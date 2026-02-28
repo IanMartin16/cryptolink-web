@@ -6,10 +6,6 @@ import { getSymbols } from "@/lib/symbolsStore";
 import { Skeleton } from "@/components/Skeleton";
 import Toast from "@/components/Toast";
 import Sparkline from "@/components/Sparkline";
-import { shortTs, shortTime } from "@/lib/format";
-import Chip from "@/components/ui/Chip";
-import type { Health } from "@/lib/health";
-import { HEALTH_OK } from "@/lib/health"
 import SymbolCell from "@/components/SymbolCell";
 import { getSymbolName } from "@/lib/symbolMeta";
 
@@ -281,7 +277,7 @@ useEffect(() => {
   if (!auto) return;
 
   // ✅ polling 10s
-  const id = setInterval(() => load("refresh"), 10000);
+  const id = setInterval(() => load("refresh"), 15000);
 
   // ✅ refresca si cambian símbolos
   const onSymbols = () => setTimeout(() => load("refresh"), 0);
@@ -299,7 +295,7 @@ useEffect(() => {
     load("initial");
     if (!auto) return;
 
-    const id = setInterval(() => load("refresh"), 10000);
+    const id = setInterval(() => load("refresh"), 15000);
     return () => clearInterval(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [auto, symbols.length]);

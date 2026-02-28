@@ -253,7 +253,7 @@ setRows((prev) => {
 
     updateMeta();
 
-    const id = setInterval(() => load("refresh"), 5000);
+    const id = setInterval(() => load("refresh"), 15000);
 
     window.addEventListener("cryptolink:fiat", updateMeta as any);
     window.addEventListener("cryptolink:symbols", updateMeta as any);
