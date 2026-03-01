@@ -160,7 +160,7 @@ function InsightCard({
           CryptoLink <span style={{ color: UI.orange }}>V2</span>
         </>
       }
-      subtitle={"Dashboard · batch pricing · social movers"}
+      subtitle={"Dashboard · batch pricing · social movers · SSE"}
       right={
         <>
           <Chip>LIVE</Chip>
