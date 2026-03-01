@@ -35,7 +35,7 @@ export default function MarketPulse({
       </div>
     </div>
 
-    <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-8 xl:grid-cols-10">
+    <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-10">
       {items.map((r) => (
         <div
           key={r.symbol}
@@ -58,7 +58,7 @@ export default function MarketPulse({
       ))}
 
       {!items.length ? (
-        <div className="col-span-2 sm:col-span-3 md:col-span-5 lg:col-span-8 xl:col-span-10 py-3 text-sm text-white/50">
+        <div className="col-span-2 sm:col-span-4 md:col-span-6 lg:col-span-10 py-3 text-sm text-white/50">
           Waiting for prices…
         </div>
       ) : null}

@@ -98,88 +98,116 @@ export default function HeroPriceCard({
         };
 
   return (
+  <div
+    style={{
+      padding: 18,
+      borderRadius: 16,
+      background: "rgba(255,255,255,0.03)",
+      outline,
+      boxShadow: flash
+        ? `0 0 0 1px rgba(255,159,67,0.06), 0 0 18px ${glow}`
+        : "0 0 0 1px rgba(255,159,67,0.06), 0 10px 30px rgba(0,0,0,0.25)",
+      transform: pulse ? "scale(1.01)" : "scale(1)",
+      transition: "transform 180ms ease, box-shadow 180ms ease, outline 180ms ease",
+      minWidth: 0, // ✅ importantísimo para evitar overflow en grid
+    }}
+  >
+    {/* ✅ Header responsive */}
     <div
-      style={{
-        padding: 18,
-        borderRadius: 16,
-        background: "rgba(255,255,255,0.03)",
-        outline,
-        boxShadow: flash
-          ? `0 0 0 1px rgba(255,159,67,0.06), 0 0 18px ${glow}`
-          : "0 0 0 1px rgba(255,159,67,0.06), 0 10px 30px rgba(0,0,0,0.25)",
-        transform: pulse ? "scale(1.01)" : "scale(1)",
-        transition: "transform 180ms ease, box-shadow 180ms ease, outline 180ms ease",
-      }}
+      className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between"
+      style={{ minWidth: 0 }}
     >
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span
-            style={{
-              padding: "4px 10px",
-              borderRadius: 999,
-              border: "1px solid rgba(255,255,255,0.10)",
-              background: "rgba(255,255,255,0.03)",
-              fontWeight: 900,
-              letterSpacing: 0.2,
-            }}
-          >
-            {symbol}
-          </span>
-          <span style={{ fontSize: 12, opacity: 0.75 }}>Actualiza cada 5s · batch BFF</span>
-        </div>
-
-        <span style={{ fontSize: 12, opacity: 0.7 }}>{fiat}</span>
-      </div>
-
-      <div
-        style={{
-          marginTop: 14,
-          fontSize: "clamp(20px, 6.2vw, 38px)", // ✅ baja en mobile, mantiene 38 en pantallas grandes
-          fontWeight: 950,
-          color: "#ffb86b",
-          textShadow: "0 0 12px rgba(255,159,67,0.18)",
-          letterSpacing: 0.2,
-          lineHeight: 1.05,
-          minHeight: 42,
-          display: "flex",
-          alignItems: "center",
-          minWidth: 0,                 // ✅ importante
-          overflow: "hidden",          // ✅ evita que invada otras cards
-          textOverflow: "ellipsis",    // ✅ si no cabe, recorta bonito
-          whiteSpace: "nowrap",        // ✅ una sola línea, sin romper
-        }}
-      >
+      <div className="flex items-center gap-2" style={{ minWidth: 0 }}>
         <span
           style={{
-            display: "block",
+            padding: "4px 10px",
+            borderRadius: 999,
+            border: "1px solid rgba(255,255,255,0.10)",
+            background: "rgba(255,255,255,0.03)",
+            fontWeight: 900,
+            letterSpacing: 0.2,
+            whiteSpace: "nowrap",
+          }}
+        >
+          {symbol}
+        </span>
+
+        {/* ✅ este es el que empuja: que trunque en mobile */}
+        <span
+          className="text-[12px] text-white/70"
+          style={{
+            minWidth: 0,
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
           }}
-            >
-          {priceNode}
+        >
+          Actualiza cada 5s · batch BFF
         </span>
       </div>
 
-      <div style={{ marginTop: 10, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12 }}>
-        <span
-          style={{
-            padding: "2px 10px",
-            borderRadius: 999,
-            fontSize: 12,
-            fontWeight: 800,
-            border: "1px solid rgba(255,159,67,0.20)",
-            background: "rgba(255,159,67,0.10)",
-            color: "#ffb86b",
-            whiteSpace: "nowrap",
-          }}
-        >
+      {/* ✅ fiat: no empuja, se alinea bonito */}
+      <span
+        className="text-[12px] text-white/60 sm:text-right"
+        style={{ whiteSpace: "nowrap" }}
+      >
+        {fiat}
+      </span>
+    </div>
+
+    {/* ✅ Price */}
+    <div
+      style={{
+        marginTop: 14,
+        fontSize: "clamp(20px, 6.2vw, 38px)",
+        fontWeight: 950,
+        color: "#ffb86b",
+        textShadow: "0 0 12px rgba(255,159,67,0.18)",
+        letterSpacing: 0.2,
+        lineHeight: 1.05,
+        minHeight: 42,
+        display: "flex",
+        alignItems: "center",
+        minWidth: 0,
+        overflow: "hidden",
+        textOverflow: "ellipsis",
+        whiteSpace: "nowrap",
+      }}
+    >
+      <span
+        style={{
+          display: "block",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {priceNode}
+      </span>
+    </div>
+
+    {/* ✅ Footer row responsive */}
+    <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+      <span
+        style={{
+          padding: "2px 10px",
+          borderRadius: 999,
+          fontSize: 12,
+          fontWeight: 800,
+          border: "1px solid rgba(255,159,67,0.20)",
+          background: "rgba(255,159,67,0.10)",
+          color: "#ffb86b",
+          whiteSpace: "nowrap",
+          alignSelf: "flex-start",
+        }}
+      >
         {cacheLabel}
-        </span>
-      <div style={{ opacity: 0.95 }}>
+      </span>
+
+      <div style={{ opacity: 0.95, alignSelf: "flex-end" }}>
         <Sparkline values={hist} w={120} h={28} stroke={sparkStroke} fill={sparkFill} />
       </div>
     </div>
-    </div>
-  );
+  </div>
+);
 }
