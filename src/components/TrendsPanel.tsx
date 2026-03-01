@@ -7,13 +7,19 @@ export default async function TrendsPanel() {
     const trends = await fetchTrends(["BTC", "ETH"]);
 
     return (
-      <section 
-         style={{ 
-          marginTop: 16, 
-          padding: 16, 
-          border: `1px solid ${UI.border}`, 
-          borderRadius: 14 
-          }}>
+      <section
+        style={{
+          marginTop: UI.gap,
+          padding: UI.padLg,
+          border: `1px solid ${UI.border}`,
+          borderRadius: UI.radiusLg,
+          background: UI.panel,
+          position: "relative",
+          overflow: "hidden",
+          minHeight: 300,
+          minWidth: 0, // ✅ clave
+        }}
+      >
         <h2 style={{ margin: 0 }}>Trends (Social_link)</h2>
         <p style={{ marginTop: 8, opacity: 0.8 }}>
           Última actualización: <code>{trends.ts}</code>

@@ -361,6 +361,7 @@ setRows((prev) => {
         position: "relative",
         overflow: "hidden",
         minHeight: 300,
+        minWidth: 0, // ✅ clave
       }}
     >
       {refreshing && (
@@ -381,13 +382,40 @@ setRows((prev) => {
         />
       )}
       
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 12 }}>
-        <h2 style={{ margin: 0, fontSize: 18, fontWeight: 900, letterSpacing: 0.3}}>
-          Prices <span style={{ color: UI.orange }}>Batch</span>
-        </h2>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",     // ✅ mobile: stack
+          alignItems: "stretch",
+          gap: 10,
+          minWidth: 0,
+        }}
+      >
+        <div style={{ minWidth: 0 }}>
+          <h2
+            style={{
+              margin: 0,
+              fontSize: 18,
+              fontWeight: 900,
+              letterSpacing: 0.3,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            Prices <span style={{ color: UI.orange }}>Batch</span>
+          </h2>
+        </div>
 
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
-
+        <div
+          style={{
+            display: "flex",
+            gap: 8,
+            flexWrap: "wrap",
+            justifyContent: "flex-start", // ✅ mobile: izquierda
+            minWidth: 0,
+          }}
+        >
           <Chip>
             Auto:{" "}
             <button
