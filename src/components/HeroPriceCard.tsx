@@ -134,7 +134,7 @@ export default function HeroPriceCard({
       <div
         style={{
           marginTop: 14,
-          fontSize: 38,
+          fontSize: "clamp(22px, 6.2vw, 38px)", // ✅ baja en mobile, mantiene 38 en pantallas grandes
           fontWeight: 950,
           color: "#ffb86b",
           textShadow: "0 0 12px rgba(255,159,67,0.18)",
@@ -143,6 +143,10 @@ export default function HeroPriceCard({
           minHeight: 42,
           display: "flex",
           alignItems: "center",
+          minWidth: 0,                 // ✅ importante
+          overflow: "hidden",          // ✅ evita que invada otras cards
+          textOverflow: "ellipsis",    // ✅ si no cabe, recorta bonito
+          whiteSpace: "nowrap",        // ✅ una sola línea, sin romper
         }}
       >
         {priceNode}
