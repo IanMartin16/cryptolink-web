@@ -22,9 +22,9 @@ export default function StatCards({ rows }: { rows: PriceRow[] }) {
   const fiat = btc?.fiat ?? rows[0]?.fiat ?? "USD";
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 12 }}>
-      <HeroPriceCard symbol="BTC" fiat={fiat} price={btc?.price} cache={btc?.cache} />
-      <HeroPriceCard symbol="ETH" fiat={fiat} price={eth?.price} cache={eth?.cache} />
-    </div>
-  );
+  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+    <HeroPriceCard symbol="BTC" fiat={fiat} price={btc?.price} cache={btc?.cache} />
+    <HeroPriceCard symbol="ETH" fiat={fiat} price={eth?.price} cache={eth?.cache} />
+  </div>
+);
 }
