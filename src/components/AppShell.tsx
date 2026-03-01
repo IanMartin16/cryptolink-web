@@ -4,6 +4,8 @@ import { ReactNode, useState } from "react";
 import { UI } from "@/lib/ui";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import MobileNav from "@/components/MobileNav";
+
 
 type NavItem = { label: string; active?: boolean; hint?: string };
 
@@ -250,6 +252,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           <div className="mainInner">{children}</div>
         </main>
       </div>
+      <MobileNav />
     </div>
   );
 }
