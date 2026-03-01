@@ -153,33 +153,38 @@ function InsightCard({
 }
 
   return (
-    <>
-      <TopHeader
-        title={
-      <>
-        CryptoLink <span style={{ color: UI.orange }}>V2</span>
-      </>
+  <div className="mx-auto w-full max-w-6xl px-3 sm:px-4 md:px-6">
+    <TopHeader
+      title={
+        <>
+          CryptoLink <span style={{ color: UI.orange }}>V2</span>
+        </>
       }
       subtitle={"Dashboard · batch pricing · social movers"}
       right={
-      <>
-        <Chip>LIVE</Chip>
-        <Chip>refresh: 5s</Chip>
-        <Chip>batch BFF</Chip>
-      </>
+        <>
+          <Chip>LIVE</Chip>
+          <Chip>refresh: 5s</Chip>
+          <Chip>batch BFF</Chip>
+        </>
       }
     />
-    <StatusBar prices={pricesHealth} trends={trendsHealth} />
 
-    <div style={{ display: "grid", gap: 14 }}>
+    <div className="mt-3">
+      <StatusBar prices={pricesHealth} trends={trendsHealth} />
+    </div>
+
+    {/* Stack principal: siempre 1 columna, spacing constante */}
+    <div className="mt-4 grid gap-4">
       <MarketMood
         score={mood.score}
         confidence={mood.confidence}
         updatedAt={moodUpdatedAt}
         insight={moodInsight}
       />
+
       <MarketSnapshotBar snapshot={snapshot} />
-      
+
       <InsightCard
         headline={insight.headline}
         summary={insight.summary}
@@ -187,23 +192,25 @@ function InsightCard({
         moodScore={mood.score}
       />
 
-      <div style={{ marginTop: 12 }}>
+      <div className="mt-1">
         <StatCards rows={rows} />
       </div>
+
       <MarketSparkStrip rows={rows} max={12} />
-      <div 
-        style={{ 
-          marginTop: 12, 
-          display: "grid", 
-          gridTemplateColumns: "repeat(2, minmax(0, 1fr))", 
-          gap: 14,
-          alignItems: "start" 
-          }}
-          >
-           <PricesPanel onRows={setRows} onHealth={setPricesHealth}/>
-           <TrendsTable onHealth={setTrendsHealth} onItems={setTrendItems} />
+
+      {/* 👇 Este era el que rompía iPhone: 2 cols fijo.
+          Ahora: 1 col en mobile, 2 cols en md+ */}
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:items-start">
+        {/* Si PricesPanel es alto, en mobile queda arriba y Trends abajo */}
+        <div className="min-w-0">
+          <PricesPanel onRows={setRows} onHealth={setPricesHealth} />
         </div>
-      </div>  
-    </>
-  );
+
+        <div className="min-w-0">
+          <TrendsTable onHealth={setTrendsHealth} onItems={setTrendItems} />
+        </div>
+      </div>
+    </div>
+  </div>
+);
 }
