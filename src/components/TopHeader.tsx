@@ -1,22 +1,33 @@
 "use client";
 
+import React, { useEffect, useState } from "react";
 import { UI } from "@/lib/ui";
-
-type ChipTone = "neutral" | "ok" | "warn";
 
 function Chip({
   children,
   tone = "neutral",
 }: {
   children: React.ReactNode;
-  tone?: ChipTone;
+  tone?: "neutral" | "good" | "warn";
 }) {
   const border =
-    tone === "ok" ? "rgba(46,229,157,0.28)" : tone === "warn" ? "rgba(255,107,107,0.28)" : UI.border;
+    tone === "good"
+      ? "rgba(46,229,157,0.22)"
+      : tone === "warn"
+      ? "rgba(255,159,67,0.22)"
+      : "rgba(255,255,255,0.12)";
   const bg =
-    tone === "ok" ? "rgba(46,229,157,0.08)" : tone === "warn" ? "rgba(255,107,107,0.08)" : "rgba(255,255,255,0.03)";
+    tone === "good"
+      ? "rgba(46,229,157,0.10)"
+      : tone === "warn"
+      ? "rgba(255,159,67,0.10)"
+      : "rgba(255,255,255,0.04)";
   const color =
-    tone === "ok" ? UI.green : tone === "warn" ? UI.red : "rgba(255,255,255,0.85)";
+    tone === "good"
+      ? UI.green
+      : tone === "warn"
+      ? UI.orangeSoft
+      : "rgba(255,255,255,0.80)";
 
   return (
     <span
@@ -32,6 +43,7 @@ function Chip({
         maxWidth: "100%",
         overflow: "hidden",
         textOverflow: "ellipsis",
+        flex: "0 0 auto",
       }}
     >
       {children}
@@ -48,13 +60,24 @@ export default function TopHeader({
   subtitle?: React.ReactNode;
   right?: React.ReactNode;
 }) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 640px)");
+    const onChange = () => setIsMobile(mq.matches);
+    onChange();
+    mq.addEventListener?.("change", onChange);
+    return () => mq.removeEventListener?.("change", onChange);
+  }, []);
+
   return (
     <div
       style={{
         display: "flex",
-        alignItems: "flex-start",
+        flexDirection: isMobile ? "column" : "row",
+        alignItems: isMobile ? "stretch" : "flex-start",
         justifyContent: "space-between",
-        gap: 14,
+        gap: 12,
         marginBottom: 14,
         padding: "12px 14px",
         borderRadius: 16,
@@ -63,11 +86,12 @@ export default function TopHeader({
         boxShadow: "0 10px 30px rgba(0,0,0,0.25)",
       }}
     >
+      {/* LEFT */}
       <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0 }}>
         <div
           style={{
-            width: 44,
-            height: 44,
+            width: isMobile ? 38 : 44,
+            height: isMobile ? 38 : 44,
             borderRadius: 14,
             display: "grid",
             placeItems: "center",
@@ -75,30 +99,70 @@ export default function TopHeader({
             background: "rgba(255,255,255,0.03)",
             boxShadow: "0 0 22px rgba(255,159,67,0.18)",
             overflow: "hidden",
+            flex: "0 0 auto",
           }}
         >
           <img
             src="/brand/cryptolink.png"
             alt="CryptoLink"
-            style={{ width: 30, height: 30, objectFit: "contain" }}
+            style={{ width: isMobile ? 26 : 30, height: isMobile ? 26 : 30, objectFit: "contain" }}
           />
         </div>
 
-        <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: 26, fontWeight: 950, letterSpacing: 0.2, lineHeight: 1.1 }}>
+        <div style={{ minWidth: 0, flex: "1 1 auto" }}>
+          <div
+            style={{
+              fontSize: isMobile ? 18 : 26,
+              fontWeight: 950,
+              letterSpacing: 0.2,
+              lineHeight: 1.1,
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+            title={typeof title === "string" ? title : undefined}
+          >
             {title}
           </div>
-          {subtitle && (
-            <div style={{ marginTop: 4, fontSize: 12, opacity: 0.75, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+
+          {subtitle ? (
+            <div
+              style={{
+                marginTop: 4,
+                fontSize: 12,
+                opacity: 0.75,
+                // ✅ en mobile permitimos 2 líneas (no nowrap)
+                overflow: "hidden",
+                display: "-webkit-box",
+                WebkitLineClamp: isMobile ? 2 : 1,
+                WebkitBoxOrient: "vertical",
+              }}
+            >
               {subtitle}
             </div>
-          )}
+          ) : null}
         </div>
       </div>
 
-      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end", maxWidth: "52%", minWidth: 0 }}>
-        {right}
-      </div>
+      {/* RIGHT */}
+      {right ? (
+        <div
+          style={{
+            display: "flex",
+            gap: 8,
+            justifyContent: isMobile ? "flex-start" : "flex-end",
+            // ✅ mobile: scroll horizontal (nunca amontona)
+            flexWrap: isMobile ? "nowrap" : "wrap",
+            overflowX: isMobile ? "auto" : "visible",
+            WebkitOverflowScrolling: "touch",
+            maxWidth: "100%", // ✅ quita 52% para mobile
+            minWidth: 0,
+            paddingBottom: isMobile ? 2 : 0,
+          }}
+        >
+          {right}
+        </div>
+      ) : null}
     </div>
   );
 }
