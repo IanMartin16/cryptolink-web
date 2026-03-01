@@ -273,32 +273,65 @@ export default function TrendsTable({
 }
 
 useEffect(() => {
-  load("initial");
-  if (!auto) return;
+  let timer: any = null;
+  let stopped = false;
+  let failCount = 0;
 
-  // ✅ polling 10s
-  const id = setInterval(() => load("refresh"), 15000);
+  const ACTIVE_MS = 15_000; // visible
+  const IDLE_MS = 60_000;   // hidden
+  const MAX_BACKOFF_MS = 120_000;
 
-  // ✅ refresca si cambian símbolos
-  const onSymbols = () => setTimeout(() => load("refresh"), 0);
-  window.addEventListener("cryptolink:symbols" as any, onSymbols);
-
-  return () => {
-    clearInterval(id);
-    window.removeEventListener("cryptolink:symbols" as any, onSymbols);
+  const schedule = (delay: number) => {
+    if (stopped) return;
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(tick, delay);
   };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, []);
 
-  // 👇 intervalo de refresh
-  useEffect(() => {
-    load("initial");
+  const nextDelay = () => {
+    const base = document.visibilityState === "visible" ? ACTIVE_MS : IDLE_MS;
+    const backoff = Math.min(base * (1 + failCount), MAX_BACKOFF_MS);
+    return backoff;
+  };
+
+  const tick = async () => {
+    if (stopped) return;
+
+    // ✅ si auto está off, no hagas polling
     if (!auto) return;
 
-    const id = setInterval(() => load("refresh"), 15000);
-    return () => clearInterval(id);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [auto, symbols.length]);
+    try {
+      await load("refresh");
+      failCount = 0;
+    } catch {
+      failCount++;
+    }
+
+    schedule(nextDelay());
+  };
+
+  // ✅ initial siempre (aunque auto esté off)
+  load("initial");
+
+  // ✅ arranca polling solo si auto está on
+  if (auto) schedule(0);
+
+  // ✅ refresca si cambian símbolos
+  const onSymbols = () => schedule(0);
+
+  // ✅ cambia delay si cambias de tab (visible/hidden)
+  const onVis = () => schedule(nextDelay());
+
+  window.addEventListener("cryptolink:symbols" as any, onSymbols);
+  document.addEventListener("visibilitychange", onVis);
+
+  return () => {
+    stopped = true;
+    if (timer) clearTimeout(timer);
+    window.removeEventListener("cryptolink:symbols" as any, onSymbols);
+    document.removeEventListener("visibilitychange", onVis);
+  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [auto, symbols.length]);
 
   useEffect(() => {
       setItems((prev) => {

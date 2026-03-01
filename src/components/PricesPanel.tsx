@@ -237,41 +237,55 @@ setRows((prev) => {
     setRefreshing(false);
   }
 }
+  //useEffect(() => { 
+  //}, [rows, loading, refreshing, error]);
 
   useEffect(() => {
-  }, [rows, loading, refreshing, error]);
+  // 1) meta UI (solo contadores/labels)
+  const updateMeta = () => {
+    const s = getSymbols();
+    setSymbolsCount(s.length);
+    setFiatLabel(getFiat());
+  };
 
+  updateMeta();
 
-  useEffect(() => {
-    load("initial");
+  // 2) carga inicial
+  load("initial");
 
-    const updateMeta = () => {
-      const s = getSymbols();
-      setSymbolsCount(s.length);
-      setFiatLabel(getFiat());
-    };
+  // 3) polling 15s (solo si auto)
+  let id: any = null;
+  const startPolling = () => {
+    if (id) clearInterval(id);
+    if (!auto) return;
+    id = setInterval(() => load("refresh"), 15000);
+  };
+  startPolling();
 
+  // 4) handlers correctos
+  const onFiat = () => {
     updateMeta();
+    setUpdatingFiat(true);
+    load("refresh").finally(() => setUpdatingFiat(false));
+  };
 
-    const id = setInterval(() => load("refresh"), 15000);
+  const onSymbols = () => {
+    updateMeta();
+    setTimeout(() => load("refresh"), 0);
+  };
 
-    window.addEventListener("cryptolink:fiat", updateMeta as any);
-    window.addEventListener("cryptolink:symbols", updateMeta as any);
+  window.addEventListener("cryptolink:fiat" as any, onFiat);
+  window.addEventListener("cryptolink:symbols" as any, onSymbols);
 
-    const onFiat = async () => {
-      setUpdatingFiat(true);
-      await load("refresh");
-      setUpdatingFiat(false);
-    };
-    const onSymbols = () => setTimeout(() => load("refresh"), 0);
+  return () => {
+    if (id) clearInterval(id);
+    Object.values(flashTimersRef.current).forEach(clearTimeout);
 
-    return () => {
-      clearInterval(id);
-      Object.values(flashTimersRef.current).forEach(clearTimeout);
-      window.removeEventListener("cryptolink:fiat", onFiat as any);
-      window.removeEventListener("cryptolink:symbols", onSymbols as any);
-    };
-  }, []);
+    window.removeEventListener("cryptolink:fiat" as any, onFiat);
+    window.removeEventListener("cryptolink:symbols" as any, onSymbols);
+  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [auto]);
   
 
   function CopyIcon({ show }: { show: boolean }) {
