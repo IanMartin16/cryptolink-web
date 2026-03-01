@@ -79,129 +79,101 @@ export default function MarketMood({ score, updatedAt, confidence, insight }: Pr
 }    
 
   return (
-    <div
-      style={{
-        padding: 18,
-        borderRadius: 18,
-        border: `1px solid ${UI.border}`,
-        background:
-          "linear-gradient(145deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01))",
-        boxShadow: `0 12px 40px rgba(0,0,0,0.35), 0 0 28px ${glow}`,
-        marginBottom: 14,
-      }}
-    >
-      <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "flex-start" }}>
-        <div style={{ minWidth: 0 }}>
-          <div style={{ fontSize: 12, opacity: 0.65, fontWeight: 900, letterSpacing: 0.35 }}>
-            MARKET SENTIMENT
-          </div>
-
-          <div
-            style={{
-              marginTop: 6,
-              fontSize: 28,
-              fontWeight: 950,
-              color,
-              letterSpacing: 0.5,
-              textShadow: "0 0 14px rgba(0,0,0,0.35)",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-            title={label}
-          >
-            {label}
-          </div>
-
-          <div style={{ marginTop: 6, display: "flex", gap: 10, flexWrap: "wrap" }}>
-            <span
-              style={{
-                padding: "4px 10px",
-                borderRadius: 999,
-                border: `1px solid ${UI.border}`,
-                background: "rgba(255,255,255,0.03)",
-                fontSize: 12,
-                fontWeight: 900,
-                opacity: 0.9,
-                whiteSpace: "nowrap",
-              }}
-            >
-              
-            </span>
-
-            <span
-              style={{
-                padding: "4px 10px",
-                borderRadius: 999,
-                border: `1px solid ${UI.border}`,
-                background: "rgba(255,255,255,0.03)",
-                fontSize: 12,
-                fontWeight: 900,
-                opacity: 0.9,
-                whiteSpace: "nowrap",
-              }}
-            >
-              Updated: <span style={{ color: UI.orangeSoft }}>{updatedAt ?? "—"}</span>
-            </span>
-          </div>
+  <div
+    className="rounded-[18px] border border-white/10 bg-white/[0.02] p-4 sm:p-[18px] shadow-[0_12px_40px_rgba(0,0,0,0.35)]"
+    style={{
+      boxShadow: `0 12px 40px rgba(0,0,0,0.35), 0 0 28px ${glow}`,
+      marginBottom: 14,
+      background:
+        "linear-gradient(145deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01))",
+    }}
+  >
+    {/* ✅ HEADER responsive: columna en mobile, fila en sm+ */}
+    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      <div className="min-w-0">
+        <div className="text-[12px] font-black tracking-[0.35px] text-white/65">
+          MARKET SENTIMENT
         </div>
 
-        <div style={{ textAlign: "right", minWidth: 120 }}>
-          <div style={{ fontSize: 12, opacity: 0.65, fontWeight: 900 }}>Score</div>
-          <div style={{ marginTop: 6, fontSize: 28, fontWeight: 950, color }}>
-            {s.toFixed(0)}
-          </div>
+        {/* ✅ label: wrap en mobile, ellipsis en sm+ */}
+        <div
+          className="mt-1 text-[22px] font-black tracking-[0.5px] sm:mt-1.5 sm:text-[28px] sm:whitespace-nowrap sm:overflow-hidden sm:text-ellipsis"
+          style={{
+            color,
+            textShadow: "0 0 14px rgba(0,0,0,0.35)",
+          }}
+          title={label}
+        >
+          {label}
+        </div>
+
+        {/* ✅ chips: se acomodan sin empujar */}
+        <div className="mt-2 flex flex-wrap gap-2">
+          {/* si no usas este chip, quítalo (ahorita está vacío y solo estorba) */}
+          {/* <span ...>...</span> */}
+
+          <span
+            className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[12px] font-black text-white/90"
+            style={{ whiteSpace: "nowrap" }}
+          >
+            Updated: <span style={{ color: UI.orangeSoft }}>{updatedAt ?? "—"}</span>
+          </span>
+
+          {/* ✅ Confidence como chip (mucho más compacto en mobile) */}
+          {typeof confidence === "number" ? (
+            <span
+              className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[12px] font-black text-white/90"
+              style={{ whiteSpace: "nowrap" }}
+            >
+              Confidence: <span style={{ color: UI.orangeSoft }}>{(confidence * 100).toFixed(0)}%</span>
+            </span>
+          ) : null}
         </div>
       </div>
 
-      {/* Gauge */}
-      <div style={{ marginTop: 14 }}>
+      {/* ✅ SCORE: ya no fuerza minWidth en mobile */}
+      <div className="text-left sm:text-right sm:min-w-[120px]">
+        <div className="text-[12px] font-black text-white/65">Score</div>
+        <div className="mt-1 text-[24px] font-black sm:mt-1.5 sm:text-[28px]" style={{ color }}>
+          {s.toFixed(0)}
+        </div>
+      </div>
+    </div>
+
+    {/* Gauge */}
+    <div className="mt-3 sm:mt-[14px]">
+      <div
+        className="h-[10px] overflow-hidden rounded-full border border-white/10 bg-white/[0.04]"
+      >
         <div
           style={{
-            height: 10,
-            borderRadius: 999,
-            border: `1px solid ${UI.border}`,
-            background: "rgba(255,255,255,0.04)",
-            overflow: "hidden",
+            width: `${pct}%`,
+            height: "100%",
+            background: `linear-gradient(90deg, ${color}, rgba(255,255,255,0.10))`,
+            boxShadow: `0 0 16px ${glow}`,
+            transition: "width 260ms ease",
           }}
-        >
-          <div
-            style={{
-              width: `${pct}%`,
-              height: "100%",
-              background: `linear-gradient(90deg, ${color}, rgba(255,255,255,0.10))`,
-              boxShadow: `0 0 16px ${glow}`,
-              transition: "width 260ms ease",
-            }}
-          />
-        </div>
+        />
+      </div>
 
-        {typeof confidence === "number" && (<div>Confidence: {(confidence * 100).toFixed(0)}%</div>)}
-
-        {insight && (
-          <div style={{ marginTop: 12, display: "grid", gap: 6 }}>
-          <div style={{ fontSize: 12, opacity: 0.85, lineHeight: 1.35 }}>
-        {insight.line1}
-          </div>
+      {insight ? (
+        <div className="mt-3 grid gap-1.5">
+          <div className="text-[12px] leading-[1.35] text-white/85">{insight.line1}</div>
           <div
-            style={{
-              fontSize: 12,
-              opacity: 0.8,
-              lineHeight: 1.35,
-              color: insight.divergence ? UI.red : "rgba(255,255,255,0.82)",
-            }}
+            className="text-[12px] leading-[1.35]"
+            style={{ color: insight.divergence ? UI.red : "rgba(255,255,255,0.82)" }}
           >
             {insight.line2}
           </div>
         </div>
-      )}
+      ) : null}
 
-        <div style={{ marginTop: 6, display: "flex", justifyContent: "space-between", fontSize: 11, opacity: 0.6 }}>
-          <span>Bearish</span>
-          <span>Neutral</span>
-          <span>Bullish</span>
-        </div>
+      <div className="mt-2 flex justify-between text-[11px] text-white/60">
+        <span>Bearish</span>
+        <span>Neutral</span>
+        <span>Bullish</span>
       </div>
     </div>
-  );
+  </div>
+);
 }

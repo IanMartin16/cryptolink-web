@@ -25,40 +25,44 @@ export default function MarketPulse({
     .slice(0, max);
 
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3">
-      <div className="flex items-center justify-between">
-        <div className="text-xs font-semibold tracking-wide text-white/70">
-          {title}
-        </div>
-        <div className="text-[11px] text-white/45">
-          {items.length ? `${items.length} assets` : "—"}
-        </div>
+  <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3">
+    <div className="flex items-center justify-between">
+      <div className="text-xs font-semibold tracking-wide text-white/70">
+        {title}
       </div>
-
-      <div className="mt-3 grid grid-cols-10 gap-2">
-        {items.map((r) => (
-          <div
-            key={r.symbol}
-            title={`${r.symbol}${typeof r.pct === "number" ? ` • ${r.pct.toFixed(2)}%` : ""}`}
-            className="rounded-lg border border-white/10 px-2 py-2 text-[11px] font-semibold text-white/80"
-            style={{
-              background: tone(r.pct),
-              backdropFilter: "blur(6px)",
-            }}
-          >
-            <div className="truncate">{r.symbol}</div>
-            <div className="mt-0.5 text-[10px] text-white/70 tabular-nums">
-              {typeof r.pct === "number" ? `${r.pct > 0 ? "+" : ""}${r.pct.toFixed(1)}%` : "—"}
-            </div>
-          </div>
-        ))}
-
-        {!items.length ? (
-          <div className="col-span-10 py-3 text-sm text-white/50">
-            Waiting for prices…
-          </div>
-        ) : null}
+      <div className="text-[11px] text-white/45">
+        {items.length ? `${items.length} assets` : "—"}
       </div>
     </div>
-  );
+
+    <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-8 xl:grid-cols-10">
+      {items.map((r) => (
+        <div
+          key={r.symbol}
+          title={`${r.symbol}${typeof r.pct === "number" ? ` • ${r.pct.toFixed(2)}%` : ""}`}
+          className="rounded-lg border border-white/10 px-2 py-2 text-[11px] font-semibold text-white/80"
+          style={{
+            background: tone(r.pct),
+            backdropFilter: "blur(6px)",
+          }}
+        >
+          <div className="truncate">{r.symbol}</div>
+
+          {/* aquí evita que el % se salga */}
+          <div className="mt-0.5 truncate text-[10px] text-white/70 tabular-nums">
+            {typeof r.pct === "number"
+              ? `${r.pct > 0 ? "+" : ""}${r.pct.toFixed(1)}%`
+              : "—"}
+          </div>
+        </div>
+      ))}
+
+      {!items.length ? (
+        <div className="col-span-2 sm:col-span-3 md:col-span-5 lg:col-span-8 xl:col-span-10 py-3 text-sm text-white/50">
+          Waiting for prices…
+        </div>
+      ) : null}
+    </div>
+  </div>
+);
 }
