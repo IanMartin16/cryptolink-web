@@ -8,19 +8,18 @@ import ApiKeyBar from "@/components/ApiKeyBar";
 
 import { getSymbols, setSymbols } from "@/lib/symbolsStore";
 // Si ya tienes un source “oficial” de los 27 símbolos, úsalo aquí:
-import { SYMBOL_META as SYMBOLS } from "@/lib/symbolMeta"; // <-- si no existe, te digo abajo cómo
+import { SYMBOL_META  } from "@/lib/symbolMeta"; // <-- si no existe, te digo abajo cómo
+
 
 export default function SettingsPage() {
   const [selected, setSelected] = useState<string[]>([]);
   const [showDev, setShowDev] = useState(false);
 
+  
+
   // ✅ lista disponible (ideal: tus 27 símbolos)
-  const available = useMemo(() => {
-    // Si SYMBOLS es string[]
-    if (Array.isArray(SYMBOLS) && SYMBOLS.length) return SYMBOLS;
-    // fallback (no ideal, pero no rompe):
-    return Array.from(new Set(selected)).sort();
-  }, [selected]);
+  const available = useMemo(() => Object.keys(SYMBOL_META), []);
+
 
   useEffect(() => {
     setSelected(getSymbols());

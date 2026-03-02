@@ -76,48 +76,9 @@ useEffect(() => {
       subtitle="watchlist · Chart overlays · Real-time view"
       badge="BETA"
     />
-
     <StatusBar prices={health} />
-
     {/* TOP GRID */}
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-      {/* LEFT */}
-      <div className="min-w-0 rounded-xl border border-white/10 bg-white/[0.03] p-3 lg:col-span-1">
-        <div className="flex items-center justify-between">
-          <div className="text-xs font-semibold tracking-wide text-white/70">
-            SYMBOLS
-          </div>
-          <div className="text-[11px] text-white/45">
-            {selected.length}/27 selected
-          </div>
-        </div>
-
-        <div className="mt-3 max-h-[260px] overflow-auto pr-1">
-          <SymbolChips symbols={available} selected={selected} onToggle={toggle} />
-        </div>
-
-        <div className="mt-3">
-          <FiatToggle />
-        </div>
-
-        {/* Dev tools toggle */}
-        <div className="mt-3">
-          <button
-            onClick={() => setShowDev((v) => !v)}
-            className="w-full rounded-lg border border-white/10 bg-white/[0.02] px-3 py-2 text-left text-[12px] font-semibold text-white/70 hover:bg-white/[0.04]"
-          >
-            Dev tools <span className="text-white/40 font-normal">(API key)</span>
-            <span className="float-right text-white/40">{showDev ? "−" : "+"}</span>
-          </button>
-
-          {showDev ? (
-            <div className="mt-2 rounded-xl border border-white/10 bg-white/[0.03] p-2">
-              <ApiKeyBar />
-            </div>
-          ) : null}
-        </div>
-      </div>
-
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
       {/* RIGHT */}
       <div className="min-w-0 rounded-xl border border-white/10 bg-white/[0.03] p-2 lg:col-span-2">
         {/* 👇 asegura que el chart tenga espacio en iPhone */}
@@ -126,7 +87,6 @@ useEffect(() => {
         </div>
       </div>
     </div>
-
     {/* FEED */}
     <div className="rounded-xl border border-white/10 bg-white/[0.02] p-2">
       <PricesPanel onRows={setRows} onHealth={setHealth} />
