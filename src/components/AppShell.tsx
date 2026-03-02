@@ -168,7 +168,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
               <img src="/brand/cryptolink.png" alt="CL" style={{ width: 22, height: 22 }} />
               <div style={{ fontWeight: 950, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                CryptoLink V2
+                <span style={{ color: UI.orange }}>CryptoLink </span>V2
               </div>
             </div>
 
