@@ -26,11 +26,11 @@ export default function MarketPulse({
 
   return (
   <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3">
-    <div className="flex items-center justify-between">
-      <div className="text-xs font-semibold tracking-wide text-white/70">
+    <div className="flex items-start justify-between gap-2">
+      <div className="min-w-0 text-xs font-semibold tracking-wide text-white/70 truncate">
         {title}
       </div>
-      <div className="text-[11px] text-white/45">
+      <div className="shrink-0 text-[11px] text-white/45">
         {items.length ? `${items.length} assets` : "—"}
       </div>
     </div>

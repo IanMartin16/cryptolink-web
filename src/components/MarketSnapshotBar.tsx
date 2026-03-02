@@ -42,7 +42,7 @@ export default function MarketSnapshotBar({
         </div>
 
         {/* KPI row */}
-        <div className="flex flex-wrap gap-2 sm:flex-1 sm:items-center">
+        <div className="flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible">
           {items.map((kpi) => (
             <KPIChip key={kpi.key} kpi={kpi} />
           ))}
@@ -59,7 +59,7 @@ export default function MarketSnapshotBar({
 
 function KPIChip({ kpi }: { kpi: SnapshotKPI }) {
   return (
-    <div className={`flex min-w-0 items-center gap-2 rounded-lg px-2 py-1 ${toneClasses(kpi.tone)}`}>
+    <div className={` shrink-0 flex min-w-0 items-center gap-2 rounded-lg px-2 py-1 ${toneClasses(kpi.tone)}`}>
       <div className="text-[11px] font-medium uppercase tracking-wide opacity-80">
         {kpi.label}
       </div>
