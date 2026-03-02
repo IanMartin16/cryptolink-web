@@ -34,18 +34,22 @@ export default function MarketSnapshotBar({
 
   return (
     <div className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">
-      <div className="flex flex-wrap items-center gap-2">
-        <div className="mr-1 text-xs font-semibold tracking-wide text-white/70">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+      
+        {/* Title */}
+        <div className="text-xs font-semibold tracking-wide text-white/70">
           MARKET SNAPSHOT
         </div>
 
-        <div className="flex flex-1 flex-wrap items-center gap-2">
+        {/* KPI row */}
+        <div className="flex flex-wrap gap-2 sm:flex-1 sm:items-center">
           {items.map((kpi) => (
             <KPIChip key={kpi.key} kpi={kpi} />
           ))}
         </div>
 
-        <div className="ml-auto text-[11px] text-white/45">
+        {/* Updated */}
+        <div className="text-[11px] text-white/45 sm:ml-auto">
           updated {Math.max(0, Math.floor((Date.now() - snapshot.updatedAt) / 1000))}s ago
         </div>
       </div>
@@ -55,11 +59,11 @@ export default function MarketSnapshotBar({
 
 function KPIChip({ kpi }: { kpi: SnapshotKPI }) {
   return (
-    <div className={`flex items-center gap-2 rounded-lg px-2 py-1 ${toneClasses(kpi.tone)}`}>
+    <div className={`flex min-w-0 items-center gap-2 rounded-lg px-2 py-1 ${toneClasses(kpi.tone)}`}>
       <div className="text-[11px] font-medium uppercase tracking-wide opacity-80">
         {kpi.label}
       </div>
-      <div className="text-sm font-semibold tabular-nums">{kpi.value}</div>
+      <div className="truncate text-sm font-semibold tabular-nums">{kpi.value}</div>
       {kpi.sub ? (
         <div className="hidden text-[11px] opacity-70 md:block">
           {kpi.sub}

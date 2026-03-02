@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import SymbolChips from "@/components/SymbolChips";
 import PriceChartPanel from "@/components/PricesChartPanel";
 import type { Health } from "@/lib/health";
 import type { PriceRow } from "@/lib/types";
@@ -9,16 +8,6 @@ import { getSymbols, setSymbols } from "@/lib/symbolsStore";
 import PricesPanel from "@/components/PricesPanel";
 import StatusBar from "@/components/StatusBar";
 import PageHeader from "@/components/PageHeader";
-import FiatToggle from "@/components/FiatToggle";
-import ApiKeyBar from "@/components/ApiKeyBar";
- 
-
-
-const AVAILABLE = [
-  "BTC","ETH","SOL","XRP","ADA","DOGE","BNB","AVAX","LINK","MATIC",
-  "DOT","LTC","BCH","UNI","ATOM","NEAR","ARB","OP","USDT","SUI",
-  "USDC", "SHIB", "DAI", "XLM", "FTM", "VET", "TRX"
-];
 
 
 export default function SymbolsPage() {
@@ -41,7 +30,6 @@ export default function SymbolsPage() {
     if (!selected.includes(main)) setMain(selected[0]);
   }, [selected, main]);
 
-  const available = useMemo(() => AVAILABLE, []);
 
   const toggle = (sym: string) => {
     setSelectedState((prev) => {

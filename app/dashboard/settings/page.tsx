@@ -20,7 +20,6 @@ export default function SettingsPage() {
   // ✅ lista disponible (ideal: tus 27 símbolos)
   const available = useMemo(() => Object.keys(SYMBOL_META), []);
 
-
   useEffect(() => {
     setSelected(getSymbols());
 
@@ -44,7 +43,10 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-4">
-      <PageHeader title="Settings" subtitle="watchlist · fiat · dev tools" badge="LIVE" />
+      <PageHeader title="Settings" subtitle="watchlist · fiat · dev tools" badge="BETA" />
+      <div className="mt-2 text-[14px] text-white/45">
+        These settings are stored locally (this device).
+      </div>
 
       {/* Fiat */}
       <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3">
