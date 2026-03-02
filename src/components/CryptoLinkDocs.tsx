@@ -173,7 +173,7 @@ export default function CryptoLinkDocs() {
                           <div className="text-[12px] text-white/80">
                             <span className="font-bold">{r.status}</span> — {r.description}
                           </div>
-                          {"example" in r ? <CodeBlock code={r.example} /> : null}
+                          {"example" in r && r.example ? <CodeBlock code={r.example} /> : null}
                         </div>
                       ))}
                     </div>
