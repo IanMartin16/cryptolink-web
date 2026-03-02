@@ -100,7 +100,7 @@ export default function HeroPriceCard({
   return (
   <div
     style={{
-      padding: 18,
+      padding: window.innerWidth < 640 ? 14 : 18,
       borderRadius: 16,
       background: "rgba(255,255,255,0.03)",
       outline,
