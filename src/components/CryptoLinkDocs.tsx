@@ -60,8 +60,8 @@ export default function CryptoLinkDocs() {
       <div className="mx-auto w-full max-w-6xl px-4 py-10">
         {/* Header */}
         <div className="rounded-3xl border border-white/10 bg-white/[0.06] p-6 shadow-[0_30px_90px_rgba(0,0,0,0.55)]">
-          <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-2xl font-extrabold text-white/95">
+          <div className="flex items-center gap-2 overflow-x-auto whitespace-nowrap pr-1">
+            <h1 className=" shrink-0 text-xl font-extrabold text-white/90">
               <span style={{ color: UI.orange }}>{d.product.name}</span><span className="text-white/45">Docs</span>
             </h1>
             <Pill>v{d.version}</Pill>
@@ -72,8 +72,8 @@ export default function CryptoLinkDocs() {
           <p className="mt-2 text-sm text-white/70">{d.product.tagline}</p>
 
           <div className="mt-4 grid gap-2 rounded-2xl border border-white/10 bg-black/20 p-4">
-            <div className="text-[12px] text-white/60">Base URL</div>
-            <div className="font-mono text-[13px] text-white/90">{d.baseUrl}</div>
+            <div className="mt-3 text-[12px] text-white/60">Base URL</div>
+            <div className="font-mono text-white/80 break-all">{d.baseUrl}</div>
 
             <div className="mt-2 text-[12px] text-white/60">Quick curl</div>
             <CodeBlock
