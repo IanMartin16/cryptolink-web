@@ -16,7 +16,7 @@ function baseUrl() {
 
 export async function fetchTrends(symbols: string[]): Promise<TrendsResponse> {
   const qs = encodeURIComponent(symbols.join(","));
-  const url = `${baseUrl()}/internal/v1/trends?symbols=${qs}`;
+  const url = `${baseUrl()}/v1/trends?symbols=${qs}`;
 
   const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) throw new Error(`Social_link HTTP ${res.status}`);
