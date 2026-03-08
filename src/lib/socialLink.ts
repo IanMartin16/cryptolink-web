@@ -11,7 +11,7 @@ export type TrendsResponse = {
 };
 
 function baseUrl() {
-  return process.env.NEXT_PUBLIC_CRYPTOLINK_API_BASE_URL || "http://localhost:8000";
+  return process.env.NEXT_PUBLIC_SOCIAL_LINK_API_BASE_URL || "http://localhost:8000";
 }
 
 export async function fetchTrends(symbols: string[]): Promise<TrendsResponse> {
