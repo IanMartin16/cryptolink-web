@@ -1,7 +1,6 @@
 import { fetchTrends } from "@/lib/socialLink";
 import { UI } from "@/lib/ui";
 
-
 export default async function TrendsPanel() {
   try {
     const trends = await fetchTrends(["BTC", "ETH"]);
@@ -17,10 +16,10 @@ export default async function TrendsPanel() {
           position: "relative",
           overflow: "hidden",
           minHeight: 300,
-          minWidth: 0, // ✅ clave
+          minWidth: 0,
         }}
       >
-        <h2 style={{ margin: 0 }}>Trends (Social_link)</h2>
+        <h2 style={{ margin: 0 }}>Trends (CryptoLink)</h2>
         <p style={{ marginTop: 8, opacity: 0.8 }}>
           Última actualización: <code>{trends.ts}</code>
         </p>
@@ -36,20 +35,21 @@ export default async function TrendsPanel() {
     );
   } catch (e: any) {
     return (
-      <section 
-        style={{ 
-          marginTop: 16, 
-          padding: 16, 
-          border: `1px solid ${UI.border}`, 
+      <section
+        style={{
+          marginTop: 16,
+          padding: 16,
+          border: `1px solid ${UI.border}`,
           borderRadius: 14,
-          background: UI.panel  
-          }}>
-        <h2 style={{ margin: 0 }}>Trends (Social_link)</h2>
+          background: UI.panel,
+        }}
+      >
+        <h2 style={{ margin: 0 }}>Trends (CryptoLink)</h2>
         <p style={{ marginTop: 8 }}>
-          Error conectando a Social_link: <b>{e?.message ?? "unknown"}</b>
+          Error conectando a CryptoLink trends: <b>{e?.message ?? "unknown"}</b>
         </p>
         <p style={{ marginTop: 8, opacity: 0.8 }}>
-          Revisa que Social_link esté corriendo en <code>http://localhost:8000</code>
+          Revisa la route interna de trends y la configuración del backend.
         </p>
       </section>
     );
