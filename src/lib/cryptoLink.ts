@@ -69,7 +69,7 @@ export type MomentumResponse = {
 
 export async function fetchMomentum(symbols: string[]): Promise<MomentumResponse> {
   const qs = encodeURIComponent(symbols.join(","));
-  const res = await fetch(`/api/momentum?symbols=${qs}&fiat=MXN`, { cache: "no-store" });
+  const res = await fetch(`/api/social/momentum?symbols=${qs}&fiat=MXN`, { cache: "no-store" });
   if (!res.ok) throw new Error(`CryptoLink momentum HTTP ${res.status}`);
   return (await res.json()) as MomentumResponse;
 }

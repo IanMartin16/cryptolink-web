@@ -5,7 +5,7 @@ import TrendsRouteBody from "@/components/TrendsRouteBody";
 import type { Health } from "@/lib/health";
 import { HEALTH_OK } from "@/lib/health";
 import PageHeader from "@/components/PageHeader";
-import MomentumPanel from "@/components/MomentumPanel";
+import  MomentumPanel  from "@/components/MomentumPanel";
 
 
 export default function TrendsPage() {
