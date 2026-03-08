@@ -26,7 +26,7 @@ async function fetchOne(base: string, symbol: string, fiat: string, apiKey: stri
     return { symbol, ok: hit.status >= 200 && hit.status < 300, data: hit.body, cache: "HIT" as const };
   }
 
-  const url = `${base}/v1/price?symbol=${encodeURIComponent(symbol)}&fiat=${encodeURIComponent(fiat)}`;
+  const url = `${base}/v1/prices?symbol=${encodeURIComponent(symbol)}&fiat=${encodeURIComponent(fiat)}`;
   const res = await fetch(url, {
     headers: { "x-api-key": apiKey },
     cache: "no-store",
