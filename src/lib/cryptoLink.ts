@@ -48,3 +48,28 @@ export async function fetchPricesBatch(symbols: string[], fiat: string, apiKey: 
 
   return res.json();
 }
+
+export type MomentumItem = {
+  symbol: string;
+  direction: "up" | "down" | "flat";
+  changePct: number;
+  strength: "low" | "medium" | "high";
+  score: number;
+  last: number | null;
+  source: string;
+};
+
+export type MomentumResponse = {
+  ok: boolean;
+  fiat: string;
+  ts: string;
+  source: string;
+  momentum: MomentumItem[];
+};
+
+export async function fetchMomentum(symbols: string[]): Promise<MomentumResponse> {
+  const qs = encodeURIComponent(symbols.join(","));
+  const res = await fetch(`/api/momentum?symbols=${qs}&fiat=MXN`, { cache: "no-store" });
+  if (!res.ok) throw new Error(`CryptoLink momentum HTTP ${res.status}`);
+  return (await res.json()) as MomentumResponse;
+}
