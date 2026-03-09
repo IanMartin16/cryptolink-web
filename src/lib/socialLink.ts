@@ -12,7 +12,7 @@ export type TrendsResponse = {
 
 export async function fetchTrends(symbols: string[]): Promise<TrendsResponse> {
   const qs = encodeURIComponent(symbols.join(","));
-  const url = `/api/trends?symbols=${qs}&fiat=MXN`;
+  const url = `/api/social/trends?symbols=${qs}&fiat=MXN`;
 
   const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) throw new Error(`CryptoLink trends HTTP ${res.status}`);
