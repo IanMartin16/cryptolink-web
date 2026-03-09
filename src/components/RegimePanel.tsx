@@ -50,6 +50,15 @@ function formatTs(ts: string) {
   }
 }
 
+  function clamp(n: number, min: number, max: number) {
+    return Math.max(min, Math.min(max, n));
+  }
+
+  function regimePosition(score: number) {
+    const pos = ((score + 1.5) / 3) * 100;
+    return clamp(pos, 0, 100);
+  }
+
 export default function RegimePanel() {
   const [data, setData] = useState<RegimeResponse | null>(null);
   const [error, setError] = useState("");
@@ -115,6 +124,9 @@ export default function RegimePanel() {
   const regime = data.regime;
   const tone = toneForState(regime.state);
   const confidencePct = Math.round((regime.confidence ?? 0) * 100);
+  const scoreNum = Number (regime.score ?? 0);
+  const markerLeft = regimePosition(scoreNum);
+
 
   return (
     <section
@@ -187,29 +199,51 @@ export default function RegimePanel() {
 
           <div style={{ fontSize: 15, opacity: 0.84 }}>{regime.summary}</div>
 
-          <div
-            style={{
-              marginTop: 4,
-              height: 12,
-              borderRadius: 999,
-              background: "rgba(255,255,255,0.08)",
-              overflow: "hidden",
-              border: `1px solid rgba(255,255,255,0.08)`,
-            }}
-          >
+          <div style={{ display: "grid", gap: 8 }}>
             <div
-              style={{
-                width: `${Math.max(8, confidencePct)}%`,
-                height: "100%",
-                background: tone,
-                boxShadow: `0 0 18px ${tone}55`,
-              }}
-            />
-          </div>
+               style={{
+                  position: "relative",
+                  height: 16,
+                  borderRadius: 999,
+      overflow: "hidden",
+      border: `1px solid rgba(255,255,255,0.08)`,
+      background:
+        "linear-gradient(90deg, rgba(255,107,107,0.28) 0%, rgba(255,255,255,0.08) 50%, rgba(43,255,136,0.28) 100%)",
+      boxShadow: "inset 0 0 18px rgba(255,255,255,0.04)",
+    }}
+  >
+    <div
+      style={{
+        position: "absolute",
+        left: `calc(${markerLeft}% - 8px)`,
+        top: -2,
+        width: 16,
+        height: 20,
+        borderRadius: 999,
+        background: tone,
+        boxShadow: `0 0 18px ${tone}88`,
+        border: "1px solid rgba(0,0,0,0.18)",
+      }}
+    />
+  </div>
 
-          <div style={{ fontSize: 12, opacity: 0.72 }}>
-            Confianza estimada: {confidencePct}%
-          </div>
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "space-between",
+      fontSize: 11,
+      opacity: 0.68,
+    }}
+  >
+    <span>Bajista</span>
+    <span>Estable</span>
+    <span>Alcista</span>
+  </div>
+
+  <div style={{ fontSize: 12, opacity: 0.72 }}>
+    Confianza estimada: {confidencePct}% · posición {scoreNum.toFixed(2)}
+  </div>
+</div>
         </div>
 
         <div
