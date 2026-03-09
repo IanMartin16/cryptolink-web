@@ -19,7 +19,7 @@ type TrendsResponse = {
 function esTrend(trend: string) {
   if (trend === "up") return "Up";
   if (trend === "down") return "Down";
-  return "estable";
+  return "Neutral";
 }
 
 export default function TrendsPanel() {

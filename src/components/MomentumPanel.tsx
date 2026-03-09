@@ -26,13 +26,13 @@ type MomentumResponse = {
 function esDirection(direction: string) {
   if (direction === "up") return "Up";
   if (direction === "down") return "Down";
-  return "estable";
+  return "Neutral";
 }
 
 function esStrength(strength: string) {
   if (strength === "high") return "High";
   if (strength === "medium") return "Medium";
-  return "bajo";
+  return "Low";
 }
 
 function formatTs(ts: string) {
