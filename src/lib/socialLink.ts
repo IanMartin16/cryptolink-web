@@ -28,10 +28,10 @@ export async function fetchTrends(symbols: string[]): Promise<TrendsResponse> {
           score: Number(t.score ?? 0),
           reason:
             t.trend === "UP"
-              ? `Momentum positive (${Number(t.changePct ?? 0).toFixed(2)}%)`
+              ? `Momentum positivo (${Number(t.changePct ?? 0).toFixed(2)}%)`
               : t.trend === "DOWN"
-              ? `Momentum negative (${Number(t.changePct ?? 0).toFixed(2)}%)`
-              : `Movement neutral (${Number(t.changePct ?? 0).toFixed(2)}%)`,
+              ? `Momentum negativo (${Number(t.changePct ?? 0).toFixed(2)}%)`
+              : `Movimiento estable (${Number(t.changePct ?? 0).toFixed(2)}%)`,
         }))
       : [],
   };
