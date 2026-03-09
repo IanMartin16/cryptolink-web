@@ -17,8 +17,8 @@ type TrendsResponse = {
 };
 
 function esTrend(trend: string) {
-  if (trend === "up") return "alcista";
-  if (trend === "down") return "bajista";
+  if (trend === "up") return "Up";
+  if (trend === "down") return "Down";
   return "estable";
 }
 
@@ -144,7 +144,7 @@ export default function TrendsPanel() {
             whiteSpace: "nowrap",
           }}
         >
-          Actualizado · <code>{formatTs(data.ts)}</code>
+          Updated · <code>{formatTs(data.ts)}</code>
         </div>
       </div>
 
@@ -217,7 +217,7 @@ export default function TrendsPanel() {
                 </div>
 
                 <div style={{ fontSize: 14, opacity: 0.82 }}>
-                  Score de tendencia
+                  Trends Score
                 </div>
               </div>
 

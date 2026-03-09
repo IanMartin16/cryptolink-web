@@ -24,14 +24,14 @@ type MomentumResponse = {
 };
 
 function esDirection(direction: string) {
-  if (direction === "up") return "alcista";
-  if (direction === "down") return "bajista";
+  if (direction === "up") return "Up";
+  if (direction === "down") return "Down";
   return "estable";
 }
 
 function esStrength(strength: string) {
-  if (strength === "high") return "alto";
-  if (strength === "medium") return "medio";
+  if (strength === "high") return "High";
+  if (strength === "medium") return "Medium";
   return "bajo";
 }
 
@@ -45,11 +45,17 @@ function formatTs(ts: string) {
       hour: "2-digit",
       minute: "2-digit",
       hour12: false,
-      timeZone: "UTC-6",
-    }).format(d) + " UTC-6";
+      timeZone: "America/Mexico_City",
+    }).format(d) + " America/Mexico_City";
   } catch {
     return ts;
   }
+}
+function fmt(iso?: string) {
+  if (!iso) return "—";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "—";
+  return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
 export default function MomentumPanel() {
@@ -156,7 +162,7 @@ export default function MomentumPanel() {
             whiteSpace: "nowrap",
           }}
         >
-          Actualizado · <code>{formatTs(data.ts)}</code>
+          Updated · <code>{formatTs(data.ts)}</code>
         </div>
       </div>
 
@@ -229,7 +235,7 @@ export default function MomentumPanel() {
                 </div>
 
                 <div style={{ fontSize: 14, opacity: 0.82 }}>
-                  Variación {m.changePct.toFixed(2)}% · score {m.score.toFixed(2)}
+                  Fluctuation {m.changePct.toFixed(2)}% · score {m.score.toFixed(2)}
                 </div>
               </div>
 
@@ -242,7 +248,7 @@ export default function MomentumPanel() {
                   opacity: 0.72,
                 }}
               >
-                Último: {m.last == null ? "N/D" : m.last.toLocaleString()} {data.fiat}
+                Last: {m.last == null ? "N/D" : m.last.toLocaleString()} {data.fiat}
               </div>
             </div>
           );
