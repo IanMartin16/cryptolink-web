@@ -45,8 +45,8 @@ function formatTs(ts: string) {
       hour: "2-digit",
       minute: "2-digit",
       hour12: false,
-      timeZone: "UTC",
-    }).format(d) + " UTC";
+      timeZone: "UTC-6",
+    }).format(d) + " UTC-6";
   } catch {
     return ts;
   }

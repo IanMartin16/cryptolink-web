@@ -26,6 +26,7 @@ export default function TrendsPanel() {
   const [data, setData] = useState<TrendsResponse | null>(null);
   const [error, setError] = useState("");
 
+  //formato de hora  fecha
   function formatTs(ts: string) {
   try {
     const d = new Date(ts);
