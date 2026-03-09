@@ -7,6 +7,7 @@ import TrendChartPanel from "@/components/TrendChartPanel";
 import type { TrendItem } from "@/lib/types";
 import type { Health } from "@/lib/health";
 import MomentumPanel from "@/components/MomentumPanel";
+import TrendsPanel from "@/components/TrendsPanel";
 
 
 export default function TrendsRouteBody() {
@@ -21,6 +22,7 @@ export default function TrendsRouteBody() {
       <div style={{ marginTop: 12 }}>
        <MomentumPanel />
       </div>
+        <TrendsPanel />
       <div style={{ marginTop: 12 }}>
         <TrendChartPanel items={trendItems} maxPoints={60}/>
       </div>

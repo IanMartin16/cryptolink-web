@@ -138,7 +138,7 @@ export default function MomentumPanel() {
             whiteSpace: "nowrap",
           }}
         >
-          Updated · <code>{data.ts}</code>
+          Actualizado · <code>{data.ts}</code>
         </div>
       </div>
 
@@ -192,7 +192,6 @@ export default function MomentumPanel() {
                     background: "rgba(255,255,255,0.05)",
                     color: tone,
                     fontWeight: 700,
-                    textTransform: "uppercase",
                   }}
                 >
                   {esDirection(m.direction)}
@@ -212,7 +211,7 @@ export default function MomentumPanel() {
                 </div>
 
                 <div style={{ fontSize: 14, opacity: 0.82 }}>
-                  {m.changePct.toFixed(2)}% · score {m.score.toFixed(2)}
+                  Variación {m.changePct.toFixed(2)}% · score {m.score.toFixed(2)}
                 </div>
               </div>
 
