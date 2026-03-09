@@ -26,13 +26,30 @@ export default function TrendsPanel() {
   const [data, setData] = useState<TrendsResponse | null>(null);
   const [error, setError] = useState("");
 
+  function formatTs(ts: string) {
+  try {
+    const d = new Date(ts);
+    return new Intl.DateTimeFormat("es-MX", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+      timeZone: "UTC",
+    }).format(d) + " UTC";
+  } catch {
+    return ts;
+  }
+}
+
   useEffect(() => {
     let cancelled = false;
 
     async function load() {
       try {
         setError("");
-        const res = await fetchTrends(["BTC", "ETH"]);
+        const res = await fetchTrends(["BTC", "ETH", "SOL"]);
         if (!cancelled) setData(res);
       } catch (e: any) {
         if (!cancelled) setError(e?.message ?? "unknown");
@@ -87,7 +104,7 @@ export default function TrendsPanel() {
   return (
     <section
       style={{
-        marginTop: UI.gap,
+        marginTop: 20,
         padding: 20,
         border: `1px solid ${UI.border}`,
         borderRadius: 20,
@@ -126,7 +143,7 @@ export default function TrendsPanel() {
             whiteSpace: "nowrap",
           }}
         >
-          Actualizado · <code>{data.ts}</code>
+          Actualizado · <code>{formatTs(data.ts)}</code>
         </div>
       </div>
 

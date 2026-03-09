@@ -34,7 +34,7 @@ function strokeFor(p?: number) {
 export default function MarketSparkStrip({
   rows,
   max = 12,
-  title = "MARKET PULSE",
+  title = "MARKET PULSE BAR",
 }: {
   rows: PriceRow[];
   max?: number;

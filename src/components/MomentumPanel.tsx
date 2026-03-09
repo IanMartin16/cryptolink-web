@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { UI } from "@/lib/ui";
 import { fetchMomentum } from "@/lib/cryptoLink";
 
+
 type MomentumItem = {
   symbol: string;
   direction: "up" | "down" | "flat";
@@ -32,6 +33,23 @@ function esStrength(strength: string) {
   if (strength === "high") return "alto";
   if (strength === "medium") return "medio";
   return "bajo";
+}
+
+function formatTs(ts: string) {
+  try {
+    const d = new Date(ts);
+    return new Intl.DateTimeFormat("es-MX", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+      timeZone: "UTC",
+    }).format(d) + " UTC";
+  } catch {
+    return ts;
+  }
 }
 
 export default function MomentumPanel() {
@@ -99,7 +117,7 @@ export default function MomentumPanel() {
   return (
     <section
       style={{
-        marginTop: UI.gap,
+        marginTop: 20,
         padding: 20,
         border: `1px solid ${UI.border}`,
         borderRadius: 20,
@@ -138,7 +156,7 @@ export default function MomentumPanel() {
             whiteSpace: "nowrap",
           }}
         >
-          Actualizado · <code>{data.ts}</code>
+          Actualizado · <code>{formatTs(data.ts)}</code>
         </div>
       </div>
 

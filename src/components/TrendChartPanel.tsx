@@ -8,7 +8,7 @@ type Point = { time: UTCTimestamp; value: number };
 
 export default function TrendChartPanel({
   items,
-  maxPoints = 60,
+  maxPoints = 40,
 }: {
   items: TrendItem[];
   maxPoints?: number;
