@@ -73,3 +73,25 @@ export async function fetchMomentum(symbols: string[]): Promise<MomentumResponse
   if (!res.ok) throw new Error(`CryptoLink momentum HTTP ${res.status}`);
   return (await res.json()) as MomentumResponse;
 }
+
+export type RegimeResponse = {
+  ok: boolean;
+  fiat: string;
+  ts: string;
+  source: string;
+  regime: {
+    state: "bullish" | "bearish" | "neutral" | "mixed";
+    score: number;
+    confidence: number;
+    summary: string;
+  };
+};
+
+export async function fetchRegime(symbols: string[]): Promise<RegimeResponse> {
+  const qs = encodeURIComponent(symbols.join(","));
+  const res = await fetch(`/api/social/regime?symbols=${qs}&fiat=MXN`, {
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error(`CryptoLink regime HTTP ${res.status}`);
+  return (await res.json()) as RegimeResponse;
+}
