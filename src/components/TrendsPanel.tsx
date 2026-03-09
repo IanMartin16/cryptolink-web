@@ -37,8 +37,8 @@ export default function TrendsPanel() {
       hour: "2-digit",
       minute: "2-digit",
       hour12: false,
-      timeZone: "UTC",
-    }).format(d) + " UTC";
+      timeZone: "America/Mexico_City",
+    }).format(d) + " Mexico City";
   } catch {
     return ts;
   }
