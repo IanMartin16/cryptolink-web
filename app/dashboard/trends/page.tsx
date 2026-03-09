@@ -5,7 +5,6 @@ import TrendsRouteBody from "@/components/TrendsRouteBody";
 import type { Health } from "@/lib/health";
 import { HEALTH_OK } from "@/lib/health";
 import PageHeader from "@/components/PageHeader";
-import  MomentumPanel  from "@/components/MomentumPanel";
 
 
 export default function TrendsPage() {
@@ -20,7 +19,6 @@ export default function TrendsPage() {
       />
       <div style={{ marginTop: 12, display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 12 }}>
       </div>
-      <MomentumPanel />
       <TrendsRouteBody />
     </div>
   );

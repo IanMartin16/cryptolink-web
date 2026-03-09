@@ -6,6 +6,7 @@ import StatusBar from "@/components/StatusBar";
 import TrendChartPanel from "@/components/TrendChartPanel";
 import type { TrendItem } from "@/lib/types";
 import type { Health } from "@/lib/health";
+import MomentumPanel from "@/components/MomentumPanel";
 
 
 export default function TrendsRouteBody() {
@@ -17,7 +18,9 @@ export default function TrendsRouteBody() {
       <div style={{ marginTop: 12 }}>
         <StatusBar trends={trendsHealth} />
       </div>
-
+      <div style={{ marginTop: 12 }}>
+       <MomentumPanel />
+      </div>
       <div style={{ marginTop: 12 }}>
         <TrendChartPanel items={trendItems} maxPoints={60}/>
       </div>
