@@ -20,16 +20,32 @@ export default function TrendsRouteBody() {
       <div style={{ marginTop: 12 }}>
         <StatusBar trends={trendsHealth} />
       </div>
-      <RegimePanel />
-      <div style={{ marginTop: 12 }}>
-       <MomentumPanel />
-      </div>
+      <div
+        style={{
+          display: "grid",
+          gap: 20,
+          marginTop: 16,
+        }}
+      >
+        <RegimePanel />
+
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(420px, 1fr))",
+            gap: 20,
+            alignItems: "start",
+          }}
+        >
+        <MomentumPanel />
         <TrendsPanel />
+      </div>
+    </div>
       <div style={{ marginTop: 12 }}>
         <TrendChartPanel items={trendItems} maxPoints={60}/>
       </div>
       <div>
-        <TrendsTable onItems={setTrendItems} onHealth={setTrendsHealth} />
+      <TrendsTable onItems={setTrendItems} onHealth={setTrendsHealth} />
       </div>
     </>
   );
