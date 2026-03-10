@@ -95,3 +95,24 @@ export async function fetchRegime(symbols: string[]): Promise<RegimeResponse> {
   if (!res.ok) throw new Error(`CryptoLink regime HTTP ${res.status}`);
   return (await res.json()) as RegimeResponse;
 }
+
+export type SignalPoint = {
+  label: string;
+  value: number;
+};
+
+export type SignalsResponse = {
+  ok: boolean;
+  ts: string;
+  fiat: string;
+  signals: SignalPoint[];
+};
+
+export async function fetchSignals(symbols: string[]): Promise<SignalsResponse> {
+  const qs = encodeURIComponent(symbols.join(","));
+  const res = await fetch(`/api/social/signals?symbols=${qs}&fiat=MXN`, {
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error(`Signals HTTP ${res.status}`);
+  return (await res.json()) as SignalsResponse;
+}

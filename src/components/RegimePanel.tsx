@@ -54,11 +54,6 @@ function formatTs(ts: string) {
     return Math.max(min, Math.min(max, n));
   }
 
-  function regimePosition(score: number) {
-    const pos = ((score + 1.5) / 3) * 100;
-    return clamp(pos, 0, 100);
-  }
-
 export default function RegimePanel() {
   const [data, setData] = useState<RegimeResponse | null>(null);
   const [error, setError] = useState("");
@@ -124,14 +119,12 @@ export default function RegimePanel() {
   const regime = data.regime;
   const tone = toneForState(regime.state);
   const confidencePct = Math.round((regime.confidence ?? 0) * 100);
-  const scoreNum = Number (regime.score ?? 0);
-  const markerLeft = regimePosition(scoreNum);
   const orb = orbGlow(regime.state, regime.confidence ?? 0);
 
 
   function clamp(n: number, min: number, max: number) {
-  return Math.max(min, Math.min(max, n));
-  }
+    return Math.max(min, Math.min(max, n));
+    }
 
   function orbGlow(state: string, confidence: number) {
     const c = clamp(confidence ?? 0, 0, 1);
@@ -221,203 +214,205 @@ export default function RegimePanel() {
           alignItems: "center",
         }}
       >
-        <div
-  style={{
-    padding: 14,
-    borderRadius: 16,
-    border: `1px solid ${UI.border}`,
-    background: "rgba(255,255,255,0.045)",
-    display: "grid",
-    gap: 14,
-  }}
->
-  <div style={{ fontSize: 13, opacity: 0.72 }}>Estado actual</div>
-
-  <div
-    style={{
-      display: "grid",
-      gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
-      gap: 14,
-      alignItems: "center",
-    }}
-  >
-    <div
-      style={{
-        width: "min(110px, 28vw)",
-        height: "min(110px, 28vw)",
-        borderRadius: "50%",
-        position: "relative",
-        margin: "0 auto",
-        transition: "box-shadow 300ms ease, border-color 300ms ease, background 300ms ease",
-      }}
-    >
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          borderRadius: "50%",
-          background: orb.glow,
-          filter: "blur(16px)",
-          animation: "orbHalo 4.2s ease-in-out infinite",
-        }}
-      />
-
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          borderRadius: "50%",
-          position: "relative",
-          background: `
-            radial-gradient(circle at 35% 35%, rgba(255,255,255,0.28), transparent 28%),
-            radial-gradient(circle, ${orb.core} 0%, ${orb.glow} 42%, rgba(0,0,0,0) 72%)
-          `,
-          boxShadow: `
-            0 0 28px ${orb.glow},
-            0 0 54px ${orb.glow},
-            inset 0 0 18px rgba(255,255,255,0.08)
-          `,
-          border: `1px solid ${orb.ring}`,
-          animation: "orbBreath 4.2s ease-in-out infinite, orbCoreDrift 6s ease-in-out infinite",
-        }}
-      >
+        {/* Card right */ }
         <div
           style={{
-            position: "absolute",
-            inset: 10,
-            borderRadius: "50%",
-            border: `1px solid ${orb.ring}`,
-            opacity: 0.9,
-          }}
-        />
+          padding: 14,
+          borderRadius: 16,
+          border: `1px solid ${UI.border}`,
+          background: "rgba(255,255,255,0.045)",
+          display: "grid",
+          gap: 14,
+        }}
+      >
+        <div style={{ fontSize: 13, opacity: 0.72 }}>Estado actual</div>
+
         <div
           style={{
-            position: "absolute",
-            inset: 22,
-            borderRadius: "50%",
-            border: `1px solid rgba(255,255,255,0.10)`,
-            opacity: 0.9,
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+            gap: 14,
+            alignItems: "center",
           }}
-        />
-      </div>
-    </div>
+        >
+          <div
+            style={{
+              width: "min(110px, 28vw)",
+              height: "min(110px, 28vw)",
+              borderRadius: "50%",
+              position: "relative",
+              margin: "0 auto",
+              transition: "box-shadow 300ms ease, border-color 300ms ease, background 300ms ease",
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                borderRadius: "50%",
+                background: orb.glow,
+                filter: "blur(16px)",
+                animation: "orbHalo 4.2s ease-in-out infinite",
+              }}
+            />
 
-    <div style={{ display: "grid", gap: 8 }}>
-      <div
-        style={{
-          fontSize: "clamp(26px, 5vw, 32px)",
-          fontWeight: 900,
-          color: tone,
-          lineHeight: 1,
-        }}
-      >
-        {esState(regime.state)}
-      </div>
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                borderRadius: "50%",
+                position: "relative",
+                background: `
+                  radial-gradient(circle at 35% 35%, rgba(255,255,255,0.28), transparent 28%),
+                  radial-gradient(circle, ${orb.core} 0%, ${orb.glow} 42%, rgba(0,0,0,0) 72%)
+                `,
+                boxShadow: `
+                  0 0 28px ${orb.glow},
+                  0 0 54px ${orb.glow},
+                  inset 0 0 18px rgba(255,255,255,0.08)
+                `,
+                border: `1px solid ${orb.ring}`,
+                animation: "orbBreath 4.2s ease-in-out infinite, orbCoreDrift 6s ease-in-out infinite",
+              }}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 10,
+                  borderRadius: "50%",
+                  border: `1px solid ${orb.ring}`,
+                  opacity: 0.9,
+                }}
+              />
+              <div
+                  style={{
+                    position: "absolute",
+                    inset: 22,
+                    borderRadius: "50%",
+                    border: `1px solid rgba(255,255,255,0.10)`,
+                    opacity: 0.9,
+                  }}
+                />
+              </div>
+            </div>
 
-      <div style={{ fontSize: 14, opacity: 0.8 }}>
-        Confianza estimada: <b>{confidencePct}%</b>
-      </div>
+            <div style={{ display: "grid", gap: 8 }}>
+              <div
+                style={{
+                  fontSize: "clamp(26px, 5vw, 32px)",
+                  fontWeight: 900,
+                  color: tone,
+                  lineHeight: 1,
+                }}
+              >
+                {esState(regime.state)}
+              </div>
 
-      <div style={{ fontSize: 14, opacity: 0.8 }}>
-        Score agregado: <b>{Number(regime.score ?? 0).toFixed(2)}</b>
-      </div>
+              <div style={{ fontSize: 14, opacity: 0.8 }}>
+                Confianza estimada: <b>{confidencePct}%</b>
+              </div>
 
-      <div
-        style={{
-          fontSize: "clamp(13px, 3.4vw, 14px)",
-          opacity: 0.84,
-          lineHeight: 1.45,
-        }}
-      >
-        {regime.summary}
-      </div>
-    </div>
-  </div>
-</div>
+              <div style={{ fontSize: 14, opacity: 0.8 }}>
+                Score agregado: <b>{Number(regime.score ?? 0).toFixed(2)}</b>
+              </div>
+
+              <div
+                style={{
+                  fontSize: "clamp(13px, 3.4vw, 14px)",
+                  opacity: 0.84,
+                  lineHeight: 1.45,
+                }}
+              >
+                {regime.summary}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Card left */ }
+        <div
+          style={{
+            padding: 14,
+            borderRadius: 16,
+            border: `1px solid ${UI.border}`,
+            background: "rgba(255,255,255,0.045)",
+            display: "grid",
+            gap: 10,
+            alignContent: "start",
+          }}
+        >
+        <div style={{ fontSize: 13, opacity: 0.72 }}>Señales</div>
+
+        <div>
+          <div style={{ fontSize: 24, fontWeight: 900, color: tone }}>
+            {confidencePct}%
+          </div>
+          <div style={{ fontSize: 12, opacity: 0.72 }}>Confianza</div>
+        </div>
+
+        <div>
+          <div style={{ fontSize: 24, fontWeight: 900, color: tone }}>
+          {Number(regime.score ?? 0).toFixed(2)}
+          </div>
+          <div style={{ fontSize: 12, opacity: 0.72 }}>Score agregado</div>
+        </div>
 
         <div
-  style={{
-    padding: 14,
-    borderRadius: 16,
-    border: `1px solid ${UI.border}`,
-    background: "rgba(255,255,255,0.045)",
-    display: "grid",
-    gap: 10,
-    alignContent: "start",
-  }}
->
-  <div style={{ fontSize: 13, opacity: 0.72 }}>Señales</div>
-
-  <div>
-    <div style={{ fontSize: 24, fontWeight: 900, color: tone }}>
-      {confidencePct}%
-    </div>
-    <div style={{ fontSize: 12, opacity: 0.72 }}>Confianza</div>
-  </div>
-
-  <div>
-    <div style={{ fontSize: 24, fontWeight: 900, color: tone }}>
-      {Number(regime.score ?? 0).toFixed(2)}
-    </div>
-    <div style={{ fontSize: 12, opacity: 0.72 }}>Score agregado</div>
-  </div>
-
-  <div
-    style={{
-      marginTop: 4,
-      paddingTop: 8,
-      borderTop: `1px solid rgba(255,255,255,0.08)`,
-      fontSize: 12,
-      opacity: 0.72,
-    }}
-  >
-    Fuente: {data.source}
-  </div>
-</div>
+          style={{
+            marginTop: 4,
+            paddingTop: 8,
+            borderTop: `1px solid rgba(255,255,255,0.08)`,
+            fontSize: 12,
+            opacity: 0.72,
+          }}
+        >
+          Fuente: {data.source}
+          </div>
+        </div>
       </div>
       <style jsx>{`
-  @keyframes orbBreath {
-    0% {
-      transform: scale(1);
-      filter: brightness(1);
-    }
-    50% {
-      transform: scale(1.035);
-      filter: brightness(1.08);
-    }
-    100% {
-      transform: scale(1);
-      filter: brightness(1);
-    }
-  }
+        @keyframes orbBreath {
+          0% {
+          transform: scale(1);
+          filter: brightness(1);
+        }
+          50% {
+          transform: scale(1.035);
+          filter: brightness(1.08);
+        }
+          100% {
+          transform: scale(1);
+          filter: brightness(1);
+          }
+        }
 
-  @keyframes orbHalo {
-    0% {
-      opacity: 0.55;
-      transform: scale(1);
-    }
-    50% {
-      opacity: 0.9;
-      transform: scale(1.06);
-    }
-    100% {
-      opacity: 0.55;
-      transform: scale(1);
-    }
-  }
+        @keyframes orbHalo {
+          0% {
+            opacity: 0.55;
+            transform: scale(1);
+          }
+          50% {
+            opacity: 0.9;
+            transform: scale(1.06);
+          }
+          100% {
+            opacity: 0.55;
+            transform: scale(1);
+          }
+        }
 
-  @keyframes orbCoreDrift {
-    0% {
-      transform: translateY(0px);
-    }
-    50% {
-      transform: translateY(-2px);
-    }
-    100% {
-      transform: translateY(0px);
-    }
-  }
-`}</style>
+        @keyframes orbCoreDrift {
+          0% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-2px);
+          }
+          100% {
+            transform: translateY(0px);
+          }
+        }
+      `}</style>
     </section>  
   );
 }

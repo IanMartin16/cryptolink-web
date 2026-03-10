@@ -8,6 +8,7 @@ import MarketPulse from "@/components/MarketPulse";
 import PricesSplit from "@/components/PricesSplit";
 import { pushPricesToHistory } from "@/lib/priceHistoryStore";
 import PricesHeaderBar from "@/components/PricesHeaderBar";
+import SignalsRadarPanel from "@/components/SignalsRadarPanel";
 
 export default function PricesRouteBody() {
   const [rows, setRows] = useState<PriceRow[]>([]);
@@ -30,7 +31,7 @@ export default function PricesRouteBody() {
         assetsCount={rows.length}
         lastUpdated={rows[0]?.updatedAt}
       />
-
+      <SignalsRadarPanel />
       <MarketPulse rows={rows} max={20} />
 
       <PricesPanel onRows={setRows} onHealth={setPricesHealth} />
