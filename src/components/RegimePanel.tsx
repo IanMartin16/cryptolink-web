@@ -228,7 +228,7 @@ export default function RegimePanel() {
           border: `1px solid ${UI.border}`,
           background: "rgba(255,255,255,0.045)",
           display: "grid",
-          gap: 14,
+          gap: 10,
         }}
       >
         <div style={{ fontSize: 13, opacity: 0.72 }}>Estado actual</div>
