@@ -126,6 +126,46 @@ export default function RegimePanel() {
   const confidencePct = Math.round((regime.confidence ?? 0) * 100);
   const scoreNum = Number (regime.score ?? 0);
   const markerLeft = regimePosition(scoreNum);
+  const orb = orbGlow(regime.state, regime.confidence ?? 0);
+
+
+  function clamp(n: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, n));
+}
+
+function orbGlow(state: string, confidence: number) {
+  const c = clamp(confidence ?? 0, 0, 1);
+
+  if (state === "bullish") {
+    return {
+      core: "#2BFF88",
+      glow: `rgba(43,255,136,${0.18 + c * 0.35})`,
+      ring: `rgba(43,255,136,${0.22 + c * 0.28})`,
+    };
+  }
+
+  if (state === "bearish") {
+    return {
+      core: "#FF6B6B",
+      glow: `rgba(255,107,107,${0.18 + c * 0.35})`,
+      ring: `rgba(255,107,107,${0.22 + c * 0.28})`,
+    };
+  }
+
+  if (state === "mixed") {
+    return {
+      core: "#F7C65F",
+      glow: `rgba(247,198,95,${0.18 + c * 0.30})`,
+      ring: `rgba(247,198,95,${0.22 + c * 0.24})`,
+    };
+  }
+
+  return {
+    core: "rgba(255,255,255,0.88)",
+    glow: `rgba(255,255,255,${0.10 + c * 0.18})`,
+    ring: `rgba(255,255,255,${0.12 + c * 0.16})`,
+  };
+}
 
 
   return (
@@ -182,109 +222,123 @@ export default function RegimePanel() {
         }}
       >
         <div
-          style={{
-            padding: 14,
-            borderRadius: 16,
-            border: `1px solid ${UI.border}`,
-            background: "rgba(255,255,255,0.045)",
-            display: "grid",
-            gap: 12,
-          }}
-        >
-          <div style={{ fontSize: 13, opacity: 0.72 }}>Estado actual</div>
+  style={{
+    padding: 14,
+    borderRadius: 16,
+    border: `1px solid ${UI.border}`,
+    background: "rgba(255,255,255,0.045)",
+    display: "grid",
+    gap: 14,
+  }}
+>
+  <div style={{ fontSize: 13, opacity: 0.72 }}>Estado actual</div>
 
-          <div style={{ fontSize: 32, fontWeight: 900, color: tone, lineHeight: 1 }}>
-            {esState(regime.state)}
-          </div>
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "120px 1fr",
+      gap: 16,
+      alignItems: "center",
+    }}
+  >
+    <div
+      style={{
+        width: 110,
+        height: 110,
+        borderRadius: "50%",
+        position: "relative",
+        margin: "0 auto",
+        background: `
+          radial-gradient(circle at 35% 35%, rgba(255,255,255,0.28), transparent 28%),
+          radial-gradient(circle, ${orb.core} 0%, ${orb.glow} 42%, rgba(0,0,0,0) 72%)
+        `,
+        boxShadow: `
+          0 0 28px ${orb.glow},
+          0 0 54px ${orb.glow},
+          inset 0 0 18px rgba(255,255,255,0.08)
+        `,
+        border: `1px solid ${orb.ring}`,
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          inset: 10,
+          borderRadius: "50%",
+          border: `1px solid ${orb.ring}`,
+          opacity: 0.9,
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          inset: 22,
+          borderRadius: "50%",
+          border: `1px solid rgba(255,255,255,0.10)`,
+          opacity: 0.9,
+        }}
+      />
+    </div>
 
-          <div style={{ fontSize: 15, opacity: 0.84 }}>{regime.summary}</div>
+    <div style={{ display: "grid", gap: 8 }}>
+      <div style={{ fontSize: 32, fontWeight: 900, color: tone, lineHeight: 1 }}>
+        {esState(regime.state)}
+      </div>
 
-          <div style={{ display: "grid", gap: 8 }}>
-            <div
-               style={{
-                  position: "relative",
-                  height: 16,
-                  borderRadius: 999,
-                  overflow: "hidden",
-                  border: `1px solid rgba(255,255,255,0.08)`,
-                  background:
-                    "linear-gradient(90deg, rgba(255,107,107,0.28) 0%, rgba(255,255,255,0.08) 50%, rgba(43,255,136,0.28) 100%)",
-                  boxShadow: "inset 0 0 18px rgba(255,255,255,0.04)",
-                }}
-              >
-                <div
-                  style={{
-                    position: "absolute",
-                    left: `calc(${markerLeft}% - 8px)`,
-                    top: -2,
-                    width: 16,
-                    height: 20,
-                    borderRadius: 999,
-                    background: tone,
-                    boxShadow: `0 0 18px ${tone}88`,
-                    border: "1px solid rgba(0,0,0,0.18)",
-                  }}
-                />
-             </div>
+      <div style={{ fontSize: 14, opacity: 0.8 }}>
+        Confianza estimada: <b>{confidencePct}%</b>
+      </div>
 
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    fontSize: 11,
-                    opacity: 0.68,
-                  }}
-                >
-                  <span>Bajista</span>
-                  <span>Estable</span>
-                  <span>Alcista</span>
-                </div>
+      <div style={{ fontSize: 14, opacity: 0.8 }}>
+        Score agregado: <b>{Number(regime.score ?? 0).toFixed(2)}</b>
+      </div>
 
-              <div style={{ fontSize: 12, opacity: 0.72 }}>
-                Confianza estimada: {confidencePct}% · posición {scoreNum.toFixed(2)}
-              </div>
-            </div>
-        </div>
+      <div style={{ fontSize: 14, opacity: 0.84, lineHeight: 1.45 }}>
+        {regime.summary}
+      </div>
+    </div>
+  </div>
+</div>
 
         <div
-          style={{
-            padding: 14,
-            borderRadius: 16,
-            border: `1px solid ${UI.border}`,
-            background: "rgba(255,255,255,0.045)",
-            display: "grid",
-            gap: 12,
-            alignContent: "start",
-          }}
-        >
-          <div style={{ fontSize: 13, opacity: 0.72 }}>Señales</div>
+  style={{
+    padding: 14,
+    borderRadius: 16,
+    border: `1px solid ${UI.border}`,
+    background: "rgba(255,255,255,0.045)",
+    display: "grid",
+    gap: 10,
+    alignContent: "start",
+  }}
+>
+  <div style={{ fontSize: 13, opacity: 0.72 }}>Señales</div>
 
-          <div>
-            <div style={{ fontSize: 24, fontWeight: 900, color: tone }}>
-              {confidencePct}%
-            </div>
-            <div style={{ fontSize: 13, opacity: 0.72 }}>Confianza</div>
-          </div>
+  <div>
+    <div style={{ fontSize: 24, fontWeight: 900, color: tone }}>
+      {confidencePct}%
+    </div>
+    <div style={{ fontSize: 12, opacity: 0.72 }}>Confianza</div>
+  </div>
 
-          <div>
-            <div style={{ fontSize: 24, fontWeight: 900, color: tone }}>
-              {Number(regime.score ?? 0).toFixed(2)}
-            </div>
-            <div style={{ fontSize: 13, opacity: 0.72 }}>Score agregado</div>
-          </div>
+  <div>
+    <div style={{ fontSize: 24, fontWeight: 900, color: tone }}>
+      {Number(regime.score ?? 0).toFixed(2)}
+    </div>
+    <div style={{ fontSize: 12, opacity: 0.72 }}>Score agregado</div>
+  </div>
 
-          <div
-            style={{
-              marginTop: 4,
-              paddingTop: 10,
-              borderTop: `1px solid rgba(255,255,255,0.08)`,
-              fontSize: 12,
-              opacity: 0.72,
-            }}
-          >
-            Fuente: {data.source}
-          </div>
-        </div>
+  <div
+    style={{
+      marginTop: 4,
+      paddingTop: 8,
+      borderTop: `1px solid rgba(255,255,255,0.08)`,
+      fontSize: 12,
+      opacity: 0.72,
+    }}
+  >
+    Fuente: {data.source}
+  </div>
+</div>
       </div>
     </section>
   );
