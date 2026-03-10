@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { UI } from "@/lib/ui";
 import { fetchSignals } from "@/lib/cryptoLink";
+import { useMarketSignalsStore } from "@/lib/stores/marketSignalsStore";
 
 type SignalPoint = {
   label: string;
@@ -48,7 +49,10 @@ function polygonPath(points: { x: number; y: number }[]) {
 }
 
 export default function SignalsRadarPanel() {
-  const [data, setData] = useState<SignalsResponse | null>(null);
+  const storedSignals = useMarketSignalsStore((s) => s.signals);
+  const setSignalsStore = useMarketSignalsStore((s) => s.setSignals);
+
+  const [data, setData] = useState<SignalsResponse | null>(storedSignals);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -58,7 +62,9 @@ export default function SignalsRadarPanel() {
       try {
         setError("");
         const res = await fetchSignals(["BTC", "ETH", "SOL"]);
-        if (!cancelled) setData(res);
+        if (!cancelled) 
+            setData(res);
+            setSignalsStore(res);
       } catch (e: any) {
         if (!cancelled) setError(e?.message ?? "unknown");
       }

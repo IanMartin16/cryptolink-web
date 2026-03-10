@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { fetchTrends } from "@/lib/socialLink";
 import { UI } from "@/lib/ui";
+import { useMarketSignalsStore } from "@/lib/stores/marketSignalsStore";
+
 
 type TrendItem = {
   symbol: string;
@@ -23,7 +25,10 @@ function esTrend(trend: string) {
 }
 
 export default function TrendsPanel() {
-  const [data, setData] = useState<TrendsResponse | null>(null);
+  const storedTrends = useMarketSignalsStore((s) => s.trends);
+  const setTrendsStore = useMarketSignalsStore((s) => s.setTrends);
+
+  const [data, setData] = useState<TrendsResponse | null>(storedTrends);
   const [error, setError] = useState("");
 
   //formato de hora  fecha
@@ -51,7 +56,9 @@ export default function TrendsPanel() {
       try {
         setError("");
         const res = await fetchTrends(["BTC", "ETH", "SOL"]);
-        if (!cancelled) setData(res);
+        if (!cancelled) 
+          setData(res);
+          setTrendsStore(res);
       } catch (e: any) {
         if (!cancelled) setError(e?.message ?? "unknown");
       }

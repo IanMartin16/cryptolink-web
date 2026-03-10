@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { UI } from "@/lib/ui";
 import { fetchRegime } from "@/lib/cryptoLink";
+import { useMarketSignalsStore } from "@/lib/stores/marketSignalsStore";
 
 type RegimeResponse = {
   ok: boolean;
@@ -55,7 +56,10 @@ function formatTs(ts: string) {
   }
 
 export default function RegimePanel() {
-  const [data, setData] = useState<RegimeResponse | null>(null);
+  const storedRegime = useMarketSignalsStore((s) => s.regime);
+  const setRegimeStore = useMarketSignalsStore((s) => s.setRegime);
+
+  const [data, setData] = useState<RegimeResponse | null>(storedRegime);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -65,7 +69,9 @@ export default function RegimePanel() {
       try {
         setError("");
         const res = await fetchRegime(["BTC", "ETH", "SOL"]);
-        if (!cancelled) setData(res);
+        if (!cancelled) 
+          setData(res);
+          setRegimeStore(res);
       } catch (e: any) {
         if (!cancelled) setError(e?.message ?? "unknown");
       }
