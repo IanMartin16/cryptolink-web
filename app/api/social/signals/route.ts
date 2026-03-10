@@ -44,27 +44,32 @@ export async function GET(req: NextRequest) {
     const moverLosers = movers?.losers ?? [];
     const regimeObj = regime?.regime ?? null;
 
+    function normalizeScore(raw: number, factor: number, floor = 8) {
+    if (!raw || raw <= 0) return 0;
+      return Math.min(100, Math.max(floor, Math.round(raw * factor))); 
+    }
+
     const trendAvg =
-  trendItems.length > 0
-    ? trendItems.reduce((acc: number, x: any) => acc + Number(x.score ?? 0), 0) / trendItems.length
-    : 0;
+      trendItems.length > 0
+      ? trendItems.reduce((acc: number, x: any) => acc + Number(x.score ?? 0), 0) / trendItems.length
+      : 0;
 
-const momentumAvg =
-  momentumItems.length > 0
-    ? momentumItems.reduce((acc: number, x: any) => acc + Number(x.score ?? 0), 0) / momentumItems.length
-    : 0;
+    const momentumAvg =
+      momentumItems.length > 0
+      ? momentumItems.reduce((acc: number, x: any) => acc + Number(x.score ?? 0), 0) / momentumItems.length
+      : 0;
 
-const trendScore = Math.min(100, Math.round(trendAvg * 35));
-const momentumScore = Math.min(100, Math.round(momentumAvg * 70));
+    const trendScore = normalizeScore(trendAvg, 35);
+    const momentumScore = normalizeScore(momentumAvg, 70);
 
-const moversScore = Math.min(
-  100,
-  Math.round((moverGainers.length + moverLosers.length) * 18)
-);
+    const moversScore = Math.min(
+      100,
+      Math.round((moverGainers.length + moverLosers.length) * 18)
+    );
 
-const regimeScore = regimeObj
-  ? Math.min(100, Math.round(Number(regimeObj.confidence ?? 0) * 100))
-  : 0;
+    const regimeScore = regimeObj
+      ? Math.min(100, Math.round(Number(regimeObj.confidence ?? 0) * 100))
+      : 0;
 
     return NextResponse.json({
       ok: true,
@@ -76,15 +81,15 @@ const regimeScore = regimeObj
         { label: "Movers", value: moversScore },
         { label: "Regime", value: regimeScore },
       ],
-      raw: {
-        trends,
-        momentum,
-        movers,
-        regime,
-      },
-    });
-  } catch (e: any) {
-    return NextResponse.json(
+        raw: {
+          trends,
+          momentum,
+          movers,
+          regime,
+        },
+      });
+    } catch (e: any) {
+      return NextResponse.json(
       { ok: false, error: e?.message ?? "signals_error" },
       { status: 500 }
     );
