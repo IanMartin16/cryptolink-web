@@ -124,9 +124,9 @@ export default function MomentumPanel() {
     <section
       style={{
         marginTop: 20,
-        padding: 20,
+        padding: 16,
         border: `1px solid ${UI.border}`,
-        borderRadius: 20,
+        borderRadius: 18,
         background:
           "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))",
         boxShadow: "0 16px 50px rgba(0,0,0,0.22)",
@@ -145,8 +145,8 @@ export default function MomentumPanel() {
         }}
       >
         <div>
-          <h2 style={{ margin: 0, fontSize: 22 }}>Momentum</h2>
-          <p style={{ marginTop: 8, opacity: 0.78, fontSize: 14 }}>
+          <h2 style={{ margin: 0, fontSize: 20 }}>Momentum</h2>
+          <p style={{ marginTop: 8, opacity: 0.78, fontSize: 13 }}>
             Fuerza y consistencia del movimiento reciente.
           </p>
         </div>
@@ -169,9 +169,9 @@ export default function MomentumPanel() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-          gap: 12,
-          marginTop: 18,
+          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+          gap: 10,
+          marginTop: 14,
         }}
       >
         {data.momentum.map((m) => {
@@ -186,12 +186,12 @@ export default function MomentumPanel() {
             <div
               key={m.symbol}
               style={{
-                padding: 16,
-                borderRadius: 18,
+                padding: 14,
+                borderRadius: 16,
                 border: `1px solid ${UI.border}`,
                 background: "rgba(255,255,255,0.045)",
                 display: "grid",
-                gap: 10,
+                gap: 8,
                 minWidth: 0,
               }}
             >
@@ -225,7 +225,7 @@ export default function MomentumPanel() {
               <div style={{ display: "grid", gap: 4 }}>
                 <div
                   style={{
-                    fontSize: 30,
+                    fontSize: 24,
                     fontWeight: 900,
                     color: tone,
                     lineHeight: 1,
@@ -234,7 +234,7 @@ export default function MomentumPanel() {
                   {esStrength(m.strength)}
                 </div>
 
-                <div style={{ fontSize: 14, opacity: 0.82 }}>
+                <div style={{ fontSize: 13, opacity: 0.82 }}>
                   Fluctuation {m.changePct.toFixed(2)}% · score {m.score.toFixed(2)}
                 </div>
               </div>
@@ -242,9 +242,9 @@ export default function MomentumPanel() {
               <div
                 style={{
                   marginTop: 2,
-                  paddingTop: 10,
+                  paddingTop: 8,
                   borderTop: `1px solid rgba(255,255,255,0.08)`,
-                  fontSize: 13,
+                  fontSize: 12,
                   opacity: 0.72,
                 }}
               >

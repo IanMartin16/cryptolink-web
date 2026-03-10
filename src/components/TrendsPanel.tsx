@@ -106,9 +106,9 @@ export default function TrendsPanel() {
     <section
       style={{
         marginTop: 20,
-        padding: 20,
+        padding: 16,
         border: `1px solid ${UI.border}`,
-        borderRadius: 20,
+        borderRadius: 18,
         background:
           "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))",
         boxShadow: "0 16px 50px rgba(0,0,0,0.22)",
@@ -127,8 +127,8 @@ export default function TrendsPanel() {
         }}
       >
         <div>
-          <h2 style={{ margin: 0, fontSize: 22 }}>Trends</h2>
-          <p style={{ marginTop: 8, opacity: 0.78, fontSize: 14 }}>
+          <h2 style={{ margin: 0, fontSize: 20 }}>Trends</h2>
+          <p style={{ marginTop: 8, opacity: 0.78, fontSize: 13 }}>
             Dirección reciente del mercado y lectura derivada.
           </p>
         </div>
@@ -151,9 +151,9 @@ export default function TrendsPanel() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-          gap: 12,
-          marginTop: 18,
+          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+          gap: 10,
+          marginTop: 14,
         }}
       >
         {[...data.data].sort((a, b) => b.score - a.score).map((t) => {
@@ -168,12 +168,12 @@ export default function TrendsPanel() {
             <div
               key={t.symbol}
               style={{
-                padding: 16,
-                borderRadius: 18,
+                padding: 14,
+                borderRadius: 16,
                 border: `1px solid ${UI.border}`,
                 background: "rgba(255,255,255,0.045)",
                 display: "grid",
-                gap: 10,
+                gap: 8,
                 minWidth: 0,
               }}
             >
@@ -207,7 +207,7 @@ export default function TrendsPanel() {
               <div style={{ display: "grid", gap: 4 }}>
                 <div
                   style={{
-                    fontSize: 30,
+                    fontSize: 24,
                     fontWeight: 900,
                     color: tone,
                     lineHeight: 1,
@@ -224,11 +224,11 @@ export default function TrendsPanel() {
               <div
                 style={{
                   marginTop: 2,
-                  paddingTop: 10,
+                  paddingTop: 8,
                   borderTop: `1px solid rgba(255,255,255,0.08)`,
-                  fontSize: 13,
+                  fontSize: 12,
                   opacity: 0.72,
-                  lineHeight: 1.4,
+                  lineHeight: 1.35,
                 }}
               >
                 {t.reason}

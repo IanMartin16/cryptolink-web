@@ -132,9 +132,9 @@ export default function RegimePanel() {
     <section
       style={{
         marginTop: UI.gap,
-        padding: 22,
+        padding: 18,
         border: `1px solid ${UI.border}`,
-        borderRadius: 22,
+        borderRadius: 18,
         background:
           "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))",
         boxShadow: "0 16px 50px rgba(0,0,0,0.22)",
@@ -175,16 +175,16 @@ export default function RegimePanel() {
 
       <div
         style={{
-          marginTop: 18,
+          marginTop: 14,
           display: "grid",
-          gridTemplateColumns: "1.2fr 0.8fr",
-          gap: 14,
+          gridTemplateColumns: "1.15fr 0.85fr",
+          gap: 12,
         }}
       >
         <div
           style={{
-            padding: 18,
-            borderRadius: 18,
+            padding: 14,
+            borderRadius: 16,
             border: `1px solid ${UI.border}`,
             background: "rgba(255,255,255,0.045)",
             display: "grid",
@@ -193,7 +193,7 @@ export default function RegimePanel() {
         >
           <div style={{ fontSize: 13, opacity: 0.72 }}>Estado actual</div>
 
-          <div style={{ fontSize: 40, fontWeight: 900, color: tone, lineHeight: 1 }}>
+          <div style={{ fontSize: 32, fontWeight: 900, color: tone, lineHeight: 1 }}>
             {esState(regime.state)}
           </div>
 
@@ -205,51 +205,51 @@ export default function RegimePanel() {
                   position: "relative",
                   height: 16,
                   borderRadius: 999,
-      overflow: "hidden",
-      border: `1px solid rgba(255,255,255,0.08)`,
-      background:
-        "linear-gradient(90deg, rgba(255,107,107,0.28) 0%, rgba(255,255,255,0.08) 50%, rgba(43,255,136,0.28) 100%)",
-      boxShadow: "inset 0 0 18px rgba(255,255,255,0.04)",
-    }}
-  >
-    <div
-      style={{
-        position: "absolute",
-        left: `calc(${markerLeft}% - 8px)`,
-        top: -2,
-        width: 16,
-        height: 20,
-        borderRadius: 999,
-        background: tone,
-        boxShadow: `0 0 18px ${tone}88`,
-        border: "1px solid rgba(0,0,0,0.18)",
-      }}
-    />
-  </div>
+                  overflow: "hidden",
+                  border: `1px solid rgba(255,255,255,0.08)`,
+                  background:
+                    "linear-gradient(90deg, rgba(255,107,107,0.28) 0%, rgba(255,255,255,0.08) 50%, rgba(43,255,136,0.28) 100%)",
+                  boxShadow: "inset 0 0 18px rgba(255,255,255,0.04)",
+                }}
+              >
+                <div
+                  style={{
+                    position: "absolute",
+                    left: `calc(${markerLeft}% - 8px)`,
+                    top: -2,
+                    width: 16,
+                    height: 20,
+                    borderRadius: 999,
+                    background: tone,
+                    boxShadow: `0 0 18px ${tone}88`,
+                    border: "1px solid rgba(0,0,0,0.18)",
+                  }}
+                />
+             </div>
 
-  <div
-    style={{
-      display: "flex",
-      justifyContent: "space-between",
-      fontSize: 11,
-      opacity: 0.68,
-    }}
-  >
-    <span>Bajista</span>
-    <span>Estable</span>
-    <span>Alcista</span>
-  </div>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    fontSize: 11,
+                    opacity: 0.68,
+                  }}
+                >
+                  <span>Bajista</span>
+                  <span>Estable</span>
+                  <span>Alcista</span>
+                </div>
 
-  <div style={{ fontSize: 12, opacity: 0.72 }}>
-    Confianza estimada: {confidencePct}% · posición {scoreNum.toFixed(2)}
-  </div>
-</div>
+              <div style={{ fontSize: 12, opacity: 0.72 }}>
+                Confianza estimada: {confidencePct}% · posición {scoreNum.toFixed(2)}
+              </div>
+            </div>
         </div>
 
         <div
           style={{
-            padding: 18,
-            borderRadius: 18,
+            padding: 14,
+            borderRadius: 16,
             border: `1px solid ${UI.border}`,
             background: "rgba(255,255,255,0.045)",
             display: "grid",
@@ -260,14 +260,14 @@ export default function RegimePanel() {
           <div style={{ fontSize: 13, opacity: 0.72 }}>Señales</div>
 
           <div>
-            <div style={{ fontSize: 28, fontWeight: 900, color: tone }}>
+            <div style={{ fontSize: 24, fontWeight: 900, color: tone }}>
               {confidencePct}%
             </div>
             <div style={{ fontSize: 13, opacity: 0.72 }}>Confianza</div>
           </div>
 
           <div>
-            <div style={{ fontSize: 28, fontWeight: 900, color: tone }}>
+            <div style={{ fontSize: 24, fontWeight: 900, color: tone }}>
               {Number(regime.score ?? 0).toFixed(2)}
             </div>
             <div style={{ fontSize: 13, opacity: 0.72 }}>Score agregado</div>

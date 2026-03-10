@@ -23,7 +23,7 @@ export default function TrendsRouteBody() {
       <div
         style={{
           display: "grid",
-          gap: 20,
+          gap: 16,
           marginTop: 16,
         }}
       >
@@ -32,8 +32,8 @@ export default function TrendsRouteBody() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(420px, 1fr))",
-            gap: 20,
+            gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))",
+            gap: 16,
             alignItems: "start",
           }}
         >
