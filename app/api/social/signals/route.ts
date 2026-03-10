@@ -59,13 +59,16 @@ export async function GET(req: NextRequest) {
       ? momentumItems.reduce((acc: number, x: any) => acc + Number(x.score ?? 0), 0) / momentumItems.length
       : 0;
 
+    const allMovers = [...moverGainers, ...moverLosers];
+
+    const avgMoverIntensity =
+       allMovers.length > 0
+       ? allMovers.reduce((acc: number, x: any) => acc + Math.abs(Number(x.changePct ?? 0)), 0) / allMovers.length
+       : 0;  
+
     const trendScore = normalizeScore(trendAvg, 35);
     const momentumScore = normalizeScore(momentumAvg, 70);
-
-    const moversScore = Math.min(
-      100,
-      Math.round((moverGainers.length + moverLosers.length) * 18)
-    );
+    const moversScore = Math.min(100, Math.round(avgMoverIntensity * 120));
 
     const regimeScore = regimeObj
       ? Math.min(100, Math.round(Number(regimeObj.confidence ?? 0) * 100))
