@@ -44,38 +44,27 @@ export async function GET(req: NextRequest) {
     const moverLosers = movers?.losers ?? [];
     const regimeObj = regime?.regime ?? null;
 
-    const trendScore =
-      trendItems.length > 0
-        ? Math.min(
-            100,
-            Math.round(
-              (trendItems.reduce((acc: number, x: any) => acc + Number(x.score ?? 0), 0) /
-                trendItems.length) *
-                100
-            )
-          )
-        : 0;
+    const trendAvg =
+  trendItems.length > 0
+    ? trendItems.reduce((acc: number, x: any) => acc + Number(x.score ?? 0), 0) / trendItems.length
+    : 0;
 
-    const momentumScore =
-      momentumItems.length > 0
-        ? Math.min(
-            100,
-            Math.round(
-              (momentumItems.reduce((acc: number, x: any) => acc + Number(x.score ?? 0), 0) /
-                Math.max(1, momentumItems.length)) *
-                100
-            )
-          )
-        : 0;
+const momentumAvg =
+  momentumItems.length > 0
+    ? momentumItems.reduce((acc: number, x: any) => acc + Number(x.score ?? 0), 0) / momentumItems.length
+    : 0;
 
-    const moversScore = Math.min(
-      100,
-      (moverGainers.length + moverLosers.length) * 20
-    );
+const trendScore = Math.min(100, Math.round(trendAvg * 35));
+const momentumScore = Math.min(100, Math.round(momentumAvg * 70));
 
-    const regimeScore = regimeObj
-      ? Math.min(100, Math.round(Number(regimeObj.confidence ?? 0) * 100))
-      : 0;
+const moversScore = Math.min(
+  100,
+  Math.round((moverGainers.length + moverLosers.length) * 18)
+);
+
+const regimeScore = regimeObj
+  ? Math.min(100, Math.round(Number(regimeObj.confidence ?? 0) * 100))
+  : 0;
 
     return NextResponse.json({
       ok: true,
