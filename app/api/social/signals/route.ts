@@ -38,41 +38,42 @@ export async function GET(req: NextRequest) {
       getJson(`${origin}/api/social/movers?symbols=${qs}&fiat=${fiat}`),
     ]);
 
+
+    function normalizeScore(raw: number, factor: number, floor = 0) {
+      if (!raw || raw <= 0) return 0;
+      return Math.min(100, Math.max(floor, Math.round(raw * factor)));
+    }
+
     const trendItems = trends?.items ?? [];
     const momentumItems = momentum?.momentum ?? [];
     const moverGainers = movers?.gainers ?? [];
     const moverLosers = movers?.losers ?? [];
     const regimeObj = regime?.regime ?? null;
 
-    function normalizeScore(raw: number, factor: number, floor = 8) {
-    if (!raw || raw <= 0) return 0;
-      return Math.min(100, Math.max(floor, Math.round(raw * factor))); 
-    }
-
     const trendAvg =
       trendItems.length > 0
-      ? trendItems.reduce((acc: number, x: any) => acc + Number(x.score ?? 0), 0) / trendItems.length
-      : 0;
+        ? trendItems.reduce((acc: number, x: any) => acc + Number(x.score ?? 0), 0) / trendItems.length
+        : 0;
 
     const momentumAvg =
       momentumItems.length > 0
-      ? momentumItems.reduce((acc: number, x: any) => acc + Number(x.score ?? 0), 0) / momentumItems.length
-      : 0;
+        ? momentumItems.reduce((acc: number, x: any) => acc + Number(x.score ?? 0), 0) / momentumItems.length
+        : 0;
 
     const allMovers = [...moverGainers, ...moverLosers];
 
     const avgMoverIntensity =
-       allMovers.length > 0
-       ? allMovers.reduce((acc: number, x: any) => acc + Math.abs(Number(x.changePct ?? 0)), 0) / allMovers.length
-       : 0;  
+      allMovers.length > 0
+        ? allMovers.reduce((acc: number, x: any) => acc + Math.abs(Number(x.changePct ?? 0)), 0) / allMovers.length
+        : 0;
 
-    const trendScore = normalizeScore(trendAvg, 35);
-    const momentumScore = normalizeScore(momentumAvg, 70);
-    const moversScore = Math.min(100, Math.round(avgMoverIntensity * 120));
-
+      // calibración más suave
+    const trendScore = normalizeScore(trendAvg, 35, 8);
+    const momentumScore = normalizeScore(momentumAvg, 70, 8);
+    const moversScore = normalizeScore(avgMoverIntensity, 120, 10);
     const regimeScore = regimeObj
-      ? Math.min(100, Math.round(Number(regimeObj.confidence ?? 0) * 100))
-      : 0;
+       ? Math.min(100, Math.max(8, Math.round(Number(regimeObj.confidence ?? 0) * 100)))
+       : 0;
 
     return NextResponse.json({
       ok: true,
@@ -83,14 +84,14 @@ export async function GET(req: NextRequest) {
         { label: "Momentum", value: momentumScore },
         { label: "Movers", value: moversScore },
         { label: "Regime", value: regimeScore },
-      ],
-        raw: {
-          trends,
-          momentum,
-          movers,
-          regime,
-        },
-      });
+    ],
+    raw: {
+      trends,
+      momentum,
+      movers,
+      regime,
+    },
+  });
     } catch (e: any) {
       return NextResponse.json(
       { ok: false, error: e?.message ?? "signals_error" },
