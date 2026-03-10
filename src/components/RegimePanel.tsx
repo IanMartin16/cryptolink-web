@@ -131,42 +131,41 @@ export default function RegimePanel() {
 
   function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
-}
-
-function orbGlow(state: string, confidence: number) {
-  const c = clamp(confidence ?? 0, 0, 1);
-
-  if (state === "bullish") {
-    return {
-      core: "#2BFF88",
-      glow: `rgba(43,255,136,${0.18 + c * 0.35})`,
-      ring: `rgba(43,255,136,${0.22 + c * 0.28})`,
-    };
   }
 
-  if (state === "bearish") {
+  function orbGlow(state: string, confidence: number) {
+    const c = clamp(confidence ?? 0, 0, 1);
+
+    if (state === "bullish") {
+      return {
+        core: "#2BFF88",
+        glow: `rgba(43,255,136,${0.18 + c * 0.35})`,
+        ring: `rgba(43,255,136,${0.22 + c * 0.28})`,
+      };
+    }
+
+    if (state === "bearish") {
+      return {
+        core: "#FF6B6B",
+        glow: `rgba(255,107,107,${0.18 + c * 0.35})`,
+        ring: `rgba(255,107,107,${0.22 + c * 0.28})`,
+      };
+    }
+
+    if (state === "mixed") {
+      return {
+        core: "#F7C65F",
+        glow: `rgba(247,198,95,${0.18 + c * 0.30})`,
+        ring: `rgba(247,198,95,${0.22 + c * 0.24})`,
+      };
+    }
+
     return {
-      core: "#FF6B6B",
-      glow: `rgba(255,107,107,${0.18 + c * 0.35})`,
-      ring: `rgba(255,107,107,${0.22 + c * 0.28})`,
+      core: "rgba(255,255,255,0.88)",
+      glow: `rgba(255,255,255,${0.10 + c * 0.18})`,
+      ring: `rgba(255,255,255,${0.12 + c * 0.16})`,
     };
   }
-
-  if (state === "mixed") {
-    return {
-      core: "#F7C65F",
-      glow: `rgba(247,198,95,${0.18 + c * 0.30})`,
-      ring: `rgba(247,198,95,${0.22 + c * 0.24})`,
-    };
-  }
-
-  return {
-    core: "rgba(255,255,255,0.88)",
-    glow: `rgba(255,255,255,${0.10 + c * 0.18})`,
-    ring: `rgba(255,255,255,${0.12 + c * 0.16})`,
-  };
-}
-
 
   return (
     <section
@@ -217,8 +216,9 @@ function orbGlow(state: string, confidence: number) {
         style={{
           marginTop: 14,
           display: "grid",
-          gridTemplateColumns: "1.15fr 0.85fr",
-          gap: 12,
+          gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+          gap: 14,
+          alignItems: "center",
         }}
       >
         <div
@@ -234,54 +234,67 @@ function orbGlow(state: string, confidence: number) {
   <div style={{ fontSize: 13, opacity: 0.72 }}>Estado actual</div>
 
   <div
+  style={{
+    width: "min(110px, 28vw)",
+    height: "min(110px, 28vw)",
+    borderRadius: "50%",
+    position: "relative",
+    margin: "0 auto",
+    transition: "box-shadow 300ms ease, border-color 300ms ease, background 300ms ease",
+  }}
+>
+  <div
     style={{
-      display: "grid",
-      gridTemplateColumns: "120px 1fr",
-      gap: 16,
-      alignItems: "center",
+      position: "absolute",
+      inset: 0,
+      borderRadius: "50%",
+      background: orb.glow,
+      filter: "blur(16px)",
+      animation: "orbHalo 4.2s ease-in-out infinite",
+    }}
+  />
+
+  <div
+    style={{
+      width: "100%",
+      height: "100%",
+      borderRadius: "50%",
+      position: "relative",
+      background: `
+        radial-gradient(circle at 35% 35%, rgba(255,255,255,0.28), transparent 28%),
+        radial-gradient(circle, ${orb.core} 0%, ${orb.glow} 42%, rgba(0,0,0,0) 72%)
+      `,
+      boxShadow: `
+        0 0 28px ${orb.glow},
+        0 0 54px ${orb.glow},
+        inset 0 0 18px rgba(255,255,255,0.08)
+      `,
+      border: `1px solid ${orb.ring}`,
+      animation: "orbBreath 4.2s ease-in-out infinite, orbCoreDrift 6s ease-in-out infinite",
     }}
   >
     <div
       style={{
-        width: 110,
-        height: 110,
+        position: "absolute",
+        inset: 10,
         borderRadius: "50%",
-        position: "relative",
-        margin: "0 auto",
-        background: `
-          radial-gradient(circle at 35% 35%, rgba(255,255,255,0.28), transparent 28%),
-          radial-gradient(circle, ${orb.core} 0%, ${orb.glow} 42%, rgba(0,0,0,0) 72%)
-        `,
-        boxShadow: `
-          0 0 28px ${orb.glow},
-          0 0 54px ${orb.glow},
-          inset 0 0 18px rgba(255,255,255,0.08)
-        `,
         border: `1px solid ${orb.ring}`,
+        opacity: 0.9,
       }}
-    >
-      <div
-        style={{
-          position: "absolute",
-          inset: 10,
-          borderRadius: "50%",
-          border: `1px solid ${orb.ring}`,
-          opacity: 0.9,
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          inset: 22,
-          borderRadius: "50%",
-          border: `1px solid rgba(255,255,255,0.10)`,
-          opacity: 0.9,
-        }}
-      />
-    </div>
+    />
+    <div
+      style={{
+        position: "absolute",
+        inset: 22,
+        borderRadius: "50%",
+        border: `1px solid rgba(255,255,255,0.10)`,
+        opacity: 0.9,
+      }}
+    />
+  </div>
 
     <div style={{ display: "grid", gap: 8 }}>
-      <div style={{ fontSize: 32, fontWeight: 900, color: tone, lineHeight: 1 }}>
+      <div style={{ fontSize: "clamp(26px, 5vw, 32px)", fontWeight: 900, color: tone, lineHeight: 1 }}>
         {esState(regime.state)}
       </div>
 
@@ -293,7 +306,7 @@ function orbGlow(state: string, confidence: number) {
         Score agregado: <b>{Number(regime.score ?? 0).toFixed(2)}</b>
       </div>
 
-      <div style={{ fontSize: 14, opacity: 0.84, lineHeight: 1.45 }}>
+      <div style={{ fontSize: "clamp(13px, 3.4vw, 14px)", opacity: 0.84, lineHeight: 1.45 }}>
         {regime.summary}
       </div>
     </div>
@@ -340,6 +353,49 @@ function orbGlow(state: string, confidence: number) {
   </div>
 </div>
       </div>
-    </section>
+      <style jsx>{`
+  @keyframes orbBreath {
+    0% {
+      transform: scale(1);
+      filter: brightness(1);
+    }
+    50% {
+      transform: scale(1.035);
+      filter: brightness(1.08);
+    }
+    100% {
+      transform: scale(1);
+      filter: brightness(1);
+    }
+  }
+
+  @keyframes orbHalo {
+    0% {
+      opacity: 0.55;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.9;
+      transform: scale(1.06);
+    }
+    100% {
+      opacity: 0.55;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes orbCoreDrift {
+    0% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-2px);
+    }
+    100% {
+      transform: translateY(0px);
+    }
+  }
+`}</style>
+    </section>  
   );
 }
