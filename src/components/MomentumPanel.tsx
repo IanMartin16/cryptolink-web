@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { UI } from "@/lib/ui";
 import { fetchMomentum } from "@/lib/cryptoLink";
+import { useMarketSignalsStore } from "@/lib/stores/marketSignalsStore";
+
 
 
 type MomentumItem = {
@@ -59,7 +61,10 @@ function fmt(iso?: string) {
 }
 
 export default function MomentumPanel() {
-  const [data, setData] = useState<MomentumResponse | null>(null);
+  const storedMomentum = useMarketSignalsStore((s) => s.momentum);
+  const setMomentumStore = useMarketSignalsStore((s) => s.setMomentum);
+
+  const [data, setData] = useState<MomentumResponse | null>(storedMomentum);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -69,7 +74,9 @@ export default function MomentumPanel() {
       try {
         setError("");
         const res = await fetchMomentum(["BTC", "ETH", "SOL"]);
-        if (!cancelled) setData(res);
+        if (!cancelled) 
+          setData(res);
+          setMomentumStore(res);
       } catch (e: any) {
         if (!cancelled) setError(e?.message ?? "unknown");
       }
