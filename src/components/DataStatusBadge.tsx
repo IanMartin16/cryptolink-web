@@ -31,6 +31,11 @@ export default function DataStatusBadge({ status }: { status: DataStatus }) {
         whiteSpace: "nowrap",
         textTransform: "uppercase",
         letterSpacing: 0.4,
+        minWidth: 96,
+        textAlign: "center",
+        justifyContent: "center",
+        display: "inline-flex",
+        alignItems: "center",
       }}
     >
       {label}

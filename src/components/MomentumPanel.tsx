@@ -48,7 +48,7 @@ function formatTs(ts: string) {
       minute: "2-digit",
       hour12: false,
       timeZone: "America/Mexico_City",
-    }).format(d) + " Mexico City";
+    }).format(d) + "";
   } catch {
     return ts;
   }

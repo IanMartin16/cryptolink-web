@@ -46,7 +46,7 @@ function formatTs(ts: string) {
         minute: "2-digit",
         hour12: false,
         timeZone: "America/Mexico_City",
-      }).format(d) + " Ciudad de Mexico"
+      }).format(d) + ""
     );
   } catch {
     return ts;
@@ -191,7 +191,7 @@ export default function RegimePanel() {
           display: "flex",
           justifyContent: "space-between",
           gap: 12,
-          alignItems: "flex-start",
+          alignItems: "stretch",
           flexWrap: "wrap",
         }}
       >
@@ -246,6 +246,7 @@ export default function RegimePanel() {
           background: "rgba(255,255,255,0.045)",
           display: "grid",
           gap: 10,
+          height: "100%",
         }}
       >
         <div style={{ fontSize: 13, opacity: 0.72 }}>Estado actual</div>
@@ -362,6 +363,7 @@ export default function RegimePanel() {
             display: "grid",
             gap: 10,
             alignContent: "start",
+            height: "100%",
           }}
         >
         <div style={{ fontSize: 13, opacity: 0.72 }}>Señales</div>

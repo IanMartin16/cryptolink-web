@@ -30,7 +30,7 @@ function formatTs(ts: string) {
         minute: "2-digit",
         hour12: false,
         timeZone: "America/Mexico_City",
-      }).format(d) + " Ciudad de Mexico"
+      }).format(d) + " Mexico City"
     );
   } catch {
     return ts;
