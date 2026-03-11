@@ -10,7 +10,7 @@ const OVERRIDES: Record<string, string> = {
   LTC: "/icons/crypto/ltc.png",
   DOT: "/icons/crypto/dot.png",
   AVAX: "/icons/crypto/avax.png",
-  MATIC: "/icons/crypto/matic.png",
+  POL: "/icons/crypto/pol.png",
   LINK: "/icons/crypto/link.png",
   USDT: "/icons/crypto/usdt.png",
   USDC: "/icons/crypto/usdc.png",
