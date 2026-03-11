@@ -6,7 +6,7 @@ export const SYMBOL_META: Record<string, { name: string }> = {
   ADA: { name: "Cardano" },
   BNB: { name: "BNB" },
   DOGE: { name: "Dogecoin" },
-  MATIC: { name: "Polygon" },
+  POL: { name: "Polygon" },
   AVAX: { name: "Avalanche" },
   DOT: { name: "Polkadot" },
   LINK: { name: "Chainlink" },
@@ -14,7 +14,7 @@ export const SYMBOL_META: Record<string, { name: string }> = {
   LTC: { name: "Litecoin" },
   USDT:{ name:"Tether" },
   USDC:{ name: "USDC" },
-  SHIB:{ name: "SHIBA" },
+  SHIB:{ name: "SHIBA Inu" },
   DAI:{ name: "DAI" },
   BCH:{ name: "Bitcoin Cash" },
   XLM:{ name: "Stellar" },
@@ -26,6 +26,9 @@ export const SYMBOL_META: Record<string, { name: string }> = {
   ARB: { name: "Arbitrum" },
   FTM: { name: "Fantom" },
   OP: { name: "Optimism"},
+  HYPE: { name: "Hyperliquid" },
+  PYUSD: { name: "PayPal USD"},
+  TON: { name: "Toncoin" },
 };
 export function getSymbolName(symbol: string) {
   const key = symbol.toUpperCase();
