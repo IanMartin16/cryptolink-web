@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { UI } from "@/lib/ui";
 import { fetchSignals } from "@/lib/cryptoLink";
 import { useMarketSignalsStore } from "@/lib/stores/marketSignalsStore";
+import DataStatusBadge from "./DataStatusBadge";
 
 type SignalPoint = {
   label: string;
@@ -28,8 +29,8 @@ function formatTs(ts: string) {
         hour: "2-digit",
         minute: "2-digit",
         hour12: false,
-        timeZone: "UTC",
-      }).format(d) + " UTC"
+        timeZone: "America/Mexico_City",
+      }).format(d) + " Ciudad de Mexico"
     );
   } catch {
     return ts;
@@ -54,6 +55,9 @@ export default function SignalsRadarPanel() {
 
   const [data, setData] = useState<SignalsResponse | null>(storedSignals);
   const [error, setError] = useState("");
+  const [status, setStatus] = useState<"live" | "restored" | "refreshing">(
+    storedSignals ? "restored" : "refreshing"
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -65,6 +69,7 @@ export default function SignalsRadarPanel() {
         if (!cancelled) 
             setData(res);
             setSignalsStore(res);
+            setStatus("live");
       } catch (e: any) {
         if (!cancelled) setError(e?.message ?? "unknown");
       }
@@ -173,6 +178,16 @@ export default function SignalsRadarPanel() {
 
         <div
           style={{
+            display: "flex",
+            gap: 8,
+            alignItems: "center",
+            flexWrap: "wrap",
+          }}
+        >
+          <DataStatusBadge status={status} />
+
+        <div
+          style={{
             padding: "6px 10px",
             borderRadius: 999,
             border: `1px solid ${UI.border}`,
@@ -184,6 +199,7 @@ export default function SignalsRadarPanel() {
         >
           Actualizado · <code>{formatTs(data.ts)}</code>
         </div>
+       </div>
       </div>
 
       <div

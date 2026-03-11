@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { fetchTrends } from "@/lib/socialLink";
 import { UI } from "@/lib/ui";
 import { useMarketSignalsStore } from "@/lib/stores/marketSignalsStore";
+import DataStatusBadge from "./DataStatusBadge";
 
 
 type TrendItem = {
@@ -30,6 +31,9 @@ export default function TrendsPanel() {
 
   const [data, setData] = useState<TrendsResponse | null>(storedTrends);
   const [error, setError] = useState("");
+  const [status, setStatus] = useState<"live" | "restored" | "refreshing">(
+    storedTrends ? "restored" : "refreshing"
+  );
 
   //formato de hora  fecha
   function formatTs(ts: string) {
@@ -142,16 +146,27 @@ export default function TrendsPanel() {
 
         <div
           style={{
-            padding: "6px 10px",
-            borderRadius: 999,
-            border: `1px solid ${UI.border}`,
-            background: "rgba(255,255,255,0.05)",
-            fontSize: 12,
-            opacity: 0.82,
-            whiteSpace: "nowrap",
+            display: "flex",
+            gap: 8,
+            alignItems: "center",
+            flexWrap: "wrap",
           }}
         >
-          Updated · <code>{formatTs(data.ts)}</code>
+          <DataStatusBadge status={status} />
+        
+          <div
+            style={{
+              padding: "6px 10px",
+              borderRadius: 999,
+              border: `1px solid ${UI.border}`,
+              background: "rgba(255,255,255,0.05)",
+              fontSize: 12,
+              opacity: 0.82,
+              whiteSpace: "nowrap",
+            }}
+          >
+              Actualizado · <code>{formatTs(data.ts)}</code>
+          </div>
         </div>
       </div>
 

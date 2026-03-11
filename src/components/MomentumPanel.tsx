@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { UI } from "@/lib/ui";
 import { fetchMomentum } from "@/lib/cryptoLink";
 import { useMarketSignalsStore } from "@/lib/stores/marketSignalsStore";
-
+import DataStatusBadge from "./DataStatusBadge";
 
 
 type MomentumItem = {
@@ -66,6 +66,9 @@ export default function MomentumPanel() {
 
   const [data, setData] = useState<MomentumResponse | null>(storedMomentum);
   const [error, setError] = useState("");
+  const [status, setStatus] = useState<"live" | "restored" | "refreshing">(
+  storedMomentum ? "restored" : "refreshing"
+);
 
   useEffect(() => {
     let cancelled = false;
@@ -77,6 +80,7 @@ export default function MomentumPanel() {
         if (!cancelled) 
           setData(res);
           setMomentumStore(res);
+          setStatus("live");
       } catch (e: any) {
         if (!cancelled) setError(e?.message ?? "unknown");
       }
@@ -160,6 +164,16 @@ export default function MomentumPanel() {
 
         <div
           style={{
+            display: "flex",
+            gap: 8,
+            alignItems: "center",
+            flexWrap: "wrap",
+          }}
+        >
+            <DataStatusBadge status={status} />
+
+        <div
+          style={{
             padding: "6px 10px",
             borderRadius: 999,
             border: `1px solid ${UI.border}`,
@@ -169,8 +183,9 @@ export default function MomentumPanel() {
             whiteSpace: "nowrap",
           }}
         >
-          Updated · <code>{formatTs(data.ts)}</code>
+          Actualizado · <code>{formatTs(data.ts)}</code>
         </div>
+      </div>
       </div>
 
       <div
