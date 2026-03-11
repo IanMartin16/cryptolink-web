@@ -59,7 +59,7 @@ function CacheBadge({ v }: { v?: string }) {
 function RefreshDot({ on }: { on: boolean }) {
     return (
       <span
-        title={on ? "Actualizando" : "Idle"}
+        title={on ? "Updating" : "Idle"}
         style={{
           width: 8,
           height: 8,
@@ -461,11 +461,11 @@ setRows((prev) => {
       <p style={{ marginTop: 6, fontSize: 11, opacity: 0.65 }}>BFF batch: 1 request / 5s.</p>
       {refreshing && !loading && 
       <p style={{ marginTop: 8, opacity: 0.7, fontSize: 12 }}>
-        Actualizando…
+        Updating…
       </p>
       }
 
-      {updatingFiat && <p style={{ opacity: 0.8 }}>Actualizando moneda…</p>}
+      {updatingFiat && <p style={{ opacity: 0.8 }}>Updating symbol…</p>}
       {error && <p style={{ color: UI.red }}>Error: {error}</p>}
 
       {showSkeleton &&(

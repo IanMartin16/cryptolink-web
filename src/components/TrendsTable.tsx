@@ -27,7 +27,7 @@ type TrendsResponse = {
 function RefreshDot({ on }: { on: boolean }) {
     return (
       <span
-        title={on ? "Actualizando" : "Idle"}
+        title={on ? "Updating" : "Idle"}
         style={{
           width: 8,
           height: 8,

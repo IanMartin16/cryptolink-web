@@ -142,7 +142,7 @@ export default function HeroPriceCard({
             whiteSpace: "nowrap",
           }}
         >
-          Actualiza cada 5s · batch BFF
+          Refresh every 10s · batch BFF
         </span>
       </div>
 
