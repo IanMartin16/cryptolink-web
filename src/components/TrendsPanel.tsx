@@ -138,7 +138,7 @@ export default function TrendsPanel() {
         }}
       >
         <div>
-          <h2 style={{ margin: 0, fontSize: 20 }}>Trends</h2>
+          <h2 style={{ margin: 0, fontSize: 20 }}><span style={{ color: UI.orange }}>Trends</span></h2>
           <p style={{ marginTop: 8, opacity: 0.78, fontSize: 13 }}>
             Recent market direction and derived signal read.
           </p>
