@@ -61,7 +61,7 @@ export default function SettingsPage() {
         <div className="flex items-center justify-between">
           <div className="text-xs font-semibold tracking-wide text-white/70">WATCHLIST SYMBOLS</div>
           <div className="text-[11px] text-white/45">
-            {selected.length}/{available.length || 27} selected
+            {selected.length}/{available.length || 30} selected
           </div>
         </div>
 

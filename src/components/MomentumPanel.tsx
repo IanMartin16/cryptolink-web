@@ -108,7 +108,7 @@ export default function MomentumPanel() {
       >
         <h2 style={{ margin: 0 }}>Momentum</h2>
         <p style={{ marginTop: 8 }}>
-          Error conectando a momentum: <b>{error}</b>
+          Cannot connect to momentum: <b>{error}</b>
         </p>
       </section>
     );
@@ -126,7 +126,7 @@ export default function MomentumPanel() {
         }}
       >
         <h2 style={{ margin: 0 }}>Momentum</h2>
-        <p style={{ marginTop: 8, opacity: 0.8 }}>Cargando momentum...</p>
+        <p style={{ marginTop: 8, opacity: 0.8 }}>Loading momentum...</p>
       </section>
     );
   }
@@ -158,7 +158,7 @@ export default function MomentumPanel() {
         <div>
           <h2 style={{ margin: 0, fontSize: 20 }}>Momentum</h2>
           <p style={{ marginTop: 8, opacity: 0.78, fontSize: 13 }}>
-            Fuerza y consistencia del movimiento reciente.
+            Recent market direction and derived signal read.
           </p>
         </div>
 
@@ -183,7 +183,7 @@ export default function MomentumPanel() {
             whiteSpace: "nowrap",
           }}
         >
-          Actualizado · <code>{formatTs(data.ts)}</code>
+          Updated · <code>{formatTs(data.ts)}</code>
         </div>
       </div>
       </div>

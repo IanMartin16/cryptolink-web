@@ -21,9 +21,9 @@ type RegimeResponse = {
 };
 
 function esState(state: string) {
-  if (state === "bullish") return "alcista";
-  if (state === "bearish") return "bajista";
-  if (state === "mixed") return "mixto";
+  if (state === "bullish") return "bullish";
+  if (state === "bearish") return "bearish";
+  if (state === "mixed") return "mixed";
   return "estable";
 }
 
@@ -103,9 +103,9 @@ export default function RegimePanel() {
           background: UI.panel,
         }}
       >
-        <h2 style={{ margin: 0 }}>Régimen del mercado</h2>
+        <h2 style={{ margin: 0 }}>Market Regime</h2>
         <p style={{ marginTop: 8 }}>
-          Error conectando a regime: <b>{error}</b>
+          Cannot connect to regime: <b>{error}</b>
         </p>
       </section>
     );
@@ -122,8 +122,8 @@ export default function RegimePanel() {
           background: UI.panel,
         }}
       >
-        <h2 style={{ margin: 0 }}>Régimen del mercado</h2>
-        <p style={{ marginTop: 8, opacity: 0.8 }}>Cargando régimen...</p>
+        <h2 style={{ margin: 0 }}>Market Regime</h2>
+        <p style={{ marginTop: 8, opacity: 0.8 }}>Loading Regime...</p>
       </section>
     );
   }
@@ -196,9 +196,9 @@ export default function RegimePanel() {
         }}
       >
         <div>
-          <h2 style={{ margin: 0, fontSize: 22 }}>Régimen del mercado</h2>
+          <h2 style={{ margin: 0, fontSize: 22 }}>Market Regime</h2>
           <p style={{ marginTop: 8, opacity: 0.78, fontSize: 14 }}>
-            Lectura agregada del estado general del mercado.
+            Aggregate view of the market's current condition.
           </p>
         </div>
 
@@ -223,7 +223,7 @@ export default function RegimePanel() {
               whiteSpace: "nowrap",
             }}
           >
-            Actualizado · <code>{formatTs(data.ts)}</code>
+            Updated · <code>{formatTs(data.ts)}</code>
           </div>
         </div>
       </div>
@@ -249,7 +249,7 @@ export default function RegimePanel() {
           height: "100%",
         }}
       >
-        <div style={{ fontSize: 13, opacity: 0.72 }}>Estado actual</div>
+        <div style={{ fontSize: 13, opacity: 0.72 }}>Current State</div>
 
         <div
           style={{
@@ -333,11 +333,11 @@ export default function RegimePanel() {
               </div>
 
               <div style={{ fontSize: 14, opacity: 0.8 }}>
-                Confianza estimada: <b>{confidencePct}%</b>
+                Confidence: <b>{confidencePct}%</b>
               </div>
 
               <div style={{ fontSize: 14, opacity: 0.8 }}>
-                Score agregado: <b>{Number(regime.score ?? 0).toFixed(2)}</b>
+                Composite Score: <b>{Number(regime.score ?? 0).toFixed(2)}</b>
               </div>
 
               <div
@@ -366,20 +366,20 @@ export default function RegimePanel() {
             height: "100%",
           }}
         >
-        <div style={{ fontSize: 13, opacity: 0.72 }}>Señales</div>
+        <div style={{ fontSize: 13, opacity: 0.72 }}>Signals</div>
 
         <div>
           <div style={{ fontSize: 24, fontWeight: 900, color: tone }}>
             {confidencePct}%
           </div>
-          <div style={{ fontSize: 12, opacity: 0.72 }}>Confianza</div>
+          <div style={{ fontSize: 12, opacity: 0.72 }}>Confidence</div>
         </div>
 
         <div>
           <div style={{ fontSize: 24, fontWeight: 900, color: tone }}>
           {Number(regime.score ?? 0).toFixed(2)}
           </div>
-          <div style={{ fontSize: 12, opacity: 0.72 }}>Score agregado</div>
+          <div style={{ fontSize: 12, opacity: 0.72 }}>Composite Score</div>
         </div>
 
         <div
@@ -391,7 +391,7 @@ export default function RegimePanel() {
             opacity: 0.72,
           }}
         >
-          Fuente: {data.source}
+          Source: {data.source}
           </div>
         </div>
       </div>

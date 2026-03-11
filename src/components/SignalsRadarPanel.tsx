@@ -123,7 +123,7 @@ export default function SignalsRadarPanel() {
       >
         <h2 style={{ margin: 0, fontSize: 20 }}>Signals Radar</h2>
         <p style={{ marginTop: 8 }}>
-          Error conectando a señales: <b>{error}</b>
+          Cannot connect to signals: <b>{error}</b>
         </p>
       </section>
     );
@@ -141,7 +141,7 @@ export default function SignalsRadarPanel() {
         }}
       >
         <h2 style={{ margin: 0, fontSize: 20 }}>Signals Radar</h2>
-        <p style={{ marginTop: 8, opacity: 0.8 }}>Cargando señales...</p>
+        <p style={{ marginTop: 8, opacity: 0.8 }}>Loading Signals...</p>
       </section>
     );
   }
@@ -172,7 +172,7 @@ export default function SignalsRadarPanel() {
         <div>
           <h2 style={{ margin: 0, fontSize: 20 }}>Signals Radar</h2>
           <p style={{ marginTop: 8, opacity: 0.78, fontSize: 13 }}>
-            Lectura multidimensional de señales internas de CryptoLink.
+            Multidimensional view of CryptoLink internal signals.
           </p>
         </div>
 
@@ -197,7 +197,7 @@ export default function SignalsRadarPanel() {
             whiteSpace: "nowrap",
           }}
         >
-          Actualizado · <code>{formatTs(data.ts)}</code>
+          Updated · <code>{formatTs(data.ts)}</code>
         </div>
        </div>
       </div>

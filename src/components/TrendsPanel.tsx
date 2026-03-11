@@ -90,7 +90,7 @@ export default function TrendsPanel() {
       >
         <h2 style={{ margin: 0 }}>Trends</h2>
         <p style={{ marginTop: 8 }}>
-          Error conectando a CryptoLink trends: <b>{error}</b>
+          Cannot connect to CryptoLink trends: <b>{error}</b>
         </p>
       </section>
     );
@@ -108,7 +108,7 @@ export default function TrendsPanel() {
         }}
       >
         <h2 style={{ margin: 0 }}>Trends</h2>
-        <p style={{ marginTop: 8, opacity: 0.8 }}>Cargando trends...</p>
+        <p style={{ marginTop: 8, opacity: 0.8 }}>Loading trends...</p>
       </section>
     );
   }
@@ -140,7 +140,7 @@ export default function TrendsPanel() {
         <div>
           <h2 style={{ margin: 0, fontSize: 20 }}>Trends</h2>
           <p style={{ marginTop: 8, opacity: 0.78, fontSize: 13 }}>
-            Dirección reciente del mercado y lectura derivada.
+            Recent market direction and derived signal read.
           </p>
         </div>
 
@@ -165,7 +165,7 @@ export default function TrendsPanel() {
               whiteSpace: "nowrap",
             }}
           >
-              Actualizado · <code>{formatTs(data.ts)}</code>
+              Updated · <code>{formatTs(data.ts)}</code>
           </div>
         </div>
       </div>
