@@ -9,6 +9,7 @@ import type { Health } from "@/lib/health";
 import MomentumPanel from "@/components/MomentumPanel";
 import TrendsPanel from "@/components/TrendsPanel";
 import RegimePanel from "@/components/RegimePanel";
+import TrendPulsePanel from "@/components/TrendPulse";
 
 
 export default function TrendsRouteBody() {
@@ -42,7 +43,7 @@ export default function TrendsRouteBody() {
       </div>
     </div>
       <div style={{ marginTop: 12 }}>
-        <TrendChartPanel items={trendItems} maxPoints={60}/>
+        <TrendPulsePanel />
       </div>
       <div>
       <TrendsTable onItems={setTrendItems} onHealth={setTrendsHealth} />
