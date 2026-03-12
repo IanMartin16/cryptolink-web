@@ -382,9 +382,10 @@ export default function RegimePanel() {
 
               <div
                 style={{
-                  fontSize: "clamp(13px, 3.4vw, 14px)",
+                  fontSize: "clamp(13px, 3.2vw, 14px)",
                   opacity: 0.84,
-                  lineHeight: 1.45,
+                  lineHeight: 1.4,
+                  maxWidth:520,
                 }}
               >
                 {regime.summary}
@@ -408,19 +409,23 @@ export default function RegimePanel() {
         >
         <div style={{ fontSize: 13, opacity: 0.72 }}>Signals</div>
 
+        <div
+          style={{
+            display: "flex",
+            gap: 14,
+            flexWrap: "wrap",
+            alignItems: "center",
+            fontSize: 14,
+            opacity: 0.82,
+          }}
+        >
         <div>
-          <div style={{ fontSize: 24, fontWeight: 900, color: tone }}>
-            {confidencePct}%
-          </div>
-          <div style={{ fontSize: 12, opacity: 0.72 }}>Confidence</div>
+          Confidence: <b>{confidencePct}%</b>
         </div>
-
         <div>
-          <div style={{ fontSize: 24, fontWeight: 900, color: tone }}>
-          {Number(regime.score ?? 0).toFixed(2)}
-          </div>
-          <div style={{ fontSize: 12, opacity: 0.72 }}>Composite Score</div>
+          Score: <b>{Number(regime.score ?? 0).toFixed(2)}</b>
         </div>
+      </div>
 
         {mh?.marketHealth ? (
           <div
