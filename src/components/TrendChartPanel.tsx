@@ -145,7 +145,10 @@ export default function TrendChartPanel({
 
     appendTrendPulsePoint(next, maxPoints);
 
-    useEffect(() => {
+    
+  }, [items, compositeScore, maxPoints]);  
+
+  useEffect(() => {
   if (!seriesRef.current) return;
   if (!trendPulseHistory?.length) {
     seriesRef.current.setData([]);
@@ -160,8 +163,6 @@ export default function TrendChartPanel({
   seriesRef.current.setData(data);
   chartRef.current?.timeScale().fitContent();
 }, [trendPulseHistory]);
-    
-  }, [items, compositeScore, maxPoints]);  
 
   return (
     <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3">
