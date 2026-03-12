@@ -5,7 +5,7 @@ import { UI } from "@/lib/ui";
 import { fetchRegime } from "@/lib/cryptoLink";
 import { useMarketSignalsStore } from "@/lib/stores/marketSignalsStore";
 import DataStatusBadge from "@/components/DataStatusBadge";
-
+import { fetchMarketHealth } from "@/lib/cryptoLink";
 
 type RegimeResponse = {
   ok: boolean;
@@ -16,6 +16,17 @@ type RegimeResponse = {
     state: "bullish" | "bearish" | "neutral" | "mixed";
     score: number;
     confidence: number;
+    summary: string;
+  };
+};
+type MarketHealthResponse = {
+  ok: boolean;
+  fiat: string;
+  ts: string;
+  source: string;
+  marketHealth: {
+    state: "healthy" | "stable" | "fragile" | "under_pressure";
+    score: number;
     summary: string;
   };
 };
@@ -57,12 +68,30 @@ function formatTs(ts: string) {
     return Math.max(min, Math.min(max, n));
   }
 
+  function healthTone(state: string) {
+  if (state === "healthy") return "#2BFF88";
+  if (state === "under_pressure") return "#FF6B6B";
+  if (state === "fragile") return "#F7C65F";
+  return "rgba(255,255,255,0.92)";
+}
+
+function healthLabel(state: string) {
+  if (state === "healthy") return "Healthy";
+  if (state === "under_pressure") return "Under Pressure";
+  if (state === "fragile") return "Fragile";
+  return "Stable";
+}
+
 export default function RegimePanel() {
   const storedRegime = useMarketSignalsStore((s) => s.regime);
   const setRegimeStore = useMarketSignalsStore((s) => s.setRegime);
 
   const [data, setData] = useState<RegimeResponse | null>(storedRegime);
   const [error, setError] = useState("");
+  const storedMarketHealth = useMarketSignalsStore((s: any) => s.marketHealth);
+  const setMarketHealthStore = useMarketSignalsStore((s: any) => s.setMarketHealth);
+
+  const [mh, setMh] = useState<MarketHealthResponse | null>(storedMarketHealth ?? null);
   const [status, setStatus] = useState<"live" | "restored" | "refreshing">(
   storedRegime ? "restored" : "refreshing"
 );
@@ -73,11 +102,22 @@ export default function RegimePanel() {
     async function load() {
       try {
         setError("");
-        const res = await fetchRegime(["BTC", "ETH", "SOL"]);
-        if (!cancelled) 
-          setData(res);
-          setRegimeStore(res);
+        setStatus((prev) => (data ? "refreshing" : prev));
+
+        const [regimeRes, healthRes] = await Promise.all([
+          fetchRegime(["BTC", "ETH", "SOL"]),
+          fetchMarketHealth(["BTC", "ETH", "SOL"]),
+        ]);
+
+        if (!cancelled) {
+          setData(regimeRes);
+          setRegimeStore(regimeRes);
+
+          setMh(healthRes);
+          setMarketHealthStore(healthRes);
+
           setStatus("live");
+        }
       } catch (e: any) {
         if (!cancelled) setError(e?.message ?? "unknown");
       }
@@ -381,6 +421,64 @@ export default function RegimePanel() {
           </div>
           <div style={{ fontSize: 12, opacity: 0.72 }}>Composite Score</div>
         </div>
+
+        {mh?.marketHealth ? (
+          <div
+            style={{
+              marginTop: 4,
+              padding: 12,
+              borderRadius: 14,
+              border: `1px solid ${UI.border}`,
+              background: "rgba(255,255,255,0.04)",
+              display: "grid",
+              gap: 6,
+            }}
+          >
+            <div style={{ fontSize: 12, opacity: 0.72 }}>Market Health</div>
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: 12,
+              flexWrap: "wrap",
+            }}
+          >
+            <div
+              style={{
+                fontSize: 18,
+                fontWeight: 900,
+                color: healthTone(mh.marketHealth.state),
+                lineHeight: 1.1,
+              }}
+            >
+              {healthLabel(mh.marketHealth.state)}
+            </div>
+
+          <div
+            style={{
+              fontSize: 13,
+              opacity: 0.82,
+              color: healthTone(mh.marketHealth.state),
+              fontWeight: 700,
+            }}
+          >
+             {mh.marketHealth.score}/100
+          </div>
+        </div>
+
+        <div
+          style={{
+            fontSize: 13,
+            opacity: 0.78,
+            lineHeight: 1.4,
+          }}
+        >
+          {mh.marketHealth.summary}
+        </div>
+      </div>
+    ) : null}
 
         <div
           style={{

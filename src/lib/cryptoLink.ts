@@ -116,3 +116,24 @@ export async function fetchSignals(symbols: string[]): Promise<SignalsResponse> 
   if (!res.ok) throw new Error(`Signals HTTP ${res.status}`);
   return (await res.json()) as SignalsResponse;
 }
+
+export type MarketHealthResponse = {
+  ok: boolean;
+  fiat: string;
+  ts: string;
+  source: string;
+  marketHealth: {
+    state: "healthy" | "stable" | "fragile" | "under_pressure";
+    score: number;
+    summary: string;
+  };
+};
+
+export async function fetchMarketHealth(symbols: string[]): Promise<MarketHealthResponse> {
+  const qs = encodeURIComponent(symbols.join(","));
+  const res = await fetch(`/api/social/market-health?symbols=${qs}&fiat=MXN`, {
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error(`Market Health HTTP ${res.status}`);
+  return (await res.json()) as MarketHealthResponse;
+}

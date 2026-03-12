@@ -63,16 +63,19 @@ type MarketSignalsState = {
   momentum: MomentumResponse | null;
   regime: RegimeResponse | null;
   signals: SignalsResponse | null;
+  marketHealth: any | null;
 
   trendsUpdatedAt: number | null;
   momentumUpdatedAt: number | null;
   regimeUpdatedAt: number | null;
   signalsUpdatedAt: number | null;
+  marketHealthUpdatedAt: number | null;
 
   setTrends: (v: TrendsResponse) => void;
   setMomentum: (v: MomentumResponse) => void;
   setRegime: (v: RegimeResponse) => void;
   setSignals: (v: SignalsResponse) => void;
+  setMarketHealth: (v: any) => void;
 
   clearAll: () => void;
 };
@@ -84,11 +87,14 @@ export const useMarketSignalsStore = create<MarketSignalsState>()(
       momentum: null,
       regime: null,
       signals: null,
+      marketHealth: null,
 
       trendsUpdatedAt: null,
       momentumUpdatedAt: null,
       regimeUpdatedAt: null,
       signalsUpdatedAt: null,
+      marketHealthUpdatedAt: null,
+
 
       setTrends: (v) =>
         set({
@@ -114,6 +120,12 @@ export const useMarketSignalsStore = create<MarketSignalsState>()(
           signalsUpdatedAt: Date.now(),
         }),
 
+        setMarketHealth: (v) =>
+          set({
+          marketHealth: v,
+          marketHealthUpdatedAt: Date.now(),
+        }),
+
       clearAll: () =>
         set({
           trends: null,
@@ -124,6 +136,8 @@ export const useMarketSignalsStore = create<MarketSignalsState>()(
           momentumUpdatedAt: null,
           regimeUpdatedAt: null,
           signalsUpdatedAt: null,
+          marketHealth: null,
+          marketHealthUpdatedAt: null,
         }),
     }),
     {
@@ -138,6 +152,8 @@ export const useMarketSignalsStore = create<MarketSignalsState>()(
         momentumUpdatedAt: state.momentumUpdatedAt,
         regimeUpdatedAt: state.regimeUpdatedAt,
         signalsUpdatedAt: state.signalsUpdatedAt,
+        marketHealth: state.marketHealth,
+        marketHealthUpdatedAt: state.marketHealthUpdatedAt,
       }),
     }
   )
