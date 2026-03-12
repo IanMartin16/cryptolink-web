@@ -42,7 +42,7 @@ export default function TrendsRouteBody() {
       </div>
     </div>
       <div style={{ marginTop: 12 }}>
-        <TrendChartPanel items={trendItems} maxPoints={60}/>
+        <TrendChartPanel items={trendItems} maxPoints={40}/>
       </div>
       <div>
       <TrendsTable onItems={setTrendItems} onHealth={setTrendsHealth} />
