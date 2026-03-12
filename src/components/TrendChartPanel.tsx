@@ -23,19 +23,25 @@ export default function TrendChartPanel({
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<"Line"> | null>(null);
 
-  // histórico por símbolo dentro del ciclo de vida del componente
-  const historyBySymbolRef = useRef<Map<string, Point[]>>(new Map());
+  // histórico del composite
+  const historyRef = useRef<Point[]>([]);
   const lastTimeRef = useRef<UTCTimestamp | 0>(0);
 
-  // top trend actual
-  const top = items?.[0];
-  const symbol = (top?.symbol || "").toUpperCase();
-  const score = typeof top?.score === "number" ? top.score : 0;
+  const compositeScore = useMemo(() => {
+    if (!items?.length) return 0;
+    const valid = items.filter((x) => typeof x.score === "number");
+    if (!valid.length) return 0;
+    return valid.reduce((acc, x) => acc + x.score, 0) / valid.length;
+  }, [items]);
+
+  const trackedAssets = useMemo(() => items?.length ?? 0, [items]);
 
   const tone =
-    score >= 1.0 ? "BULLISH" :
-    score <= -1.0 ? "BEARISH" :
-    "NEUTRAL";
+    compositeScore >= 1.0
+      ? "BULLISH"
+      : compositeScore <= -1.0
+      ? "BEARISH"
+      : "NEUTRAL";
 
   const lineColor =
     tone === "BULLISH"
@@ -50,13 +56,6 @@ export default function TrendChartPanel({
       : tone === "BEARISH"
       ? "border-rose-400/30 bg-rose-400/10 text-rose-200"
       : "border-white/15 bg-white/5 text-white/70";
-
-  const header = useMemo(() => {
-    return {
-      sym: symbol || "—",
-      score: typeof top?.score === "number" ? top.score.toFixed(2) : "—",
-    };
-  }, [symbol, top?.score]);
 
   // 1) init chart
   useEffect(() => {
@@ -121,61 +120,44 @@ export default function TrendChartPanel({
     };
   }, []);
 
-  // 2) actualizar color cuando cambie el tono
+  // 2) actualizar color del composite
   useEffect(() => {
     if (!seriesRef.current) return;
     seriesRef.current.applyOptions({ color: lineColor });
   }, [lineColor]);
 
-  // 3) agregar nuevo punto al histórico del símbolo activo
+  // 3) agregar punto nuevo del composite
   useEffect(() => {
     if (!seriesRef.current) return;
-    if (!symbol || typeof top?.score !== "number") return;
+    if (!items?.length) return;
 
     const nowSec = Math.floor(Date.now() / 1000) as UTCTimestamp;
 
-    // evita duplicar puntos en el mismo segundo
     if (nowSec === lastTimeRef.current) return;
     lastTimeRef.current = nowSec;
 
     const next: Point = {
       time: nowSec,
-      value: top.score,
+      value: compositeScore,
     };
 
-    const map = historyBySymbolRef.current;
-    const arr = map.get(symbol) ?? [];
+    const arr = historyRef.current;
     arr.push(next);
 
     if (arr.length > maxPoints) {
       arr.splice(0, arr.length - maxPoints);
     }
 
-    map.set(symbol, arr);
-
     seriesRef.current.setData(arr);
     chartRef.current?.timeScale().fitContent();
-  }, [symbol, top?.score, maxPoints]);
-
-  // 4) al cambiar de símbolo, pintar su histórico existente
-  useEffect(() => {
-    if (!seriesRef.current || !symbol) return;
-
-    const arr = historyBySymbolRef.current.get(symbol);
-    if (arr?.length) {
-      seriesRef.current.setData(arr);
-      chartRef.current?.timeScale().fitContent();
-    } else {
-      seriesRef.current.setData([]);
-    }
-  }, [symbol]);
+  }, [items, compositeScore, maxPoints]);
 
   return (
     <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3">
       <div className="mb-2 flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="flex items-center gap-2 text-xs font-semibold tracking-wide text-white/70">
-            <span>Trend Pulse · {header.sym}</span>
+            <span>Trend Pulse</span>
 
             <span
               className={[
@@ -188,12 +170,12 @@ export default function TrendChartPanel({
           </div>
 
           <div className="text-[11px] text-white/45">
-            Top trend score over time · {header.score}
+            Composite trend score · {compositeScore.toFixed(2)}
           </div>
         </div>
 
         <div className="text-[11px] text-white/45">
-          {maxPoints} pts
+          {trackedAssets} assets · {maxPoints} pts
         </div>
       </div>
 
