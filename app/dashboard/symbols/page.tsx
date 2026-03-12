@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import PriceChartPanel from "@/components/PricesChartPanel";
+import PriceComparePanel from "@/components/PricesChartPanel";
 import type { Health } from "@/lib/health";
 import type { PriceRow } from "@/lib/types";
 import { getSymbols, setSymbols } from "@/lib/symbolsStore";
@@ -71,7 +71,7 @@ useEffect(() => {
       <div className="min-w-0 rounded-xl border border-white/10 bg-white/[0.03] p-2 lg:col-span-2">
         {/* 👇 asegura que el chart tenga espacio en iPhone */}
         <div className="min-h-[320px] sm:min-h-[360px]">
-          <PriceChartPanel rows={rows} symbol={main} onSymbolChange={setMain} />
+          <PriceComparePanel rows={rows} symbol={main} onSymbolChange={setMain} />
         </div>
       </div>
     </div>
