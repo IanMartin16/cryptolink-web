@@ -1,7 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useRef } from "react";
-import { createChart, LineSeries, type IChartApi, type ISeriesApi, type UTCTimestamp } from "lightweight-charts";
+import {
+  createChart,
+  LineSeries,
+  type IChartApi,
+  type ISeriesApi,
+  type UTCTimestamp,
+} from "lightweight-charts";
 import type { TrendItem } from "@/lib/types";
 
 type Point = { time: UTCTimestamp; value: number };
@@ -17,19 +23,40 @@ export default function TrendChartPanel({
   const chartRef = useRef<IChartApi | null>(null);
   const seriesRef = useRef<ISeriesApi<"Line"> | null>(null);
 
-  // ✅ histórico en memoria del componente
+  // histórico por símbolo dentro del ciclo de vida del componente
   const historyBySymbolRef = useRef<Map<string, Point[]>>(new Map());
   const lastTimeRef = useRef<UTCTimestamp | 0>(0);
 
-  // Top trend (el #1)
+  // top trend actual
   const top = items?.[0];
+  const symbol = (top?.symbol || "").toUpperCase();
+  const score = typeof top?.score === "number" ? top.score : 0;
+
+  const tone =
+    score >= 1.0 ? "BULLISH" :
+    score <= -1.0 ? "BEARISH" :
+    "NEUTRAL";
+
+  const lineColor =
+    tone === "BULLISH"
+      ? "#34d399"
+      : tone === "BEARISH"
+      ? "#fb7185"
+      : "#f59e0b";
+
+  const toneCls =
+    tone === "BULLISH"
+      ? "border-emerald-400/30 bg-emerald-400/10 text-emerald-200"
+      : tone === "BEARISH"
+      ? "border-rose-400/30 bg-rose-400/10 text-rose-200"
+      : "border-white/15 bg-white/5 text-white/70";
 
   const header = useMemo(() => {
-    const sym = top?.symbol ?? "—";
-    const score =
-      typeof top?.score === "number" ? top.score.toFixed(2) : "—";
-    return { sym, score };
-  }, [top?.symbol, top?.score]);
+    return {
+      sym: symbol || "—",
+      score: typeof top?.score === "number" ? top.score.toFixed(2) : "—",
+    };
+  }, [symbol, top?.score]);
 
   // 1) init chart
   useEffect(() => {
@@ -43,10 +70,13 @@ export default function TrendChartPanel({
       },
       grid: {
         vertLines: { visible: false },
-        horzLines: { visible: false },
+        horzLines: { color: "rgba(255,255,255,0.06)" },
       },
       rightPriceScale: {
         borderVisible: false,
+      },
+      leftPriceScale: {
+        visible: false,
       },
       timeScale: {
         borderVisible: false,
@@ -57,27 +87,32 @@ export default function TrendChartPanel({
         vertLine: { visible: true },
         horzLine: { visible: true },
       },
+      handleScroll: true,
+      handleScale: true,
     });
 
     const series = chart.addSeries(LineSeries, {
       lineWidth: 2,
-      // si luego quieres colores dinámicos por trend, lo hacemos aquí
+      color: lineColor,
       priceLineVisible: true,
       lastValueVisible: true,
+      crosshairMarkerVisible: true,
     });
 
     chartRef.current = chart;
     seriesRef.current = series;
 
-    const onResize = () => {
-      if (!containerRef.current || !chartRef.current) return;
-      chartRef.current.applyOptions({ width: containerRef.current.clientWidth });
-    };
-
-    // set width inicial
     chart.applyOptions({ width: containerRef.current.clientWidth });
 
+    const onResize = () => {
+      if (!containerRef.current || !chartRef.current) return;
+      chartRef.current.applyOptions({
+        width: containerRef.current.clientWidth,
+      });
+    };
+
     window.addEventListener("resize", onResize);
+
     return () => {
       window.removeEventListener("resize", onResize);
       chart.remove();
@@ -86,69 +121,58 @@ export default function TrendChartPanel({
     };
   }, []);
 
-  // 2) cada vez que cambie el top score, añadimos un punto
+  // 2) actualizar color cuando cambie el tono
   useEffect(() => {
     if (!seriesRef.current) return;
-    if (!top || typeof top.score !== "number") return;
+    seriesRef.current.applyOptions({ color: lineColor });
+  }, [lineColor]);
 
-    const sym = (top.symbol || "").toUpperCase();
-    if (!sym) return;
+  // 3) agregar nuevo punto al histórico del símbolo activo
+  useEffect(() => {
+    if (!seriesRef.current) return;
+    if (!symbol || typeof top?.score !== "number") return;
 
     const nowSec = Math.floor(Date.now() / 1000) as UTCTimestamp;
 
-    // evita duplicar puntos si caen en el mismo segundo
+    // evita duplicar puntos en el mismo segundo
     if (nowSec === lastTimeRef.current) return;
     lastTimeRef.current = nowSec;
 
-    const next: Point = { time: nowSec, value: top.score };
+    const next: Point = {
+      time: nowSec,
+      value: top.score,
+    };
 
     const map = historyBySymbolRef.current;
-    const arr = map.get(sym) ?? [];
+    const arr = map.get(symbol) ?? [];
     arr.push(next);
-    if (arr.length > maxPoints) arr.splice(0, arr.length - maxPoints);
-    map.set(sym, arr);
 
-    // ✅ pintamos el histórico del símbolo activo
+    if (arr.length > maxPoints) {
+      arr.splice(0, arr.length - maxPoints);
+    }
+
+    map.set(symbol, arr);
+
     seriesRef.current.setData(arr);
     chartRef.current?.timeScale().fitContent();
-  }, [top?.score, top?.symbol, maxPoints]);
+  }, [symbol, top?.score, maxPoints]);
 
+  // 4) al cambiar de símbolo, pintar su histórico existente
   useEffect(() => {
-    if (!seriesRef.current) return;
-    const sym = (top?.symbol || "").toUpperCase();
-    if (!sym) return;
+    if (!seriesRef.current || !symbol) return;
 
-    const arr = historyBySymbolRef.current.get(sym);
+    const arr = historyBySymbolRef.current.get(symbol);
     if (arr?.length) {
-      const color =
-        score >= 15
-          ? "#34d399"
-          : score <= -15
-          ? "#fb7185"
-          : "#f59e0b";
-seriesRef.current.applyOptions({ color });
       seriesRef.current.setData(arr);
       chartRef.current?.timeScale().fitContent();
+    } else {
+      seriesRef.current.setData([]);
     }
-  }, [top?.symbol]);
-
-  const score = typeof top?.score === "number" ? top.score : 0;
-
-  const tone =
-    score >= 15 ? "BULLISH"
-    : score <= -15 ? "BEARISH"
-    : "NEUTRAL";
-
-  const toneCls =
-    tone === "BULLISH"
-      ? "border-emerald-400/30 bg-emerald-400/10 text-emerald-200"
-      : tone === "BEARISH"
-      ? "border-rose-400/30 bg-rose-400/10 text-rose-200"
-      : "border-white/15 bg-white/5 text-white/70";
+  }, [symbol]);
 
   return (
     <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3">
-      <div className="flex items-baseline justify-between gap-3 mb-2">
+      <div className="mb-2 flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="flex items-center gap-2 text-xs font-semibold tracking-wide text-white/70">
             <span>Trend Pulse · {header.sym}</span>
@@ -162,8 +186,9 @@ seriesRef.current.applyOptions({ color });
               {tone}
             </span>
           </div>
+
           <div className="text-[11px] text-white/45">
-            Live score · {header.score}
+            Top trend score over time · {header.score}
           </div>
         </div>
 
