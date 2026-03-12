@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TrendsTable from "@/components/TrendsTable";
 import StatusBar from "@/components/StatusBar";
 import TrendChartPanel from "@/components/TrendChartPanel";
@@ -9,7 +9,31 @@ import type { Health } from "@/lib/health";
 import MomentumPanel from "@/components/MomentumPanel";
 import TrendsPanel from "@/components/TrendsPanel";
 import RegimePanel from "@/components/RegimePanel";
+import { fetchPricesBatch } from "@/lib/cryptoLink";
 
+export function TrendsWarmup() {
+  useEffect(() => {
+    let cancelled = false;
+
+    async function warm() {
+      try {
+        await fetchPricesBatch( ["BTC", "ETH", "SOL", "LINK", "UNI", "ATOM"], "USD", "");
+      } catch {
+        // silencioso a propósito
+      }
+    }
+
+    warm();
+    const id = setInterval(warm, 10000);
+
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+    };
+  }, []);
+
+  return null;
+}
 
 export default function TrendsRouteBody() {
   const [trendsHealth, setTrendsHealth] = useState<Health | undefined>(undefined);
@@ -38,6 +62,7 @@ export default function TrendsRouteBody() {
           }}
         >
         <MomentumPanel />
+        <TrendsWarmup />
         <TrendsPanel />
       </div>
     </div>
