@@ -51,6 +51,11 @@ type SignalPoint = {
   value: number;
 };
 
+type Point = {
+  time: number;
+  value: number;
+};
+
 type SignalsResponse = {
   ok: boolean;
   ts: string;
@@ -64,18 +69,22 @@ type MarketSignalsState = {
   regime: RegimeResponse | null;
   signals: SignalsResponse | null;
   marketHealth: any | null;
+  trendPulseHistory: Point[]; 
 
   trendsUpdatedAt: number | null;
   momentumUpdatedAt: number | null;
   regimeUpdatedAt: number | null;
   signalsUpdatedAt: number | null;
   marketHealthUpdatedAt: number | null;
+  trendPulseUpdatedAt: number | null;
 
   setTrends: (v: TrendsResponse) => void;
   setMomentum: (v: MomentumResponse) => void;
   setRegime: (v: RegimeResponse) => void;
   setSignals: (v: SignalsResponse) => void;
   setMarketHealth: (v: any) => void;
+  setTrendPulseHistory: (points: Point[]) => void;
+  appendTrendPulsePoint: (point: Point, maxPoints?: number) => void;
 
   clearAll: () => void;
 };
@@ -88,13 +97,14 @@ export const useMarketSignalsStore = create<MarketSignalsState>()(
       regime: null,
       signals: null,
       marketHealth: null,
+      trendPulseHistory: [],
 
       trendsUpdatedAt: null,
       momentumUpdatedAt: null,
       regimeUpdatedAt: null,
       signalsUpdatedAt: null,
       marketHealthUpdatedAt: null,
-
+      trendPulseUpdatedAt: null,
 
       setTrends: (v) =>
         set({
@@ -126,6 +136,24 @@ export const useMarketSignalsStore = create<MarketSignalsState>()(
           marketHealthUpdatedAt: Date.now(),
         }),
 
+        setTrendPulseHistory: (points) =>
+          set({
+          trendPulseHistory: points,
+          trendPulseUpdatedAt: Date.now(),
+        }),
+
+        appendTrendPulsePoint: (point, maxPoints = 40) =>
+          set((state) => {
+            const next = [...state.trendPulseHistory, point];
+            const trimmed =
+              next.length > maxPoints ? next.slice(next.length - maxPoints) : next;
+
+            return {
+              trendPulseHistory: trimmed,
+              trendPulseUpdatedAt: Date.now(),
+            };
+          }),
+
       clearAll: () =>
         set({
           trends: null,
@@ -138,6 +166,8 @@ export const useMarketSignalsStore = create<MarketSignalsState>()(
           signalsUpdatedAt: null,
           marketHealth: null,
           marketHealthUpdatedAt: null,
+          trendPulseHistory: [],
+          trendPulseUpdatedAt: null,
         }),
     }),
     {
