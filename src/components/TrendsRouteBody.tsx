@@ -9,27 +9,24 @@ import type { Health } from "@/lib/health";
 import MomentumPanel from "@/components/MomentumPanel";
 import TrendsPanel from "@/components/TrendsPanel";
 import RegimePanel from "@/components/RegimePanel";
-import { fetchPricesBatch } from "@/lib/cryptoLink";
+
 
 export function TrendsWarmup() {
   useEffect(() => {
-    let cancelled = false;
-
     async function warm() {
       try {
-        await fetchPricesBatch( ["BTC", "ETH", "SOL", "LINK", "UNI", "ATOM"], "USD", "");
+        await fetch("/api/cryptolink/prices?symbols=BTC,ETH,SOL&fiat=MXN", {
+          cache: "no-store",
+        });
       } catch {
-        // silencioso a propósito
+        // silent on purpose
       }
     }
 
     warm();
     const id = setInterval(warm, 10000);
 
-    return () => {
-      cancelled = true;
-      clearInterval(id);
-    };
+    return () => clearInterval(id);
   }, []);
 
   return null;
