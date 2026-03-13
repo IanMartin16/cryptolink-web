@@ -8,11 +8,21 @@ import { getSymbols, setSymbols } from "@/lib/symbolsStore";
 import PricesPanel from "@/components/PricesPanel";
 import StatusBar from "@/components/StatusBar";
 import PageHeader from "@/components/PageHeader";
+import { useMarketSignalsStore } from "@/lib/stores/marketSignalsStore";
+
 
 
 export default function SymbolsPage() {
   const [selected, setSelectedState] = useState<string[]>([]);
+  const storedMainSymbol = useMarketSignalsStore((s: { compareMainSymbol: string | null}) => s.compareMainSymbol);
   const [main, setMain] = useState("BTC");
+
+  useEffect(() => {
+    if (storedMainSymbol) {
+      setMain(storedMainSymbol);
+    }
+  }, [storedMainSymbol]);
+
 
   // feed para el chart (reusamos tu PricesPanel para no duplicar fetch todavía)
   const [rows, setRows] = useState<PriceRow[]>([]);
