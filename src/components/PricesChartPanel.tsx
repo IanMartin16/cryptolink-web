@@ -208,11 +208,11 @@ export default function PriceComparePanel({
   }, [symbol, symbols]);
 
   useEffect(() => {
-    if (!containerRef.current) return;
-
-  useEffect(() => {
     if (symbol) setStoredMainSymbol(symbol);
   }, [symbol, setStoredMainSymbol]);  
+
+  useEffect(() => {
+    if (!containerRef.current) return;
 
     const chart = createChart(containerRef.current, {
       height: 320,
