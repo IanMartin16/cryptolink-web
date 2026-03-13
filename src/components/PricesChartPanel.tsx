@@ -212,6 +212,16 @@ export default function PriceComparePanel({
   }, [symbol, setStoredMainSymbol]);  
 
   useEffect(() => {
+    if (
+      storedMainSymbol &&
+      storedMainSymbol !== symbol &&
+      symbols.includes(storedMainSymbol)
+    ) {
+      onSymbolChange(storedMainSymbol);
+    }
+  }, [storedMainSymbol, symbol, symbols, onSymbolChange]);
+
+  useEffect(() => {
     if (!containerRef.current) return;
 
     const chart = createChart(containerRef.current, {
