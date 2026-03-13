@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useMarketSignalsStore } from "@/lib/stores/marketSignalsStore";
 import {
   AreaSeries,
   LineSeries,
@@ -89,10 +90,25 @@ export default function PriceComparePanel({
     ov2: ISeriesApi<"Line"> | null;
   }>({ ov1: null, ov2: null });
 
-  const [range, setRange] = useState<"5m" | "15m" | "50m">("15m");
-  const [normalize, setNormalize] = useState(true);
-  const [compare, setCompare] = useState<string[]>([]);
+  
   const [hover, setHover] = useState<{ price?: number; t?: number } | null>(null);
+  const storedCompareSymbols = useMarketSignalsStore((s: any) => s.compareSymbols);
+  const setStoredCompareSymbols = useMarketSignalsStore((s: any) => s.setCompareSymbols);
+
+  const storedCompareRange = useMarketSignalsStore(
+    (s: { compareRange: "5m" | "15m" | "50m" }) => s.compareRange
+  );
+  const setStoredCompareRange = useMarketSignalsStore((s: any) => s.setCompareRange);
+
+  const storedCompareNormalize = useMarketSignalsStore((s: any) => s.compareNormalize);
+  const setStoredCompareNormalize = useMarketSignalsStore((s: any) => s.setCompareNormalize);
+
+  const storedMainSymbol = useMarketSignalsStore((s: any) => s.compareMainSymbol);
+  const setStoredMainSymbol = useMarketSignalsStore((s: any) => s.setCompareMainSymbol);
+
+  const range: "5m" | "15m" | "50m"= storedCompareRange ?? "15m";
+  const normalize = storedCompareNormalize ?? true;
+  const compare = storedCompareSymbols ?? [];
 
   const symbols = useMemo(() => {
     return [...new Set((rows || []).map((r) => r.symbol))].sort();
@@ -172,23 +188,31 @@ export default function PriceComparePanel({
     const key = sym.toUpperCase();
     if (key === symbol.toUpperCase()) return;
 
-    setCompare((prev) => {
-      if (prev.includes(key)) return prev.filter((x) => x !== key);
-      if (prev.length < 2) return [...prev, key];
-      return [prev[0], key];
-    });
+    const next = compare.includes(key)
+      ? compare.filter((x: string) => x !== key)
+      : compare.length < 2
+      ? [...compare, key]
+      : [compare[0], key];
+
+    setStoredCompareSymbols(next);
   }
 
   function removeCompare(sym: string) {
-    setCompare((prev) => prev.filter((x) => x !== sym));
+    setStoredCompareSymbols(compare.filter((x: string) => x !== sym));
   }
 
   useEffect(() => {
-    setCompare((prev) => prev.filter((s) => s !== symbol && symbols.includes(s)).slice(0, 2));
+    setStoredCompareSymbols(
+      compare.filter((s: string) => s !== symbol && symbols.includes(s)).slice(0, 2)
+    );
   }, [symbol, symbols]);
 
   useEffect(() => {
     if (!containerRef.current) return;
+
+  useEffect(() => {
+    if (symbol) setStoredMainSymbol(symbol);
+  }, [symbol, setStoredMainSymbol]);  
 
     const chart = createChart(containerRef.current, {
       height: 320,
@@ -294,7 +318,7 @@ export default function PriceComparePanel({
           <div className="min-w-0">
             <div className="text-lg font-semibold text-white/90">Compare</div>
             <div className="mt-1 text-sm text-white/55">
-              Relative performance across selected assets
+              Compare how selected assets performed over the choosen time window
             </div>
 
             <div className="mt-2 text-xs text-white/45 tabular-nums">
@@ -315,18 +339,18 @@ export default function PriceComparePanel({
               <input
                 type="checkbox"
                 checked={normalize}
-                onChange={(e) => setNormalize(e.target.checked)}
+                onChange={(e) => setStoredCompareNormalize(e.target.checked)}
               />
               Normalize
             </label>
-
+              <span className="text-[11px] text-white/45">Base 100 comparison</span>
             <div className="flex gap-1">
               {(["5m", "15m", "50m"] as const).map((r) => {
                 const active = range === r;
                 return (
                   <button
                     key={r}
-                    onClick={() => setRange(r)}
+                    onClick={() => setStoredCompareRange(r)}
                     className={[
                       "rounded-lg border px-3 py-1 text-xs font-semibold transition",
                       active
@@ -393,7 +417,7 @@ export default function PriceComparePanel({
 
         {compare.length > 0 ? (
           <div className="mt-3 flex flex-wrap gap-2">
-            {compare.map((s, i) => {
+            {compare.map((s: string, i: number) => {
               const color = i === 0 ? SERIES_COLORS.ov1 : SERIES_COLORS.ov2;
               return (
                 <button

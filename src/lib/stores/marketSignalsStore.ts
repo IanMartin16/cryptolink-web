@@ -69,7 +69,12 @@ type MarketSignalsState = {
   regime: RegimeResponse | null;
   signals: SignalsResponse | null;
   marketHealth: any | null;
-  trendPulseHistory: Point[]; 
+  trendPulseHistory: Point[];
+  compareMainSymbol: string | null;
+  compareSymbols: string[];
+  compareRange: "5m" | "15m" | "50m";
+  compareNormalize: boolean;
+
 
   trendsUpdatedAt: number | null;
   momentumUpdatedAt: number | null;
@@ -77,6 +82,8 @@ type MarketSignalsState = {
   signalsUpdatedAt: number | null;
   marketHealthUpdatedAt: number | null;
   trendPulseUpdatedAt: number | null;
+  compareUpdatedAt: number | null;
+
 
   setTrends: (v: TrendsResponse) => void;
   setMomentum: (v: MomentumResponse) => void;
@@ -85,6 +92,10 @@ type MarketSignalsState = {
   setMarketHealth: (v: any) => void;
   setTrendPulseHistory: (points: Point[]) => void;
   appendTrendPulsePoint: (point: Point, maxPoints?: number) => void;
+  setCompareMainSymbol: (v: string | null) => void;
+  setCompareSymbols: (v: string[]) => void;
+  setCompareRange: (v: "5m" | "15m" | "50m") => void;
+  setCompareNormalize: (v: boolean) => void;
 
   clearAll: () => void;
 };
@@ -98,6 +109,10 @@ export const useMarketSignalsStore = create<MarketSignalsState>()(
       signals: null,
       marketHealth: null,
       trendPulseHistory: [],
+      compareMainSymbol: null,
+      compareSymbols: [],
+      compareRange: "15m",
+      compareNormalize: false,
 
       trendsUpdatedAt: null,
       momentumUpdatedAt: null,
@@ -105,6 +120,8 @@ export const useMarketSignalsStore = create<MarketSignalsState>()(
       signalsUpdatedAt: null,
       marketHealthUpdatedAt: null,
       trendPulseUpdatedAt: null,
+      compareUpdatedAt: null,
+
 
       setTrends: (v) =>
         set({
@@ -142,6 +159,30 @@ export const useMarketSignalsStore = create<MarketSignalsState>()(
           trendPulseUpdatedAt: Date.now(),
         }),
 
+        setCompareMainSymbol: (v) =>
+          set({
+          compareMainSymbol: v,
+          compareUpdatedAt: Date.now(),
+        }),
+
+        setCompareSymbols: (v) =>
+          set({
+          compareSymbols: v.slice(0, 2),
+          compareUpdatedAt: Date.now(),
+        }),
+
+        setCompareRange: (v) =>
+          set({
+          compareRange: v,
+          compareUpdatedAt: Date.now(),
+        }),
+
+        setCompareNormalize: (v) =>
+          set({
+          compareNormalize: v,
+          compareUpdatedAt: Date.now(),
+        }),
+
         appendTrendPulsePoint: (point, maxPoints = 40) =>
           set((state) => {
             const next = [...state.trendPulseHistory, point];
@@ -168,6 +209,11 @@ export const useMarketSignalsStore = create<MarketSignalsState>()(
           marketHealthUpdatedAt: null,
           trendPulseHistory: [],
           trendPulseUpdatedAt: null,
+          compareMainSymbol: null,
+          compareSymbols: [],
+          compareRange: "15m",
+          compareNormalize: true,
+          compareUpdatedAt: null,
         }),
     }),
     {
@@ -184,6 +230,11 @@ export const useMarketSignalsStore = create<MarketSignalsState>()(
         signalsUpdatedAt: state.signalsUpdatedAt,
         marketHealth: state.marketHealth,
         marketHealthUpdatedAt: state.marketHealthUpdatedAt,
+        compareMainSymbol: state.compareMainSymbol,
+        compareSymbols: state.compareSymbols,
+        compareRange: state.compareRange,
+        compareNormalize: state.compareNormalize,
+        compareUpdatedAt: state.compareUpdatedAt,
       }),
     }
   )
