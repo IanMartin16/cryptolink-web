@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useMarketSignalsStore } from "@/lib/stores/marketSignalsStore";
+import { UI } from "@/lib/ui";
 import {
   AreaSeries,
   LineSeries,
@@ -331,7 +332,7 @@ export default function PriceComparePanel({
       <div className="border-b border-white/10 px-4 py-3">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0">
-            <div className="text-lg font-semibold text-white/90">Compare</div>
+            <div className="text-lg font-semibold text-white/90"><span style={{ color: UI.orange }}>Compare<span/></span></div>
             <div className="mt-1 text-sm text-white/55">
               Compare how selected assets performed over the choosen time window
             </div>

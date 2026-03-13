@@ -170,7 +170,7 @@ export default function SignalsRadarPanel() {
         }}
       >
         <div>
-          <h2 style={{ margin: 0, fontSize: 20 }}><span style={{ color: UI.orange }}>Signals Radar</span></h2>
+          <h2 style={{ margin: 0, fontSize: 20 }}>Signals<span style={{ color: UI.orange }}> Radar</span></h2>
           <p style={{ marginTop: 8, opacity: 0.78, fontSize: 13 }}>
             Multidimensional view of CryptoLink internal signals.
           </p>

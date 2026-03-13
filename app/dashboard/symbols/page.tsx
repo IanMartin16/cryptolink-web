@@ -18,10 +18,10 @@ export default function SymbolsPage() {
   const [main, setMain] = useState("BTC");
 
   useEffect(() => {
-    if (storedMainSymbol) {
+    if (storedMainSymbol && storedMainSymbol !== main) {
       setMain(storedMainSymbol);
     }
-  }, [storedMainSymbol]);
+  }, [storedMainSymbol, main]);
 
 
   // feed para el chart (reusamos tu PricesPanel para no duplicar fetch todavía)

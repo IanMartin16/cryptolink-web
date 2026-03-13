@@ -236,7 +236,7 @@ export default function RegimePanel() {
         }}
       >
         <div>
-          <h2 style={{ margin: 0, fontSize: 22 }}><span style={{ color: UI.orange }}>Market Regime</span></h2>
+          <h2 style={{ margin: 0, fontSize: 22 }}>Market<span style={{ color: UI.orange }}> Regime</span></h2>
           <p style={{ marginTop: 8, opacity: 0.78, fontSize: 14 }}>
             Aggregate view of the market's current condition.
           </p>
