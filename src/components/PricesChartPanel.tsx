@@ -202,16 +202,6 @@ export default function PriceComparePanel({
   }
 
   useEffect(() => {
-    setStoredCompareSymbols(
-      compare.filter((s: string) => s !== symbol && symbols.includes(s)).slice(0, 2)
-    );
-  }, [symbol, symbols]);
-
-  useEffect(() => {
-    if (symbol) setStoredMainSymbol(symbol);
-  }, [symbol, setStoredMainSymbol]);  
-
-  useEffect(() => {
     if (
       storedMainSymbol &&
       storedMainSymbol !== symbol &&
@@ -220,6 +210,21 @@ export default function PriceComparePanel({
       onSymbolChange(storedMainSymbol);
     }
   }, [storedMainSymbol, symbol, symbols, onSymbolChange]);
+
+  useEffect(() => {
+    const cleaned = compare
+      .filter((s: string) => s !== symbol && symbols.includes(s))
+      .slice(0, 2);
+
+    if (cleaned.length !== compare.length) {
+      setStoredCompareSymbols(cleaned);
+    }
+  }, [symbol, symbols, compare, setStoredCompareSymbols]);
+
+  useEffect(() => {
+    if (symbol) setStoredMainSymbol(symbol);
+  }, [symbol, setStoredMainSymbol]);  
+
 
   useEffect(() => {
     if (!containerRef.current) return;
