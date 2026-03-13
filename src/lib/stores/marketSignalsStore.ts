@@ -112,7 +112,7 @@ export const useMarketSignalsStore = create<MarketSignalsState>()(
       compareMainSymbol: null,
       compareSymbols: [],
       compareRange: "15m",
-      compareNormalize: false,
+      compareNormalize: true,
 
       trendsUpdatedAt: null,
       momentumUpdatedAt: null,
