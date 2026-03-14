@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <footer className="mt-10 border-t border-white/10 py-6 text-center">
       <div className="text-[12px] text-white/45">
-        CryptoLink V2<span className="text-white/25">·</span>{" "}
+        CryptoLink V2.5<span className="text-white/25">·</span>{" "}
         Market Intelligence Layer
       </div>
 
