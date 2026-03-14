@@ -190,7 +190,6 @@ export default function PricesSplit({
           ) : null}
         </div>
       </div>
-    </div>
-    
+    </div>  
   );
 }

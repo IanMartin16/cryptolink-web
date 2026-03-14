@@ -37,21 +37,21 @@ export default function TrendsPanel() {
 
   //formato de hora  fecha
   function formatTs(ts: string) {
-  try {
-    const d = new Date(ts);
-    return new Intl.DateTimeFormat("es-MX", {
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-      timeZone: "America/Mexico_City",
-    }).format(d) + "";
-  } catch {
-    return ts;
+    try {
+      const d = new Date(ts);
+      return new Intl.DateTimeFormat("es-MX", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+        timeZone: "America/Mexico_City",
+      }).format(d) + "";
+    } catch {
+      return ts;
+    }
   }
-}
 
   useEffect(() => {
     let cancelled = false;

@@ -106,7 +106,7 @@ export default function StatusBar({
           color: "#ffb86b",
         }}
       >
-        LIVE · 5s cache · BFF
+        LIVE · 10s cache · BFF
       </div>
     </div>
   );

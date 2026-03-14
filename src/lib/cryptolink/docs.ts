@@ -62,8 +62,8 @@ export const cryptolinkDocs = {
   },
 
   limits: {
-    maxSymbolsPlan: { FREE: 3, BUSINESS: 15, PRO: 27 },
-    availableSymbolsToday: 27,
+    maxSymbolsPlan: { FREE: 3, BUSINESS: 15, PRO: 25 },
+    availableSymbolsToday: 30,
   },
 
   sections: [

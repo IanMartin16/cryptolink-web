@@ -48,7 +48,7 @@ export default function SymbolsPage() {
       const next = has ? prev.filter((x) => x !== key) : [...prev, key];
       const capped = next.slice(0, 20);
 
-      // ✅ persistimos en TU store
+      // ✅ persistimos en store
       setSymbols(capped);
 
       // asegura main razonable
