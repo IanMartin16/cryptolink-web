@@ -157,14 +157,14 @@ function InsightCard({
     <TopHeader
       title={
         <>
-          CryptoLink <span style={{ color: UI.orange }}>V2</span>
+          CryptoLink <span style={{ color: UI.orange }}>V2.5</span>
         </>
       }
       subtitle={"Dashboard · batch pricing · social movers · SSE"}
       right={
         <>
           <Chip>LIVE</Chip>
-          <Chip>refresh: 5s</Chip>
+          <Chip>refresh: 10s</Chip>
           <Chip>batch BFF</Chip>
         </>
       }
