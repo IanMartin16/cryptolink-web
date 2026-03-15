@@ -74,7 +74,7 @@ type MarketSignalsState = {
   compareSymbols: string[];
   compareRange: "5m" | "15m" | "50m";
   compareNormalize: boolean;
-
+  socialPulse: any | null;
 
   trendsUpdatedAt: number | null;
   momentumUpdatedAt: number | null;
@@ -83,7 +83,7 @@ type MarketSignalsState = {
   marketHealthUpdatedAt: number | null;
   trendPulseUpdatedAt: number | null;
   compareUpdatedAt: number | null;
-
+  socialPulseUpdatedAt: number | null;
 
   setTrends: (v: TrendsResponse) => void;
   setMomentum: (v: MomentumResponse) => void;
@@ -96,6 +96,8 @@ type MarketSignalsState = {
   setCompareSymbols: (v: string[]) => void;
   setCompareRange: (v: "5m" | "15m" | "50m") => void;
   setCompareNormalize: (v: boolean) => void;
+  setSocialPulse: (v: any) => void;
+
 
   clearAll: () => void;
 };
@@ -113,6 +115,7 @@ export const useMarketSignalsStore = create<MarketSignalsState>()(
       compareSymbols: [],
       compareRange: "15m",
       compareNormalize: true,
+      socialPulse: null,
 
       trendsUpdatedAt: null,
       momentumUpdatedAt: null,
@@ -121,7 +124,7 @@ export const useMarketSignalsStore = create<MarketSignalsState>()(
       marketHealthUpdatedAt: null,
       trendPulseUpdatedAt: null,
       compareUpdatedAt: null,
-
+      socialPulseUpdatedAt: null,
 
       setTrends: (v) =>
         set({
@@ -183,6 +186,12 @@ export const useMarketSignalsStore = create<MarketSignalsState>()(
           compareUpdatedAt: Date.now(),
         }),
 
+        setSocialPulse: (v) =>
+          set({
+          socialPulse: v,
+          socialPulseUpdatedAt: Date.now(),
+        }),
+
         appendTrendPulsePoint: (point, maxPoints = 40) =>
           set((state) => {
             const next = [...state.trendPulseHistory, point];
@@ -214,6 +223,8 @@ export const useMarketSignalsStore = create<MarketSignalsState>()(
           compareRange: "15m",
           compareNormalize: true,
           compareUpdatedAt: null,
+          socialPulse: null,
+          socialPulseUpdatedAt: null,
         }),
     }),
     {
@@ -235,6 +246,8 @@ export const useMarketSignalsStore = create<MarketSignalsState>()(
         compareRange: state.compareRange,
         compareNormalize: state.compareNormalize,
         compareUpdatedAt: state.compareUpdatedAt,
+        socialPulse: state.socialPulse,
+        socialPulseUpdatedAt: state.socialPulseUpdatedAt,
       }),
     }
   )

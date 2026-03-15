@@ -19,6 +19,7 @@ import { computeSnapshotKPIs } from "@/lib/snapshotEngine";
 import MarketSnapshotBar from "@/components/MarketSnapshotBar";
 import { buildInsightV2 } from "@/lib/insights";
 import MarketSparkStrip from "@/components/MarketSparkStrip";
+import SocialPulseBoard from "@/components/SocialPulseBoard";
 
 
 export default function DashboardPage() {
@@ -203,6 +204,7 @@ function InsightCard({
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:items-start">
         {/* Si PricesPanel es alto, en mobile queda arriba y Trends abajo */}
         <div className="min-w-0">
+          <SocialPulseBoard />
           <PricesPanel onRows={setRows} onHealth={setPricesHealth} />
         </div>
 

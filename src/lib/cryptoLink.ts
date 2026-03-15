@@ -137,3 +137,26 @@ export async function fetchMarketHealth(symbols: string[]): Promise<MarketHealth
   if (!res.ok) throw new Error(`Market Health HTTP ${res.status}`);
   return (await res.json()) as MarketHealthResponse;
 }
+
+export type SocialPulseResponse = {
+  ok: boolean;
+  fiat: string;
+  ts: string;
+  source: string;
+  socialPulse: {
+    state: "bullish" | "bearish" | "mixed" | "neutral";
+    score: number;
+    summary: string;
+    topAssets: string[];
+    tags: string[];
+  };
+};
+
+export async function fetchSocialPulse(symbols: string[]): Promise<SocialPulseResponse> {
+  const qs = encodeURIComponent(symbols.join(","));
+  const res = await fetch(`/api/social/social-pulse?symbols=${qs}&fiat=MXN`, {
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error(`Social Pulse HTTP ${res.status}`);
+  return (await res.json()) as SocialPulseResponse;
+}
