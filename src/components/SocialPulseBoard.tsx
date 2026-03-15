@@ -157,10 +157,40 @@ export default function SocialPulseBoard() {
       }}
     >
       <div
+  style={{
+    marginTop: 16,
+    display: "grid",
+    gridTemplateColumns: "minmax(0, 1fr)",
+    gap: 14,
+    alignItems: "stretch",
+  }}
+>
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "minmax(0, 1.05fr) minmax(320px, 0.95fr)",
+      gap: 14,
+      alignItems: "stretch",
+    }}
+  >
+    <div
+      style={{
+        padding: 18,
+        borderRadius: 20,
+        border: `1px solid ${UI.border}`,
+        background: "rgba(255,255,255,0.04)",
+        display: "grid",
+        gap: 16,
+        minWidth: 0,
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      <div
         style={{
           position: "absolute",
           inset: 0,
-          background: `radial-gradient(circle at 18% 55%, ${glow}, transparent 36%)`,
+          background: `radial-gradient(circle at 20% 35%, ${glow}, transparent 42%)`,
           pointerEvents: "none",
         }}
       />
@@ -176,219 +206,221 @@ export default function SocialPulseBoard() {
         }}
       >
         <div>
-          <h2 style={{ margin: 0, fontSize: 22 }}>Social Pulse</h2>
-          <p style={{ marginTop: 8, opacity: 0.78, fontSize: 14 }}>
-            Narrative and attention layer across selected assets
-          </p>
+          <div style={{ fontSize: 13, opacity: 0.68 }}>Narrative State</div>
+          <div
+            style={{
+              marginTop: 8,
+              fontSize: "clamp(30px, 5vw, 42px)",
+              fontWeight: 900,
+              lineHeight: 1,
+              color: tone,
+              letterSpacing: -0.8,
+            }}
+          >
+            {pulseLabel(pulse.state)}
+          </div>
+
+          <div
+            style={{
+              marginTop: 10,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "8px 12px",
+              borderRadius: 999,
+              border: `1px solid ${UI.border}`,
+              background: "rgba(255,255,255,0.045)",
+              fontSize: 12,
+              color: "rgba(255,255,255,0.72)",
+            }}
+          >
+            <span
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                background: tone,
+                boxShadow: `0 0 12px ${glow}`,
+              }}
+            />
+            Narrative Layer
+          </div>
         </div>
 
         <div
           style={{
-            display: "flex",
-            gap: 8,
-            alignItems: "center",
-            flexWrap: "wrap",
+            minWidth: 140,
+            padding: 14,
+            borderRadius: 18,
+            border: `1px solid ${UI.border}`,
+            background: "rgba(255,255,255,0.05)",
+            display: "grid",
+            gap: 6,
+            alignContent: "start",
           }}
         >
-          <DataStatusBadge status={status} />
+          <div style={{ fontSize: 12, opacity: 0.66 }}>Pulse Score</div>
           <div
             style={{
-              padding: "6px 10px",
-              borderRadius: 999,
-              border: `1px solid ${UI.border}`,
-              background: "rgba(255,255,255,0.05)",
-              fontSize: 12,
-              opacity: 0.82,
-              whiteSpace: "nowrap",
+              fontSize: 34,
+              fontWeight: 900,
+              color: tone,
+              lineHeight: 1,
+              letterSpacing: -0.6,
             }}
           >
-            Updated · <code>{formatTs(data.ts)}</code>
+            {pulse.score}
+            <span style={{ fontSize: 16, opacity: 0.8, marginLeft: 4 }}>/100</span>
+          </div>
+          <div style={{ fontSize: 12, opacity: 0.56 }}>
+            Narrative intensity
           </div>
         </div>
       </div>
 
       <div
         style={{
-          marginTop: 16,
           display: "grid",
-          gridTemplateColumns: "minmax(0, 1.15fr) minmax(280px, 0.85fr)",
-          gap: 14,
-          alignItems: "stretch",
+          gridTemplateColumns: "repeat(12, 1fr)",
+          gap: 10,
+          alignItems: "end",
+          position: "relative",
+          minHeight: 96,
         }}
       >
-        <div
-          style={{
-            padding: 16,
-            borderRadius: 18,
-            border: `1px solid ${UI.border}`,
-            background: "rgba(255,255,255,0.04)",
-            display: "grid",
-            gap: 14,
-            minWidth: 0,
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              gap: 12,
-              alignItems: "center",
-              flexWrap: "wrap",
-            }}
-          >
-            <div>
-              <div style={{ fontSize: 13, opacity: 0.72 }}>Narrative State</div>
-              <div
-                style={{
-                  marginTop: 6,
-                  fontSize: "clamp(28px, 5vw, 38px)",
-                  fontWeight: 900,
-                  lineHeight: 1,
-                  color: tone,
-                }}
-              >
-                {pulseLabel(pulse.state)}
-              </div>
-            </div>
+        {[...Array(12)].map((_, i) => {
+          const score = Number(pulse.score ?? 0);
+          const base = Math.max(10, Math.min(100, score));
+          const variance = [0.58, 0.72, 0.86, 0.95, 0.82, 0.68, 0.76, 0.92, 0.74, 0.60, 0.84, 0.70][i];
+          const h = Math.max(12, Math.round(base * variance));
 
+          return (
             <div
+              key={i}
               style={{
-                padding: "10px 14px",
-                borderRadius: 16,
-                border: `1px solid ${UI.border}`,
-                background: "rgba(255,255,255,0.05)",
-                minWidth: 120,
-              }}
-            >
-              <div style={{ fontSize: 12, opacity: 0.68 }}>Pulse Score</div>
-              <div
-                style={{
-                  marginTop: 6,
-                  fontSize: 28,
-                  fontWeight: 900,
-                  color: tone,
-                  lineHeight: 1,
-                }}
-              >
-                {pulse.score}
-                <span style={{ fontSize: 16, opacity: 0.8, marginLeft: 4 }}>/100</span>
-              </div>
-            </div>
-          </div>
-
-          <div
-            style={{
-              position: "relative",
-              height: 14,
-              borderRadius: 999,
-              background: "rgba(255,255,255,0.06)",
-              border: `1px solid rgba(255,255,255,0.08)`,
-              overflow: "hidden",
-            }}
-          >
-            <div
-              style={{
-                width: intensityWidth,
-                height: "100%",
+                height: `${h}px`,
                 borderRadius: 999,
-                background: tone,
-                boxShadow: `0 0 18px ${glow}`,
-                transition: "width 300ms ease",
+                background: `linear-gradient(180deg, ${tone}, rgba(255,255,255,0.10))`,
+                opacity: 0.85 - i * 0.02,
+                boxShadow: `0 0 14px ${glow}`,
               }}
             />
-          </div>
+          );
+        })}
+      </div>
+    </div>
 
-          <div
-            style={{
-              fontSize: 15,
-              lineHeight: 1.5,
-              opacity: 0.88,
-              maxWidth: 760,
-            }}
-          >
-            {pulse.summary}
-          </div>
-        </div>
+    <div
+      style={{
+        padding: 18,
+        borderRadius: 20,
+        border: `1px solid ${UI.border}`,
+        background: "rgba(255,255,255,0.04)",
+        display: "grid",
+        gap: 16,
+        minWidth: 0,
+      }}
+    >
+      <div>
+        <div style={{ fontSize: 13, opacity: 0.68 }}>Focus Assets</div>
 
         <div
           style={{
-            padding: 16,
-            borderRadius: 18,
-            border: `1px solid ${UI.border}`,
-            background: "rgba(255,255,255,0.04)",
+            marginTop: 12,
             display: "grid",
-            gap: 14,
-            minWidth: 0,
+            gridTemplateColumns: pulse.topAssets.length >= 3 ? "1.2fr 1fr 0.9fr" : "1.2fr 1fr",
+            gap: 10,
           }}
         >
-          <div>
-            <div style={{ fontSize: 13, opacity: 0.72 }}>Focus Assets</div>
+          {pulse.topAssets.map((asset, i) => (
             <div
+              key={asset}
               style={{
-                marginTop: 10,
+                padding: i === 0 ? 16 : 14,
+                borderRadius: 18,
+                border: `1px solid ${UI.border}`,
+                background: i === 0 ? "rgba(255,255,255,0.07)" : "rgba(255,255,255,0.045)",
                 display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(92px, 1fr))",
-                gap: 10,
+                gap: 6,
+                minHeight: i === 0 ? 110 : 96,
+                alignContent: "end",
               }}
             >
-              {pulse.topAssets.map((asset, i) => (
-                <div
-                  key={asset}
-                  style={{
-                    padding: 12,
-                    borderRadius: 16,
-                    border: `1px solid ${UI.border}`,
-                    background: "rgba(255,255,255,0.045)",
-                    display: "grid",
-                    gap: 6,
-                  }}
-                >
-                  <div style={{ fontSize: 11, opacity: 0.58 }}>Rank {i + 1}</div>
-                  <div
-                    style={{
-                      fontSize: 22,
-                      fontWeight: 900,
-                      color: tone,
-                      lineHeight: 1,
-                    }}
-                  >
-                    {asset}
-                  </div>
-                </div>
-              ))}
+              <div style={{ fontSize: 11, opacity: 0.56 }}>Rank {i + 1}</div>
+              <div
+                style={{
+                  fontSize: i === 0 ? 30 : 24,
+                  fontWeight: 900,
+                  color: tone,
+                  lineHeight: 1,
+                  letterSpacing: -0.6,
+                }}
+              >
+                {asset}
+              </div>
+              <div style={{ fontSize: 12, opacity: 0.58 }}>
+                attention focus
+              </div>
             </div>
-          </div>
-
-          <div>
-            <div style={{ fontSize: 13, opacity: 0.72 }}>Narrative Tags</div>
-            <div
-              style={{
-                marginTop: 10,
-                display: "flex",
-                flexWrap: "wrap",
-                gap: 8,
-              }}
-            >
-              {pulse.tags.map((tag) => (
-                <div
-                  key={tag}
-                  style={{
-                    padding: "8px 10px",
-                    borderRadius: 999,
-                    border: `1px solid ${UI.border}`,
-                    background: "rgba(255,255,255,0.05)",
-                    fontSize: 12,
-                    color: "rgba(255,255,255,0.86)",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {tag}
-                </div>
-              ))}
-            </div>
-          </div>
+          ))}
         </div>
       </div>
+
+      <div>
+        <div style={{ fontSize: 13, opacity: 0.68 }}>Narrative Tags</div>
+
+        <div
+          style={{
+            marginTop: 12,
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 8,
+          }}
+        >
+          {pulse.tags.map((tag) => (
+            <div
+              key={tag}
+              style={{
+                padding: "9px 12px",
+                borderRadius: 999,
+                border: `1px solid ${UI.border}`,
+                background: "rgba(255,255,255,0.05)",
+                fontSize: 12,
+                color: "rgba(255,255,255,0.86)",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {tag}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    style={{
+      padding: 16,
+      borderRadius: 20,
+      border: `1px solid ${UI.border}`,
+      background: "rgba(255,255,255,0.04)",
+      display: "grid",
+      gap: 8,
+    }}
+  >
+    <div style={{ fontSize: 13, opacity: 0.68 }}>Market Note</div>
+    <div
+      style={{
+        fontSize: 16,
+        lineHeight: 1.55,
+        opacity: 0.9,
+        maxWidth: 1100,
+      }}
+    >
+      {pulse.summary}
+    </div>
+  </div>
+</div>
     </section>
   );
 }
