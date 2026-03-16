@@ -146,6 +146,9 @@ export type SocialPulseResponse = {
   socialPulse: {
     state: "bullish" | "bearish" | "mixed" | "neutral";
     score: number;
+    breadth: "broad" | "selective" | "low";
+    conviction: "strong" | "moderate" | "low";
+    leadership: "concentrated" | "distributed" | "mixed";
     summary: string;
     topAssets: string[];
     tags: string[];

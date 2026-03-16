@@ -29,6 +29,16 @@ export const SYMBOL_META: Record<string, { name: string }> = {
   HYPE: { name: "Hyperliquid" },
   PYUSD: { name: "PayPal USD"},
   TON: { name: "Toncoin" },
+  OBK: { name: "OBK" },
+  PI: { name: "Pi Network" },
+  LEO: { name: "LEO Token" },
+  XMR: { name: "Monero" },
+  USDE: { name: "Ethena USDe" },
+  CC: { name: "Canton" },
+  WLFI: { name: "World Liberty Financial" },
+  HBAR: { name: "Hedera" },
+  MNT: { name: "Mantle" },
+  PAXG: { name: "Pax Gold" },
 };
 export function getSymbolName(symbol: string) {
   const key = symbol.toUpperCase();

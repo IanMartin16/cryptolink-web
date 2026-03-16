@@ -12,6 +12,9 @@ type SocialPulseResponse = {
   source: string;
   socialPulse: {
     state: "bullish" | "bearish" | "mixed" | "neutral";
+    breadth: "broad" | "selective" | "low";
+    conviction: "strong" | "moderate" | "low";
+    leadership: "concentrated" | "distributed" | "mixed";
     score: number;
     summary: string;
     topAssets: string[];
@@ -287,6 +290,45 @@ export default function SocialPulseBoard() {
                     Narrative intensity
                   </div>
                 </div>
+              </div>
+
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+                  gap: 10,
+                }}
+              >
+                {[
+                  { label: "Breadth", value: pulse.breadth },
+                  { label: "Conviction", value: pulse.conviction },
+                  { label: "Leadership", value: pulse.leadership },
+                ].map((item) => (
+                  <div
+                    key={item.label}
+                    style={{
+                      padding: 12,
+                      borderRadius: 16,
+                      border: "1px solid rgba(255,255,255,0.10)",
+                      background: "rgba(255,255,255,0.035)",
+                      display: "grid",
+                      gap: 4,
+                    }}
+                  >
+                    <div style={{ fontSize: 11, opacity: 0.56 }}>{item.label}</div>
+                    <div
+                      style={{
+                        fontSize: 16,
+                        fontWeight: 800,
+                        color: "rgba(255,255,255,0.9)",
+                        textTransform: "capitalize",
+                        lineHeight: 1.15,
+                      }}
+                    >
+                      {item.value}
+                    </div>
+                  </div>
+                ))}
               </div>
 
               <div
