@@ -311,7 +311,7 @@ export default function SocialPulseBoard() {
                     style={{
                       height: `${h}px`,
                       borderRadius: 999,
-                      background: `linear-gradient(180deg, rgba(110,235,143,0.78), (rgba(110,235,143,0.16)`,
+                      background: barFill,
                       opacity: 0.72 - i * 0.15,
                       boxShadow: `0 0 10px ${glow}`,
                       animation: `pulseBars ${3.8 + i * 0.12} s ease-in-out infinite`,
@@ -329,7 +329,7 @@ export default function SocialPulseBoard() {
                 padding: 18,
                 borderRadius: 20,
                 border: `1px solid ${UI.border}`,
-                background: barFill,
+                background: "rgba(255,255,255,0.04)",
                 display: "grid",
                 gap: 16,
                 minWidth: 0,
