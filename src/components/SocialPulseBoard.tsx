@@ -435,8 +435,7 @@ export default function SocialPulseBoard() {
         >
           {pulse.summary}
         </div>
-      </div>
-      <style jsx>{`
+        <style jsx>{`
         @keyframes pulseBars {
           0% {
             transform: scaleY(0.96);
@@ -464,6 +463,7 @@ export default function SocialPulseBoard() {
           }
         }
       `}</style>
+      </div>
     </div>
     </section>
   );
