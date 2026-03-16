@@ -303,7 +303,7 @@ export default function SocialPulseBoard() {
                const score = Number(pulse.score ?? 0);
                const base = Math.max(10, Math.min(100, score));
                const variance = [0.58, 0.72, 0.86, 0.95, 0.82, 0.68, 0.76, 0.92, 0.74, 0.60, 0.84, 0.70][i];
-               const h = Math.max(12, Math.round(base * variance));
+               const h = Math.max(18, Math.round(base * variance));
 
                return (
                   <div
@@ -312,8 +312,8 @@ export default function SocialPulseBoard() {
                       height: `${h}px`,
                       borderRadius: 999,
                       background: barFill,
-                      opacity: 0.72 - i * 0.15,
-                      boxShadow: `0 0 10px ${glow}`,
+                      opacity: 0.82 - i * 0.12,
+                      boxShadow: `0 0 12px ${glow}`,
                       animation: `pulseBars ${3.8 + i * 0.12} s ease-in-out infinite`,
                       transformOrigin: "bottom center",
                       willChange: "transform, opacity",
