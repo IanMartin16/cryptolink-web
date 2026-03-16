@@ -176,6 +176,7 @@ function InsightCard({
     </div>
 
     {/* Stack principal: siempre 1 columna, spacing constante */}
+    <SocialPulseBoard />
     <div className="mt-4 grid gap-4">
       <MarketMood
         score={mood.score}
@@ -201,16 +202,8 @@ function InsightCard({
 
       {/* 👇 Este era el que rompía iPhone: 2 cols fijo.
           Ahora: 1 col en mobile, 2 cols en md+ */}
-        <SocialPulseBoard />
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:items-start">
         {/* Si PricesPanel es alto, en mobile queda arriba y Trends abajo */}
-        <div className="min-w-0">
-          <PricesPanel onRows={setRows} onHealth={setPricesHealth} />
-        </div>
-
-        <div className="min-w-0">
-          <TrendsTable onHealth={setTrendsHealth} onItems={setTrendItems} />
-        </div>
       </div>
     </div>
   </div>
