@@ -29,7 +29,7 @@ const OVERRIDES: Record<string, string> = {
   HYPE: "/icons/crypto/hype.png",
   PYUSD: "/icons/crypto/pyusd.png",
   TON: "/icons/crypto/ton.png",
-  OBK: "/icons/crypto/obk.png",
+  OKB: "/icons/crypto/okb.png",
   PI: "/icons/crypto/pi.png",
   LEO: "/icons/crypto/leo.png",
   XMR: "/icons/crypto/xmr.png",

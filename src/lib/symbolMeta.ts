@@ -29,7 +29,7 @@ export const SYMBOL_META: Record<string, { name: string }> = {
   HYPE: { name: "Hyperliquid" },
   PYUSD: { name: "PayPal USD"},
   TON: { name: "Toncoin" },
-  OBK: { name: "OBK" },
+  OKB: { name: "OKB" },
   PI: { name: "Pi Network" },
   LEO: { name: "LEO Token" },
   XMR: { name: "Monero" },
