@@ -1,71 +1,228 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
+import { useEffect, useMemo, useState } from "react";
+import DataStatusBadge from "@/components/DataStatusBadge";
 import type { SnapshotKPIs, SnapshotKPI } from "@/lib/types";
 
-function toneClasses(tone: SnapshotKPI["tone"]) {
-  // Sin depender de colores específicos del theme; usa convenciones (success/warn/destructive)
+type Props = {
+  snapshot: SnapshotKPIs;
+  status?: "live" | "restored" | "refreshing";
+};
+
+function toneStyles(tone: SnapshotKPI["tone"]) {
   switch (tone) {
     case "good":
-      return "border border-emerald-500/30 bg-emerald-500/10 text-emerald-200";
+      return {
+        border: "1px solid rgba(46,229,157,0.18)",
+        background: "rgba(46,229,157,0.08)",
+        color: "rgba(220,255,236,0.95)",
+      };
     case "warn":
-      return "border border-amber-500/30 bg-amber-500/10 text-amber-200";
+      return {
+        border: "1px solid rgba(255,159,67,0.18)",
+        background: "rgba(255,159,67,0.08)",
+        color: "rgba(255,238,214,0.95)",
+      };
     case "bad":
-      return "border border-rose-500/30 bg-rose-500/10 text-rose-200";
+      return {
+        border: "1px solid rgba(255,107,107,0.18)",
+        background: "rgba(255,107,107,0.08)",
+        color: "rgba(255,226,226,0.95)",
+      };
     default:
-      return "border border-white/10 bg-white/5 text-white/80";
+      return {
+        border: "1px solid rgba(255,255,255,0.10)",
+        background: "rgba(255,255,255,0.035)",
+        color: "rgba(255,255,255,0.86)",
+      };
   }
+}
+
+function formatAgeMs(updatedAt: number) {
+  const secs = Math.max(0, Math.floor((Date.now() - updatedAt) / 1000));
+  if (secs < 60) return `${secs}s ago`;
+  const mins = Math.floor(secs / 60);
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  return `${hrs}h ago`;
 }
 
 export default function MarketSnapshotBar({
   snapshot,
-}: {
-  snapshot: SnapshotKPIs;
-}) {
+  status = "live",
+}: Props) {
   const items = snapshot?.items ?? [];
-
-  const [tick, setTick] = useState(0);
+  const [ageLabel, setAgeLabel] = useState(() => formatAgeMs(snapshot.updatedAt));
 
   useEffect(() => {
-    const id = setInterval(() => setTick((t) => t + 1), 1000);
+    setAgeLabel(formatAgeMs(snapshot.updatedAt));
+
+    const id = setInterval(() => {
+      setAgeLabel(formatAgeMs(snapshot.updatedAt));
+    }, 1000);
+
     return () => clearInterval(id);
-  }, []);
+  }, [snapshot.updatedAt]);
+
+  const hasItems = useMemo(() => items.length > 0, [items]);
 
   return (
-    <div className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-      
-        {/* Title */}
-        <div className="text-xs font-semibold tracking-wide text-white/70">
-          MARKET SNAPSHOT
+    <section
+      style={{
+        marginTop: 0,
+        padding: 14,
+        border: "1px solid rgba(255,255,255,0.10)",
+        borderRadius: 18,
+        background:
+          "linear-gradient(145deg, rgba(255,255,255,0.03), rgba(255,255,255,0.012))",
+        boxShadow: "0 12px 34px rgba(0,0,0,0.22)",
+        minWidth: 0,
+        overflow: "hidden",
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 10,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            gap: 12,
+            alignItems: "flex-start",
+            flexWrap: "wrap",
+          }}
+        >
+          <div>
+            <div
+              style={{
+                fontSize: 12,
+                fontWeight: 900,
+                letterSpacing: 0.35,
+                color: "rgba(255,255,255,0.66)",
+              }}
+            >
+              MARKET SNAPSHOT
+            </div>
+
+            <div
+              style={{
+                marginTop: 4,
+                fontSize: 13,
+                color: "rgba(255,255,255,0.55)",
+              }}
+            >
+              Fast read of key market conditions
+            </div>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              flexWrap: "wrap",
+            }}
+          >
+            <DataStatusBadge status={status} />
+
+            <div
+              style={{
+                padding: "6px 10px",
+                borderRadius: 999,
+                border: "1px solid rgba(255,255,255,0.10)",
+                background: "rgba(255,255,255,0.04)",
+                fontSize: 12,
+                color: "rgba(255,255,255,0.72)",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Updated · <code>{ageLabel}</code>
+            </div>
+          </div>
         </div>
 
-        {/* KPI row */}
-        <div className="flex gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:overflow-visible">
-          {items.map((kpi) => (
-            <KPIChip key={kpi.key} kpi={kpi} />
-          ))}
-        </div>
-
-        {/* Updated */}
-        <div className="text-[11px] text-white/45 sm:ml-auto">
-          updated {Math.max(0, Math.floor((Date.now() - snapshot.updatedAt) / 1000))}s ago
-        </div>
+        {hasItems ? (
+          <div
+            style={{
+              display: "flex",
+              gap: 8,
+              overflowX: "auto",
+              paddingBottom: 2,
+            }}
+          >
+            {items.map((kpi) => (
+              <KPIChip key={kpi.key} kpi={kpi} />
+            ))}
+          </div>
+        ) : (
+          <div
+            style={{
+              fontSize: 13,
+              color: "rgba(255,255,255,0.55)",
+              padding: "4px 0",
+            }}
+          >
+            No snapshot items available.
+          </div>
+        )}
       </div>
-    </div>
+    </section>
   );
 }
 
 function KPIChip({ kpi }: { kpi: SnapshotKPI }) {
+  const tone = toneStyles(kpi.tone);
+
   return (
-    <div className={` shrink-0 flex min-w-0 items-center gap-2 rounded-lg px-2 py-1 ${toneClasses(kpi.tone)}`}>
-      <div className="text-[11px] font-medium uppercase tracking-wide opacity-80">
+    <div
+      style={{
+        ...tone,
+        flexShrink: 0,
+        minWidth: 0,
+        display: "flex",
+        alignItems: "center",
+        gap: 10,
+        padding: "10px 12px",
+        borderRadius: 14,
+        boxShadow: "inset 0 0 10px rgba(255,255,255,0.015)",
+      }}
+    >
+      <div
+        style={{
+          fontSize: 11,
+          fontWeight: 800,
+          textTransform: "uppercase",
+          letterSpacing: 0.35,
+          opacity: 0.76,
+          whiteSpace: "nowrap",
+        }}
+      >
         {kpi.label}
       </div>
-      <div className="truncate text-sm font-semibold tabular-nums">{kpi.value}</div>
+
+      <div
+        style={{
+          fontSize: 14,
+          fontWeight: 800,
+          fontVariantNumeric: "tabular-nums",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {kpi.value}
+      </div>
+
       {kpi.sub ? (
-        <div className="hidden text-[11px] opacity-70 md:block">
+        <div
+          style={{
+            fontSize: 11,
+            opacity: 0.68,
+            whiteSpace: "nowrap",
+          }}
+        >
           {kpi.sub}
         </div>
       ) : null}
