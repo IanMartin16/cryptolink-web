@@ -434,7 +434,6 @@ export default function SocialPulseBoard() {
           }}
         >
           {pulse.summary}
-        </div>
         <style jsx>{`
         @keyframes pulseBars {
           0% {
@@ -462,7 +461,8 @@ export default function SocialPulseBoard() {
             opacity: 0.55;
           }
         }
-      `}</style>
+      `}</style>  
+        </div>
       </div>
     </div>
     </section>
