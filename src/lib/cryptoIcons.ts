@@ -29,6 +29,16 @@ const OVERRIDES: Record<string, string> = {
   HYPE: "/icons/crypto/hype.png",
   PYUSD: "/icons/crypto/pyusd.png",
   TON: "/icons/crypto/ton.png",
+  OBK: "/icons/crypto/obk.png",
+  PI: "/icons/crypto/pi.png",
+  LEO: "/icons/crypto/leo.png",
+  XMR: "/icons/crypto/xmr.png",
+  USDE: "/icons/crypto/usde.png",
+  CC: "/icons/crypto/cc.png",
+  WLFI: "/icons/crypto/wlfi.png",
+  HBAR: "/icons/crypto/hbar.png",
+  MNT: "/icons/crypto/mnt.png",
+  PAXG: "/icons/crypto/paxg.png",
 };
 
 export function getCryptoIconUrl(symbol: string): string | undefined {
