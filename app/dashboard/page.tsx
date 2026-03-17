@@ -132,7 +132,6 @@ useEffect(() => {
     <div className="mt-3">
       <StatusBar prices={pricesHealth} trends={trendsHealth} />
     </div>
-    <SocialPulseBoard />
 
       <MarketSnapshotBar snapshot={snapshot} />
 
@@ -142,7 +141,7 @@ useEffect(() => {
         note={insight.note}
         moodScore={mood.score}
       />
-
+      <SocialPulseBoard />
       <div className="mt-1">
         <StatCards rows={rows} />
       </div>

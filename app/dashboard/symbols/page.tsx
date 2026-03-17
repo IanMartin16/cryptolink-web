@@ -15,8 +15,9 @@ import { buildMarketInsight } from "@/lib/insights";
 import StatusBar from "@/components/StatusBar";
 import PageHeader from "@/components/PageHeader";
 import { useMarketSignalsStore } from "@/lib/stores/marketSignalsStore";
-
-
+import { usePricesFeed } from "@/lib/hooks/usePricesFeed";
+import { useTrendsFeed } from "@/lib/trends/useTrendsFeed";
+import { HEALTH_OK } from "@/lib/health";
 
 export default function SymbolsPage() {
   const [selected, setSelectedState] = useState<string[]>([]);
@@ -26,6 +27,8 @@ export default function SymbolsPage() {
   const [health, setHealth] = useState<Health | undefined>(undefined);
   const [trendItems, setTrendItems] = useState<TrendItem[]>([]);
    const [moodUpdatedAt, setMoodUpdatedAt] = useState<string>("—");
+    const [trendsHealth, setTrendsHealth] = useState<Health>(HEALTH_OK);
+    const [pricesHealth, setPricesHealth] = useState<Health>(HEALTH_OK);
   
     // ✅ 1) Normaliza trends UNA vez
     const normalizedTrends = useMemo(() => normalizeTrends(trendItems), [trendItems]);
@@ -121,6 +124,28 @@ useEffect(() => {
   const flag = qs.get("dev") === "1" || localStorage.getItem("cryptolink:dev") === "1";
   setShowDev(flag);
 }, []);
+
+const pricesFeed = usePricesFeed({
+  onRows: setRows,
+  onHealth: setPricesHealth,
+});
+
+const trendsFeed = useTrendsFeed({
+  onItems: setTrendItems,
+  onHealth: setTrendsHealth,
+});
+
+useEffect(() => {
+  if (pricesFeed.rows.length) {
+    setRows(pricesFeed.rows);
+  }
+}, [pricesFeed.rows]);
+
+useEffect(() => {
+  if (trendsFeed.items.length) {
+    setTrendItems(trendsFeed.items);
+  }
+}, [trendsFeed.items]);
 
   return (
   <div className="mx-auto w-full max-w-6xl px-3 sm:px-4 md:px-6 space-y-4">
