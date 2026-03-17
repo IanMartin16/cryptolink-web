@@ -379,18 +379,6 @@ export default function PriceComparePanel({
                 );
               })}
             </div>
-
-            <select
-              value={symbol}
-              onChange={(e) => onSymbolChange(e.target.value)}
-              className="rounded-lg border border-white/10 bg-black/20 px-3 py-2 text-xs text-white/80 outline-none"
-            >
-              {symbols.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
           </div>
         </div>
 
