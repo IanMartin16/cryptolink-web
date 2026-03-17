@@ -123,7 +123,6 @@ export default function PricesSplit({
   titleLeft?: string;
   titleRight?: string;
 }) {
-  const items = (rows || []).slice(0, max);
   const [moversFilter, setMoversFilter] = useState<"all" | "gainers" | "losers">("all");
 
   const movers = useMemo(
@@ -131,7 +130,7 @@ export default function PricesSplit({
     [rows, moversFilter]
   );
 
-  const watch = useMemo(() => sortForWatchlist(rows || []), [rows]);
+  const watch = useMemo(() => sortForWatchlist(rows || []), [0, max, rows]);
 
   function fmtTick(rows: PriceRow[]) {
     const t = rows.find((r) => r.updatedAt)?.updatedAt;
