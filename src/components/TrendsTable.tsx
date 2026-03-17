@@ -609,19 +609,7 @@ export default function TrendsTable({
                         </div>
                       </td>
 
-                      <td style={{ padding: "12px 8px" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                          <div
-                            style={{
-                              fontWeight: 950,
-                              color: c,
-                              minWidth: 54,
-                              textAlign: "right",
-                              fontVariantNumeric: "tabular-nums",
-                            }}
-                          >
-                          </div>
-
+                      <td style={{ marginLeft: 4 }}>
                         <Sparkline
                           values={h}
                           w={82}
@@ -635,8 +623,7 @@ export default function TrendsTable({
                               : "rgba(255,255,255,0.06)"
                             }
                           />
-                          {typeof t.score === "number" ? t.score.toFixed(2) : "—"}
-                        </div>
+                        {typeof t.score === "number" ? t.score.toFixed(2) : "—"}
                       </td>
                       {/* ✅ Reason con ellipsis */}
                       <td style={{ padding: "12px 8px", fontSize: 12, opacity: 0.85, maxWidth: 260 }}>
@@ -652,7 +639,7 @@ export default function TrendsTable({
                       >
                         {t.reason }
                         <Sparkline
-                          values={hist[t.symbol] ?? []}
+                          values={h}
                           w={88}
                           h={22}
                           stroke={c}
