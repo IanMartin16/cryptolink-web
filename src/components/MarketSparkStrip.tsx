@@ -2,6 +2,7 @@
 
 import type { PriceRow } from "@/lib/types";
 import { getPriceHistory } from "@/lib/usePriceHistory";
+import { UI } from "@/lib/ui";
 
 function clsPct(p?: number) {
   if (typeof p !== "number") return "text-white/55";
@@ -50,7 +51,7 @@ function ensureSparkData(hist: number[], current?: number, prev?: number) {
 export default function MarketSparkStrip({
   rows,
   max = 12,
-  title = "MARKET PULSE BAR",
+  title = "MARKET PULSE BAR"
 }: {
   rows: PriceRow[];
   max?: number;

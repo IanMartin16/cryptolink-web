@@ -1,16 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { UI } from "@/lib/ui";
-import { getFiat } from "@/lib/fiatStore";
-import { getApiKey } from "@/lib/apiKey";
-import { getSymbols } from "@/lib/symbolsStore";
-import { fetchPricesBatch } from "@/lib/cryptoLink";
 import { Skeleton } from "@/components/Skeleton";
 import Toast from "@/components/Toast";
-import type { Health } from "@/lib/health";
 import SymbolCell from "@/components/SymbolCell";
+import type { Health } from "@/lib/health";
 import type { PriceRow } from "@/lib/types";
+import { usePricesFeed } from "@/lib/hooks/usePricesFeed";
 
 // CacheBadge inline.
 function CacheBadge({ v }: { v?: string }) {
@@ -80,243 +77,25 @@ export default function PricesPanel({
   onRows?: (rows: PriceRow[]) => void;
   onHealth?: (h: Health) => void;
 }) {
-  const [rows, setRows] = useState<PriceRow[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [updatingFiat, setUpdatingFiat] = useState(false);
-  const [refreshing, setRefreshing] = useState(false);
-  const reqSeq = useRef(0);
-  const showSkeleton = loading && rows.length === 0;
   const [hover, setHover] = useState<string | null>(null);
-  const [flashRow, setFlashRow] = useState<Record<string, "up" | "down" >>({});
-  const lastPriceRef = useRef<Record<string, number>>({});
-  const flashTimersRef = useRef<Record<string, any>>({});
-  const [chipFiat, setChipFiat] = useState<string>("-");
-  const [chipCount, setChipCount] = useState<number>(0);
   const [copied, setCopied] = useState<string | null>(null);
-  const [auto, setAuto] = useState(true);
-  const [lastOkAt, setLastOkAt] = useState<string | undefined>(undefined);
   const [toast, setToast] = useState<{ msg: string; tone?: "ok" | "warn" | "err" } | null>(null);
-  const [lastUpdated, setLastUpdated] = useState<string>("");
-  const [symbolsCount, setSymbolsCount] = useState(0);
-  const [fiatLabel, setFiatLabel] = useState("USD");
-  
 
-async function load(kind: "initial" | "refresh" = "refresh") {
-  const seq = ++reqSeq.current;
+  const {
+    rows,
+    error,
+    loading,
+    updatingFiat,
+    refreshing,
+    auto,
+    setAuto,
+    lastUpdated,
+    symbolsCount,
+    fiatLabel,
+    flashRow,
+  } = usePricesFeed({ onRows, onHealth });
 
-  try {
-    setError(null);
-    if (kind === "initial") setLoading(true);
-    else setRefreshing(true);
-
-    const apiKey = getApiKey();
-    //if (!apiKey) {
-      //setRows([]);
-      //setError("Falta API Key (pégala arriba).");
-      //return;
-   // }
-
-    const fiat = getFiat();
-    const symbols = getSymbols();
-
-    if (kind !== "initial" && (!symbols || symbols.length === 0)) return;
-
-    const res = await fetchPricesBatch(symbols, fiat, apiKey ?? "");
-    if (seq !== reqSeq.current) return;
-
-    const mapped: PriceRow[] = (res.data ?? []).map((item: any) => {
-      const d = item.data;
-      const price = d?.price ?? d?.data?.price ?? d?.value ?? d?.rate;
-      const err = d?.error || d?.message || (!item.ok ? "upstream_error" : undefined);
-
-      const ts = d?.ts ?? d?.data?.ts;
-      const source = d?.source ?? d?.data?.source;
-      
-      return {
-        symbol: item.symbol,
-        fiat: res.fiat,
-        price: typeof price === "number" ? price : undefined,
-        cache: item.cache,
-        ok: item.ok,
-        err,
-        ts,
-        source,
-        updatedAt: new Date().toISOString(),
-      };
-    });
-
-    if (kind !== "initial" && mapped.length === 0) return;
-
-    // ✅ 1) construye nextRows usando el prev REAL
-setRows((prev) => {
-  const prevMap = new Map(prev.map((r) => [r.symbol, r]));
-
-  const nextRows: PriceRow[] = mapped.map((cur) => {
-    const old = prevMap.get(cur.symbol);
-
-    const newPrice =
-      typeof cur.price === "number" ? cur.price : old?.price;
-
-    const oldPrice =
-      typeof old?.price === "number" ? old.price : undefined;
-
-    // ✅ prevPrice = el precio anterior
-    const prevPrice =
-      typeof oldPrice === "number" &&
-      typeof newPrice === "number" &&
-      newPrice !== oldPrice
-        ? oldPrice
-        : old?.prevPrice;
-
-    const pct =
-      typeof newPrice === "number" &&
-      typeof prevPrice === "number" &&
-      prevPrice !== 0
-        ? ((newPrice - prevPrice) / prevPrice) * 100
-        : old?.pct;
-
-    return {
-      ...old,
-      ...cur,
-      price: newPrice,
-      prevPrice,
-      pct,
-    };
-  });
-
-  // ✅ flashes aquí sí pueden vivir (usan nextRows y refs)
-  const newFlashes: Record<string, "up" | "down"> = {};
-  for (const r of nextRows) {
-    if (typeof r.price !== "number") continue;
-    const last = lastPriceRef.current[r.symbol];
-    if (typeof last === "number") {
-      if (r.price > last) newFlashes[r.symbol] = "up";
-      else if (r.price < last) newFlashes[r.symbol] = "down";
-    }
-    lastPriceRef.current[r.symbol] = r.price;
-  }
-
-  if (Object.keys(newFlashes).length) {
-    setFlashRow((prevFlash) => ({ ...prevFlash, ...newFlashes }));
-    for (const sym of Object.keys(newFlashes)) {
-      if (flashTimersRef.current[sym]) clearTimeout(flashTimersRef.current[sym]);
-      flashTimersRef.current[sym] = setTimeout(() => {
-        setFlashRow((m) => {
-          const copy = { ...m };
-          delete copy[sym];
-          return copy;
-        });
-      }, 450);
-    }
-  }
-
-  // ✅ notifica al padre con el nextRows correcto
-  queueMicrotask(() => {
-    if (seq !== reqSeq.current) return;
-    onRows?.(nextRows);
-    onHealth?.({ ok: true, lastOkAt: new Date().toISOString() });
-  });
-
-  setLastUpdated(new Date().toISOString());
-  return nextRows;
-});
-    // ✅ notifica al padre SIN “setState during render”
-  } catch (e: any) {
-    if (seq !== reqSeq.current) return;
-    const msg = e?.message ?? "Error cargando precios";
-    setError(msg);
-
-    queueMicrotask(() => {
-      if (seq !== reqSeq.current) return;
-      onHealth?.({ ok: false, lastErr: msg });
-    });
-  } finally {
-    if (seq !== reqSeq.current) return;
-    setLoading(false);
-    setRefreshing(false);
-  }
-}
-  //useEffect(() => { 
-  //}, [rows, loading, refreshing, error]);
-
-  useEffect(() => {
-  // 1) meta UI (solo contadores/labels)
-  const updateMeta = () => {
-    const s = getSymbols();
-    setSymbolsCount(s.length);
-    setFiatLabel(getFiat());
-  };
-
-  updateMeta();
-
-  // 2) carga inicial
-  load("initial");
-
-  // 3) polling 15s (solo si auto)
-  let id: any = null;
-  const startPolling = () => {
-    if (id) clearInterval(id);
-    if (!auto) return;
-    id = setInterval(() => load("refresh"), 15000);
-  };
-  startPolling();
-
-  // 4) handlers correctos
-  const onFiat = () => {
-    updateMeta();
-    setUpdatingFiat(true);
-    load("refresh").finally(() => setUpdatingFiat(false));
-  };
-
-  const onSymbols = () => {
-    updateMeta();
-    setTimeout(() => load("refresh"), 0);
-  };
-
-  window.addEventListener("cryptolink:fiat" as any, onFiat);
-  window.addEventListener("cryptolink:symbols" as any, onSymbols);
-
-  return () => {
-    if (id) clearInterval(id);
-    Object.values(flashTimersRef.current).forEach(clearTimeout);
-
-    window.removeEventListener("cryptolink:fiat" as any, onFiat);
-    window.removeEventListener("cryptolink:symbols" as any, onSymbols);
-  };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [auto]);
-  
-
-  function CopyIcon({ show }: { show: boolean }) {
-    return (
-      <span
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          opacity: show ? 0.9 : 0,
-          transform: show ? "translateX(0)" : "translateX(-2px)",
-          transition: "opacity 120ms ease, transform 120ms ease",
-        }}
-        aria-hidden
-      >
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-          <path
-            d="M8 8V6.8C8 5.805 8.805 5 9.8 5H18.2C19.195 5 20 5.805 20 6.8V15.2C20 16.195 19.195 17 18.2 17H17"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
-          <path
-            d="M6.8 8H15.2C16.195 8 17 8.805 17 9.8V18.2C17 19.195 16.195 20 15.2 20H6.8C5.805 20 5 19.195 5 18.2V9.8C5 8.805 5.805 8 6.8 8Z"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
-        </svg>
-      </span>
-    );
-  }
+  const showSkeleton = loading && rows.length === 0;
 
   function copySymbol(sym: string) {
     navigator.clipboard.writeText(sym);
@@ -328,7 +107,11 @@ setRows((prev) => {
     if (!v) return "—";
     const d = new Date(v);
     if (isNaN(d.getTime())) return "—";
-    return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }); 
+    return d.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
   }
 
   function Chip({ children }: { children: React.ReactNode }) {

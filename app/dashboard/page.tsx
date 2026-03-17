@@ -79,13 +79,6 @@ export default function DashboardPage() {
     setMoodUpdatedAt(new Date().toLocaleTimeString());
   }, [mood.score, mood.confidence, normalizedTrends.length]);
 
-  // ... resto de helpers + JSX
-
-  function insightTone(score: number) {
-  if (score >= 35) return "bull";
-  if (score <= -35) return "bear";
-  return "neutral";
-}
 
 const insight = buildInsightV2({
   mood,
