@@ -17,29 +17,10 @@ type TrendItem = {
 };
 
 
-function RefreshDot({ on }: { on: boolean }) {
-    return (
-      <span
-        title={on ? "Updating" : "Idle"}
-        style={{
-          width: 8,
-          height: 8,
-          borderRadius: 999,
-          display: "inline-block",
-          background: on ? "rgba(255,159,67,0.95)" : "rgba(255,255,255,0.18)",
-          boxShadow: on ? "0 0 14px rgba(255,159,67,0.35)" : "none",
-          animation: on ? "clPulse 900ms ease-in-out infinite" : "none",
-        }}
-      />
-    );
-  }
-
-
 function trendColor(trend: TrendItem["trend"]) {
   return trend === "up" ? UI.green : trend === "down" ? UI.red : "#bbb";
 }
 
-const alpha = (base: number, k: number) => base + k * 0.18;
 
 function TrendBadge({ trend }: { trend: TrendItem["trend"] }) {
   const c = trendColor(trend);
