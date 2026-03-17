@@ -8,6 +8,7 @@ import Sparkline from "@/components/Sparkline";
 import SymbolCell from "@/components/SymbolCell";
 import { getSymbolName } from "@/lib/symbolMeta";
 import { useTrendsFeed } from "@/lib/trends/useTrendsFeed";
+import { getTrendHistory } from "@/lib/useTrendHistory";
 
 type TrendItem = {
   symbol: string;
@@ -520,7 +521,7 @@ export default function TrendsTable({
                     ? `rgba(255,107,107,${0.25 + a * 0.55})`
                     : `rgba(255,255,255,${0.18 + a * 0.25})`;   
                     
-                const h = hist[t.symbol] ?? [];
+                const h = getTrendHistory(t.symbol).slice(-24);
                 const sl = slope(h);
                 const mom = momentumLabel(t.score, sl);
                 const mt = momentumTone(mom);

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getSymbols } from "@/lib/symbolsStore";
+import { pushTrendHistory } from "@/lib/useTrendHistory";
 
 export type TrendItem = {
   symbol: string;
@@ -145,6 +146,12 @@ export function useTrendsFeed({
             ts: t.ts ?? resolvedTs,
           }))
           .sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
+
+          for(const it of nextItems) {
+            if (typeof it.score === "number") {
+              pushTrendHistory(it.symbol, it.score, 120);
+            }
+          }
 
         setTs(resolvedTs);
         setItems(nextItems);
