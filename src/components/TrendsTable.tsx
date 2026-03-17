@@ -352,9 +352,15 @@ export default function TrendsTable({
 
                   {/* Up/Down */}
                   <span style={{ fontSize: 12, opacity: 0.75 }}>Up/Down:</span>
-                  <span style={{ fontSize: 12, fontWeight: 950, color: UI.orangeSoft, whiteSpace: "nowrap" }}>
-                    {stats.breadthUpPct}% / {stats.breadthDownPct}%
-                  </span>
+                  <div style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                    <span style={{ color: UI.green, fontWeight: 900 }}>
+                      ↑ {stats.breadthUpPct}%
+                    </span>
+                    <span style={{ opacity: 0.35 }}>/</span>
+                    <span style={{ color: UI.red, fontWeight: 900 }}>
+                      ↓ {stats.breadthDownPct}%
+                    </span>
+                  </div>
 
                   {/* Confidence */}
                   <span style={{ fontSize: 12, opacity: 0.75 }}>Confidence:</span>

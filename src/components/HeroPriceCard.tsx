@@ -2,7 +2,7 @@
 
 import { useMemo, useEffect, useState } from "react";
 import Sparkline from "@/components/Sparkline";
-import { usePriceHistory } from "@/lib/usePriceHistory";
+import { usePriceHistory, getPriceHistory } from "@/lib/usePriceHistory";
 import { formatMoney } from "@/lib/format";
 
 export default function HeroPriceCard({
@@ -21,7 +21,8 @@ export default function HeroPriceCard({
     return formatMoney(price, fiat);
   }, [price, fiat]);
 
-  const hist = usePriceHistory(symbol, price, 30);
+  usePriceHistory(symbol, price, 600);
+  const hist = getPriceHistory(symbol).slice(-30);
   const lastMove =
     hist.length >= 2 ? hist[hist.length - 1] - hist[hist.length - 2] : 0;
 
