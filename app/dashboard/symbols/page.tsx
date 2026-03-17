@@ -3,9 +3,15 @@
 import { useEffect, useMemo, useState } from "react";
 import PriceComparePanel from "@/components/PricesChartPanel";
 import type { Health } from "@/lib/health";
-import type { PriceRow } from "@/lib/types";
 import { getSymbols, setSymbols } from "@/lib/symbolsStore";
 import PricesPanel from "@/components/PricesPanel";
+import MarketMood from "@/components/MarketMood";
+import { normalizeTrends } from "@/lib/trendEngine";
+import { computeSnapshotKPIs } from "@/lib/snapshotEngine";
+import type { SnapshotKPIs } from "@/lib/types";
+import type { PriceRow, TrendItem } from "@/lib/types";
+import { computeMood } from "@/lib/moodEngine";
+import { buildMarketInsight } from "@/lib/insights";
 import StatusBar from "@/components/StatusBar";
 import PageHeader from "@/components/PageHeader";
 import { useMarketSignalsStore } from "@/lib/stores/marketSignalsStore";
@@ -16,6 +22,57 @@ export default function SymbolsPage() {
   const [selected, setSelectedState] = useState<string[]>([]);
   const storedMainSymbol = useMarketSignalsStore((s: { compareMainSymbol: string | null}) => s.compareMainSymbol);
   const [main, setMain] = useState("BTC");
+  const [rows, setRows] = useState<PriceRow[]>([]);  
+  const [health, setHealth] = useState<Health | undefined>(undefined);
+  const [trendItems, setTrendItems] = useState<TrendItem[]>([]);
+   const [moodUpdatedAt, setMoodUpdatedAt] = useState<string>("—");
+  
+    // ✅ 1) Normaliza trends UNA vez
+    const normalizedTrends = useMemo(() => normalizeTrends(trendItems), [trendItems]);
+  
+    // ✅ 2) Mood UNA vez (source of truth)
+    const mood = useMemo(() => computeMood(rows, normalizedTrends), [rows, normalizedTrends]);
+  
+    // ✅ 3) Insight “market sentiment”
+    const moodInsight = useMemo(
+      () =>
+        buildMarketInsight({
+          rows,
+          moodScore: mood.score,
+          trends: normalizedTrends,
+        }),
+      [rows, mood.score, normalizedTrends]
+    );
+  
+    useEffect(() => {
+    const sample = rows.slice(0, 6).map(r => ({
+      sym: r.symbol,
+      price: r.price,
+      prev: r.prevPrice,
+      pct: r.pct,
+    }));
+    console.log("[dash rows sample]", sample);
+  }, [rows]);
+  
+    // ✅ 4) Snapshot KPIs (MarketSnapshotBar)
+    const snapshot: SnapshotKPIs = useMemo(
+      () =>
+        computeSnapshotKPIs({
+          rows,
+          trends: normalizedTrends,
+          moodScore: mood.score,
+          confidence: mood.confidence,
+        }),
+      [rows, normalizedTrends, mood.score, mood.confidence]
+    );
+  
+    // ✅ 5) Insight narrativo V2
+    
+  
+    // ✅ “last updated” del mood
+    useEffect(() => {
+      setMoodUpdatedAt(new Date().toLocaleTimeString());
+    }, [mood.score, mood.confidence, normalizedTrends.length]);
 
   useEffect(() => {
     if (storedMainSymbol && storedMainSymbol !== main) {
@@ -25,8 +82,6 @@ export default function SymbolsPage() {
 
 
   // feed para el chart (reusamos tu PricesPanel para no duplicar fetch todavía)
-  const [rows, setRows] = useState<PriceRow[]>([]);
-  const [health, setHealth] = useState<Health | undefined>(undefined);
 
   useEffect(() => {
     const s = getSymbols();
@@ -79,15 +134,22 @@ useEffect(() => {
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
       {/* RIGHT */}
       <div className="min-w-0 rounded-xl border border-white/10 bg-white/[0.03] p-2 lg:col-span-2">
+      {/* Stack principal: siempre 1 columna, spacing constante */}
+          <div className="mt-4 grid gap-4">
+            <MarketMood
+              score={mood.score}
+              confidence={mood.confidence}
+              updatedAt={moodUpdatedAt}
+              insight={moodInsight}
+            />
+      
         {/* 👇 asegura que el chart tenga espacio en iPhone */}
         <div className="min-h-[320px] sm:min-h-[360px]">
           <PriceComparePanel rows={rows} symbol={main} onSymbolChange={setMain} />
         </div>
       </div>
-    </div>
-    {/* FEED */}
-    <div className="rounded-xl border border-white/10 bg-white/[0.02] p-2">
-      <PricesPanel onRows={setRows} onHealth={setHealth} />
+      </div>
+      
     </div>
   </div>
 );

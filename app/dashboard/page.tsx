@@ -99,6 +99,18 @@ const trendsFeed = useTrendsFeed({
   onHealth: setTrendsHealth,
 });
 
+useEffect(() => {
+  if (pricesFeed.rows.length) {
+    setRows(pricesFeed.rows);
+  }
+}, [pricesFeed.rows]);
+
+useEffect(() => {
+  if (trendsFeed.items.length) {
+    setTrendItems(trendsFeed.items);
+  }
+}, [trendsFeed.items]);
+
   return (
   <div className="mx-auto w-full max-w-6xl px-3 sm:px-4 md:px-6">
     <TopHeader
@@ -122,15 +134,6 @@ const trendsFeed = useTrendsFeed({
     </div>
     <SocialPulseBoard />
 
-    {/* Stack principal: siempre 1 columna, spacing constante */}
-    <div className="mt-4 grid gap-4">
-      <MarketMood
-        score={mood.score}
-        confidence={mood.confidence}
-        updatedAt={moodUpdatedAt}
-        insight={moodInsight}
-      />
-
       <MarketSnapshotBar snapshot={snapshot} />
 
       <InsightCard
@@ -151,7 +154,6 @@ const trendsFeed = useTrendsFeed({
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:items-start">
         {/* Si PricesPanel es alto, en mobile queda arriba y Trends abajo */}
         
-      </div>
     </div>
   </div>
 );
