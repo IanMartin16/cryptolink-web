@@ -353,14 +353,19 @@ export default function TrendsTable({
 
                   {/* Up/Down */}
                   <span style={{ fontSize: 12, opacity: 0.75 }}>Up/Down:</span>
-                  <div style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-                    <span style={{ color: UI.green, fontWeight: 900 }}>
-                      ↑ {stats.breadthUpPct}%
-                    </span>
+                  <div
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 8,
+                      whiteSpace: "nowrap",
+                      fontSize: 12,
+                      fontWeight: 950,
+                    }}
+                  >
+                    <span style={{ color: UI.green }}>↑ {stats.breadthUpPct}%</span>
                     <span style={{ opacity: 0.35 }}>/</span>
-                    <span style={{ color: UI.red, fontWeight: 900 }}>
-                      ↓ {stats.breadthDownPct}%
-                    </span>
+                    <span style={{ color: UI.red }}>↓ {stats.breadthDownPct}%</span>
                   </div>
 
                   {/* Confidence */}
@@ -604,9 +609,22 @@ export default function TrendsTable({
                         </div>
                       </td>
 
-                      <td style={{ marginLeft: 4 }}>
+                      <td style={{ padding: "12px 8px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                          <div
+                            style={{
+                              fontWeight: 950,
+                              color: c,
+                              minWidth: 54,
+                              textAlign: "right",
+                              fontVariantNumeric: "tabular-nums",
+                            }}
+                          >
+                            {typeof t.score === "number" ? t.score.toFixed(2) : "—"}
+                          </div>
+
                         <Sparkline
-                          values={hist[t.symbol] ?? []}
+                          values={h}
                           w={82}
                           h={20}
                           stroke={c}
@@ -618,34 +636,24 @@ export default function TrendsTable({
                               : "rgba(255,255,255,0.06)"
                             }
                           />
-                        {typeof t.score === "number" ? t.score.toFixed(2) : "—"}
+                        </div>
                       </td>
                       {/* ✅ Reason con ellipsis */}
                     <td style={{ padding: "12px 8px", fontSize: 12, opacity: 0.85, maxWidth: 260 }}>
-                      <span
-                        style={{
-                          display: "block",
-                          color: c,
-                          overflow: "hidden",
-                          whiteSpace: "nowrap",
-                          textOverflow: "ellipsis",
-                        }}
-                        title={t.reason || ""}
-                      >
-                        {t.reason }
-                        <Sparkline
-                          values={hist[t.symbol] ?? []}
-                          w={88}
-                          h={22}
-                          stroke={c}
-                          fill={t.trend === "up"
-                            ? "rgba(46,229,157,0.10)"
-                            : t.trend === "down"
-                            ? "rgba(255,107,107,0.10)"
-                            : "rgba(255,255,255,0.08)"
-                          }
-                        />
-                      </span>
+                      <td style={{ padding: "12px 8px", fontSize: 12, opacity: 0.85, maxWidth: 260 }}>
+                        <span
+                          style={{
+                            display: "block",
+                            color: "rgba(255,255,255,0.82)",
+                            overflow: "hidden",
+                            whiteSpace: "nowrap",
+                            textOverflow: "ellipsis",
+                          }}
+                          title={t.reason || ""}
+                        >
+                          {t.reason || "—"}
+                        </span>
+                      </td>
                     </td>
                       <td style={{ padding: "12px 8px" }}>
                         <span
