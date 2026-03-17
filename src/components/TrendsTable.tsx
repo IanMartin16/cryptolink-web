@@ -602,7 +602,12 @@ export default function TrendsTable({
                     </td>
 
                       {/* Trend (Badge + sparkline ) */}
-                      
+                      <td style={{ padding: "12px 8px" }}>
+                        <div style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
+                          <TrendBadge trend={t.trend} />
+                          {/* aquí deja tu sparkline si ya está integrado */}
+                        </div>
+                      </td>
 
                       <td style={{ padding: "12px 8px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
