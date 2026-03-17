@@ -21,6 +21,8 @@ import MarketSparkStrip from "@/components/MarketSparkStrip";
 import SocialPulseBoard from "@/components/SocialPulseBoard";
 import InsightCard from "@/components/InsightCard";
 import { buildInsightV2 } from "@/lib/insight/buildInsightV2";
+import { usePricesFeed } from "@/lib/hooks/usePricesFeed";
+import { useTrendsFeed } from "@/lib/trends/useTrendsFeed";
 
 
 export default function DashboardPage() {
@@ -87,6 +89,16 @@ const insight = buildInsightV2({
   trends: normalizedTrends, 
 });
 
+const pricesFeed = usePricesFeed({
+  onRows: setRows,
+  onHealth: setPricesHealth,
+});
+
+const trendsFeed = useTrendsFeed({
+  onItems: setTrendItems,
+  onHealth: setTrendsHealth,
+});
+
   return (
   <div className="mx-auto w-full max-w-6xl px-3 sm:px-4 md:px-6">
     <TopHeader
@@ -138,13 +150,7 @@ const insight = buildInsightV2({
           Ahora: 1 col en mobile, 2 cols en md+ */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:items-start">
         {/* Si PricesPanel es alto, en mobile queda arriba y Trends abajo */}
-        <div className="min-w-0">
-          <PricesPanel onRows={setRows} onHealth={setPricesHealth} />
-        </div>
-
-        <div className="min-w-0">
-          <TrendsTable onHealth={setTrendsHealth} onItems={setTrendItems} />
-        </div>
+        
       </div>
     </div>
   </div>
