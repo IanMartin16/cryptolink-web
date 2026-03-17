@@ -23,20 +23,25 @@ export default function HeroPriceCard({
 
   usePriceHistory(symbol, price, 600);
   const hist = getPriceHistory(symbol).slice(-30);
-  const lastMove =
-    hist.length >= 2 ? hist[hist.length - 1] - hist[hist.length - 2] : 0;
+  const firstVisible = hist.length >= 2 ? hist[0] : undefined;
+  const lastVisible = hist.length >= 2 ? hist[hist.length - 1] : undefined;
+
+  const netMove =
+    typeof firstVisible === "number" && typeof lastVisible === "number"
+      ? lastVisible - firstVisible
+      : 0;
 
   const sparkStroke =
-    lastMove > 0
+    netMove > 0
       ? "rgba(46,229,157,0.82)"
-      : lastMove < 0
+      : netMove < 0
       ? "rgba(255,107,107,0.82)"
       : "rgba(255,159,67,0.80)";
 
   const sparkFill =
-    lastMove > 0
+    netMove > 0
       ? "rgba(46,229,157,0.08)"
-      : lastMove < 0
+      : netMove < 0
       ? "rgba(255,107,107,0.08)"
       : "rgba(255,159,67,0.08)";
 

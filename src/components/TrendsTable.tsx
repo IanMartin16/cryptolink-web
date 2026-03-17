@@ -620,7 +620,6 @@ export default function TrendsTable({
                               fontVariantNumeric: "tabular-nums",
                             }}
                           >
-                            {typeof t.score === "number" ? t.score.toFixed(2) : "—"}
                           </div>
 
                         <Sparkline
@@ -636,22 +635,35 @@ export default function TrendsTable({
                               : "rgba(255,255,255,0.06)"
                             }
                           />
+                          {typeof t.score === "number" ? t.score.toFixed(2) : "—"}
                         </div>
                       </td>
                       {/* ✅ Reason con ellipsis */}
                       <td style={{ padding: "12px 8px", fontSize: 12, opacity: 0.85, maxWidth: 260 }}>
                         <span
-                          style={{
-                            display: "block",
-                            color: "rgba(255,255,255,0.82)",
-                            overflow: "hidden",
-                            whiteSpace: "nowrap",
-                            textOverflow: "ellipsis",
-                          }}
-                          title={t.reason || ""}
-                        >
-                          {t.reason || "—"}
-                        </span>
+                        style={{
+                          display: "block",
+                          color: c,
+                          overflow: "hidden",
+                          whiteSpace: "nowrap",
+                          textOverflow: "ellipsis",
+                        }}
+                        title={t.reason || ""}
+                      >
+                        {t.reason }
+                        <Sparkline
+                          values={hist[t.symbol] ?? []}
+                          w={88}
+                          h={22}
+                          stroke={c}
+                          fill={t.trend === "up"
+                            ? "rgba(46,229,157,0.10)"
+                            : t.trend === "down"
+                            ? "rgba(255,107,107,0.10)"
+                            : "rgba(255,255,255,0.08)"
+                          }
+                        />
+                      </span>
                       </td>
                       <td style={{ padding: "12px 8px" }}>
                         <span
