@@ -31,8 +31,8 @@ export default function PricesRouteBody() {
         assetsCount={rows.length}
         lastUpdated={rows[0]?.updatedAt}
       />
-      <SignalsRadarPanel />
       <MarketPulse rows={rows} max={20} />
+      <SignalsRadarPanel />
 
       <PricesPanel onRows={setRows} onHealth={setPricesHealth} />
 
