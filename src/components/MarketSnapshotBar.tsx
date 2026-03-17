@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import DataStatusBadge from "@/components/DataStatusBadge";
 import type { SnapshotKPIs, SnapshotKPI } from "@/lib/types";
+import { UI } from "@/lib/ui";
 
 type Props = {
   snapshot: SnapshotKPIs;
@@ -105,7 +106,7 @@ export default function MarketSnapshotBar({
                 color: "rgba(255,255,255,0.66)",
               }}
             >
-              MARKET SNAPSHOT
+            <span style={{ color: UI.orange }}>MARKET SNAPSHOT</span>
             </div>
 
             <div

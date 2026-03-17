@@ -115,7 +115,7 @@ export default function MarketSentiment({
               color: "rgba(255,255,255,0.65)",
             }}
           >
-            MARKET SENTIMENT
+          <span style={{ color: UI.orange }}> MARKET SENTIMENT</span>
           </div>
 
           <div
