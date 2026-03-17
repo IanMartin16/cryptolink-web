@@ -130,7 +130,7 @@ export default function PricesSplit({
     [rows, moversFilter]
   );
 
-  const watch = useMemo(() => sortForWatchlist(rows || []), [0, max, rows]);
+  const watch = useMemo(() => sortForWatchlist(rows || []), [rows]);
 
   function fmtTick(rows: PriceRow[]) {
     const t = rows.find((r) => r.updatedAt)?.updatedAt;
@@ -169,6 +169,7 @@ export default function PricesSplit({
               {watch.map((r) => {
                 const pct = effectivePct(r);
                 const hist = getPriceHistory(r.symbol).slice(-20);
+                console.log("watch symbols", watch.map((r) => r.symbol));
                 const tone = sparkTone(pct);
 
                 return (
