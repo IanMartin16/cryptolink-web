@@ -138,7 +138,13 @@ const insight = buildInsightV2({
           Ahora: 1 col en mobile, 2 cols en md+ */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:items-start">
         {/* Si PricesPanel es alto, en mobile queda arriba y Trends abajo */}
-        
+        <div className="min-w-0">
+          <PricesPanel onRows={setRows} onHealth={setPricesHealth} />
+        </div>
+
+        <div className="min-w-0">
+          <TrendsTable onHealth={setTrendsHealth} onItems={setTrendItems} />
+        </div>
       </div>
     </div>
   </div>
