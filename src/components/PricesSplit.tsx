@@ -114,13 +114,16 @@ function sparkTone(pct?: number | null) {
 
 export default function PricesSplit({
   rows,
+  max = 12,
   titleLeft = "WATCHLIST",
   titleRight = "TOP MOVERS",
 }: {
   rows: PriceRow[];
+  max?: number;
   titleLeft?: string;
   titleRight?: string;
 }) {
+  const items = (rows || []).slice(0, max);
   const [moversFilter, setMoversFilter] = useState<"all" | "gainers" | "losers">("all");
 
   const movers = useMemo(
