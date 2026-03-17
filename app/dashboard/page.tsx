@@ -17,9 +17,10 @@ import type { PriceRow, TrendItem } from "@/lib/types";
 import type { SnapshotKPIs } from "@/lib/types";
 import { computeSnapshotKPIs } from "@/lib/snapshotEngine";
 import MarketSnapshotBar from "@/components/MarketSnapshotBar";
-import { buildInsightV2 } from "@/lib/insights";
 import MarketSparkStrip from "@/components/MarketSparkStrip";
 import SocialPulseBoard from "@/components/SocialPulseBoard";
+import InsightCard from "@/components/InsightCard";
+import { buildInsightV2 } from "@/lib/insight/buildInsightV2";
 
 
 export default function DashboardPage() {
@@ -71,16 +72,7 @@ export default function DashboardPage() {
   );
 
   // ✅ 5) Insight narrativo V2
-  const insight = useMemo(
-    () =>
-      buildInsightV2({
-        mood,
-        snapshot,
-        rows,
-        trends: normalizedTrends,
-      }),
-    [mood.score, mood.confidence, snapshot.updatedAt, rows, normalizedTrends]
-  );
+  
 
   // ✅ “last updated” del mood
   useEffect(() => {
@@ -95,63 +87,12 @@ export default function DashboardPage() {
   return "neutral";
 }
 
-function toneClasses(tone: "bull" | "bear" | "neutral") {
-  switch (tone) {
-    case "bull":
-      return "border-emerald-500/30 bg-emerald-500/10 text-emerald-200";
-    case "bear":
-      return "border-rose-500/30 bg-rose-500/10 text-rose-200";
-    default:
-      return "border-white/10 bg-white/5 text-white/75";
-  }
-}
-
-function toneLabel(tone: "bull" | "bear" | "neutral") {
-  if (tone === "bull") return "BULLISH";
-  if (tone === "bear") return "BEARISH";
-  return "NEUTRAL";
-}
-
-function InsightCard({
-  headline,
-  summary,
-  note,
-  moodScore,
-}: {
-  headline: string;
-  summary: string;
-  note?: string;
-  moodScore: number;
-}) {
-  const tone = insightTone(moodScore);
-
-  return (
-    <div className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2">
-      <div className="flex items-start gap-3">
-        {/* badge */}
-        <div
-          className={`shrink-0 rounded-lg border px-2 py-1 text-[11px] font-semibold tracking-wide ${toneClasses(
-            tone
-          )}`}
-          title={`mood score: ${Math.round(moodScore)}`}
-        >
-          {toneLabel(tone)}
-        </div>
-
-        {/* text */}
-        <div className="min-w-0">
-          <div className="truncate text-sm font-semibold text-white/90">
-            {headline}
-          </div>
-          <div className="mt-0.5 text-xs text-white/70">{summary}</div>
-          {note ? (
-            <div className="mt-1 text-xs text-white/50">{note}</div>
-          ) : null}
-        </div>
-      </div>
-    </div>
-  );
-}
+const insight = buildInsightV2({
+  mood,
+  snapshot,
+  rows,
+  trends: normalizedTrends, 
+});
 
   return (
   <div className="mx-auto w-full max-w-6xl px-3 sm:px-4 md:px-6">
