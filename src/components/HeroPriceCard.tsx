@@ -160,16 +160,7 @@ export default function HeroPriceCard({
               minWidth: 0,
             }}
           >
-            <span
-              style={{
-                display: "block",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-                whiteSpace: "nowrap",
-              }}
-            >
               {priceNode}
-            </span>
           </div>
 
           <div
