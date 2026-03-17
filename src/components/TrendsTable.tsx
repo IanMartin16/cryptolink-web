@@ -602,12 +602,7 @@ export default function TrendsTable({
                     </td>
 
                       {/* Trend (Badge + sparkline ) */}
-                      <td style={{ padding: "12px 8px" }}>
-                        <div style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
-                          <TrendBadge trend={t.trend} />
-                          {/* aquí deja tu sparkline si ya está integrado */}
-                        </div>
-                      </td>
+                      
 
                       <td style={{ padding: "12px 8px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -639,7 +634,6 @@ export default function TrendsTable({
                         </div>
                       </td>
                       {/* ✅ Reason con ellipsis */}
-                    <td style={{ padding: "12px 8px", fontSize: 12, opacity: 0.85, maxWidth: 260 }}>
                       <td style={{ padding: "12px 8px", fontSize: 12, opacity: 0.85, maxWidth: 260 }}>
                         <span
                           style={{
@@ -654,7 +648,6 @@ export default function TrendsTable({
                           {t.reason || "—"}
                         </span>
                       </td>
-                    </td>
                       <td style={{ padding: "12px 8px" }}>
                         <span
                           style={{
