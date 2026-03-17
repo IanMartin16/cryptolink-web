@@ -7,6 +7,8 @@ import { getSymbols } from "@/lib/symbolsStore";
 import { fetchPricesBatch } from "@/lib/cryptoLink";
 import type { Health } from "@/lib/health";
 import type { PriceRow } from "@/lib/types";
+import { pushPriceHistory } from "@/lib/usePriceHistory";
+
 
 export function usePricesFeed({
   onRows,
@@ -110,6 +112,12 @@ export function usePricesFeed({
               pct,
             };
           });
+
+          for (const r of nextRows) {
+            if (typeof r.price === "number") {
+              pushPriceHistory(r.symbol, r.price, 600);
+            } 
+          }
 
           const newFlashes: Record<string, "up" | "down"> = {};
           for (const r of nextRows) {

@@ -114,12 +114,10 @@ function sparkTone(pct?: number | null) {
 
 export default function PricesSplit({
   rows,
-  max = 12,
   titleLeft = "WATCHLIST",
   titleRight = "TOP MOVERS",
 }: {
   rows: PriceRow[];
-  max?: number;
   titleLeft?: string;
   titleRight?: string;
 }) {
@@ -169,7 +167,6 @@ export default function PricesSplit({
               {watch.map((r) => {
                 const pct = effectivePct(r);
                 const hist = getPriceHistory(r.symbol).slice(-20);
-                console.log("watch symbols", watch.map((r) => r.symbol));
                 const tone = sparkTone(pct);
 
                 return (
