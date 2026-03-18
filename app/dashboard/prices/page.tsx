@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import PricesRouteBody from "@/components/PricesRouteBody";
-import StatusBar from "@/components/StatusBar";
-import PricesPanel from "@/components/PricesPanel";
 import type { Health } from "@/lib/health";
 import { HEALTH_OK } from "@/lib/health";
 import PageHeader from "@/components/PageHeader";

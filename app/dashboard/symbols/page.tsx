@@ -148,7 +148,7 @@ useEffect(() => {
 }, [trendsFeed.items]);
 
   return (
-  <div className="mx-auto w-full max-w-6xl px-3 sm:px-4 md:px-6 space-y-4">
+  <div>
     <PageHeader
       title="Symbols"
       subtitle="watchlist · Chart overlays · Real-time view"
