@@ -1,15 +1,12 @@
 "use client";
 
 import { useState, useEffect, useMemo } from "react";
-import PricesPanel from "@/components/PricesPanel";
 import StatCards from "@/components/StatCards";
-import TrendsTable from "@/components/TrendsTable";
 import StatusBar from "@/components/StatusBar";
 import { UI } from "@/lib/ui";
 import type { Health } from "@/lib/health";
 import { HEALTH_OK } from "@/lib/health";
 import TopHeader, { Chip } from "@/components/TopHeader";
-import MarketMood from "@/components/MarketMood";
 import { buildMarketInsight } from "@/lib/insights";
 import { computeMood } from "@/lib/moodEngine";
 import { normalizeTrends } from "@/lib/trendEngine";

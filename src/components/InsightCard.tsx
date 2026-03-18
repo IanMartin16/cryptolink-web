@@ -1,4 +1,6 @@
 "use client";
+import { UI } from "@/lib/ui";
+
 
 function insightTone(score: number): "good" | "warn" | "bad" | "neutral" {
   if (score >= 25) return "good";
@@ -60,7 +62,7 @@ export default function InsightCard({
 
         <div className="min-w-0">
           <div className="truncate text-sm font-semibold text-white/90">
-            {headline}
+            <span style={{ color: UI.orange }}>{headline}</span>
           </div>
           <div className="mt-0.5 text-xs text-white/70">{summary}</div>
           {note ? (
