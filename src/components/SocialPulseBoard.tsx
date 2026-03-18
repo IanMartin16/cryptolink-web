@@ -487,7 +487,7 @@ export default function SocialPulseBoard() {
           boxShadow: "inset 0 0 16px rgba(255,255,255,0.015)",
         }}
       >
-        <div style={{ fontSize: 13, opacity: 0.68 }}>Live Narrative</div>
+        <div style={{ fontSize: 13, opacity: 0.68 }}><span style={{ color: UI.orange }}>Live Narrative</span></div>
 
         <div
           style={{

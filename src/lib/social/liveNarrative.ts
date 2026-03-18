@@ -13,7 +13,7 @@ export type LiveNarrative = {
   confidence: NarrativeConfidence;
   breadth: NarrativeBreadth;
   leadership: NarrativeLeadership;
-  sourceType: "derived";
+  sourceType: "derived" | "hybrid" | "social_native";
   updatedAt: string;
 };
 
@@ -39,7 +39,24 @@ export type LiveNarrativeInput = {
     score: number;
     confidence: number;
   };
+  basicSignals?: BasicSignalsInput;
   updatedAt: string;
+};
+
+export type SocialAttentionItem = {
+  asset: string;
+  attentionScore: number;
+  attentionDeltaPct: number;
+  direction: "up" | "down" | "flat";
+  tags?: string[];
+};
+
+export type BasicSignalsInput = {
+  topAssets: string[];
+  attentionLeaders: SocialAttentionItem[];
+  attentionLosers: SocialAttentionItem[];
+  tags: string[];
+  coverage: "low" | "moderate" | "broad";
 };
 
 function mapBreadth(value: "broad" | "selective" | "low"): NarrativeBreadth {
@@ -58,6 +75,30 @@ function compactAssets(list: string[], max = 3): string[] {
   return [...new Set((list || []).filter(Boolean))].slice(0, max);
 }
 
+ function resolveFocusAssets(input: LiveNarrativeInput): string[] {
+  const real = input.basicSignals?.topAssets ?? [];
+  const derived = [
+    ...input.socialPulse.topAssets,
+    ...input.trends.topSymbols,
+  ];
+
+  return compactAssets([...real, ...derived], 3);
+}
+
+function resolveAttentionLeaders(input: LiveNarrativeInput): string[] {
+  const leaders = input.basicSignals?.attentionLeaders?.map((x) => x.asset) ?? [];
+  if (leaders.length) return compactAssets(leaders, 3);
+  return compactAssets(input.socialPulse.topAssets, 3);
+}
+
+function resolveThemes(input: LiveNarrativeInput, fallback: string[]): string[] {
+  const realTags = input.basicSignals?.tags ?? [];
+  if (realTags.length) {
+    return [...new Set([...realTags, ...fallback])].slice(0, 4);
+  }
+  return fallback.slice(0, 4);
+}
+
 function assetsText(list: string[]): string {
   if (!list.length) return "core assets";
   if (list.length === 1) return list[0];
@@ -72,6 +113,7 @@ function buildHeadline(args: {
   leadership: NarrativeLeadership;
 }): string {
   const { state, breadth, confidence, leadership } = args;
+
 
   if (state === "bullish") {
     if (breadth === "broad") return "Upside pressure is building with broad participation.";
@@ -106,18 +148,23 @@ function buildSubline(args: {
   state: NarrativeState;
   breadth: NarrativeBreadth;
   confidence: NarrativeConfidence;
-  focusAssets: string[];
+  leaders: string[];
   trends: LiveNarrativeInput["trends"];
+  hasRealSignals: boolean;
 }): string {
-  const { state, breadth, confidence, focusAssets, trends } = args;
-  const assets = assetsText(focusAssets);
+  const { state, breadth, confidence, leaders, trends, hasRealSignals } = args;
+  const assets = assetsText(leaders);
 
   if (state === "bullish") {
-    if (breadth === "broad") {
-      return `${assets} are leading the tape while broader participation continues to improve.`;
-    }
-    return `${assets} are drawing the most attention, though confirmation remains ${confidence}.`;
+  if (breadth === "broad") {
+    return hasRealSignals
+      ? `${assets} are leading real attention flows while broader participation continues to improve.`
+      : `${assets} are leading the tape while broader participation continues to improve.`;
   }
+  return hasRealSignals
+    ? `${assets} are drawing the strongest real attention, though confirmation remains ${confidence}.`
+    : `${assets} are drawing the most attention, though confirmation remains ${confidence}.`;
+}
 
   if (state === "bearish") {
     return `${assets} sit at the center of market attention while downside pressure remains ${confidence}.`;
@@ -181,8 +228,18 @@ function buildNote(args: {
   leadership: NarrativeLeadership;
   trends: LiveNarrativeInput["trends"];
   mood?: LiveNarrativeInput["mood"];
+  basicSignals?: LiveNarrativeInput["basicSignals"];
 }): string | undefined {
-  const { state, breadth, confidence, leadership, trends, mood } = args;
+  const { state, breadth, confidence, leadership, trends, mood, basicSignals } = args;
+
+  if (basicSignals?.coverage === "low") {
+    return "Real attention coverage remains limited; treat the narrative as an early signal.";
+  }
+
+  const losers = basicSignals?.attentionLosers ?? [];
+  if (losers.length >= 2 && leadership === "concentrated") {
+    return `Leadership is narrow while ${losers[0].asset} and ${losers[1].asset} continue to fade from attention.`;
+  }
 
   if (leadership === "concentrated" && breadth !== "broad") {
     return "Leadership is concentrated; follow-through across the board is still limited.";
@@ -213,10 +270,10 @@ export function buildLiveNarrative(input: LiveNarrativeInput): LiveNarrative {
   const confidence = mapConfidence(input.socialPulse.conviction);
   const leadership: NarrativeLeadership = input.socialPulse.leadership;
 
-  const focusAssets = compactAssets([
-    ...input.socialPulse.topAssets,
-    ...input.trends.topSymbols,
-  ]);
+  const focusAssets = resolveFocusAssets(input);
+  const leaders = resolveAttentionLeaders(input);
+  const hasRealSignals = !!input.basicSignals;
+
 
   const headline = buildHeadline({
     state,
@@ -229,11 +286,12 @@ export function buildLiveNarrative(input: LiveNarrativeInput): LiveNarrative {
     state,
     breadth,
     confidence,
-    focusAssets,
+    leaders,
     trends: input.trends,
+    hasRealSignals,
   });
 
-  const themes = buildThemes({
+  const fallbackThemes = buildThemes({
     state,
     breadth,
     confidence,
@@ -241,6 +299,8 @@ export function buildLiveNarrative(input: LiveNarrativeInput): LiveNarrative {
     focusAssets,
     trends: input.trends,
   });
+
+  const themes = resolveThemes(input, fallbackThemes);
 
   const note = buildNote({
     state,
@@ -249,7 +309,12 @@ export function buildLiveNarrative(input: LiveNarrativeInput): LiveNarrative {
     leadership,
     trends: input.trends,
     mood: input.mood,
+    basicSignals: input.basicSignals,
   });
+
+  const sourceType: LiveNarrative["sourceType"] = input.basicSignals
+    ? "hybrid"
+    : "derived";
 
   return {
     headline,
@@ -261,7 +326,7 @@ export function buildLiveNarrative(input: LiveNarrativeInput): LiveNarrative {
     confidence,
     breadth,
     leadership,
-    sourceType: "derived",
+    sourceType,
     updatedAt: input.updatedAt,
   };
 }
