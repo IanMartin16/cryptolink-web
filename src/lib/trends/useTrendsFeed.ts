@@ -141,11 +141,26 @@ export function useTrendsFeed({
         const raw = r.items ?? r.data ?? [];
 
         const nextItems: TrendItem[] = raw
-          .map((t) => ({
+          .map((t) => {
+            const score = typeof t.score === "number" ? t.score : 0;
+
+            const trend: TrendItem["trend"] =
+              t.trend === "up" || t.trend === "down"
+              ? t.trend
+              : score > 0.15
+              ? "up"
+              : score < -0.15
+              ? "down"
+              : "flat";
+
+          return {
             ...t,
+            trend,
+            score,
             ts: t.ts ?? resolvedTs,
-          }))
-          .sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
+          };
+        })
+        .sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
 
           for(const it of nextItems) {
             if (typeof it.score === "number") {
