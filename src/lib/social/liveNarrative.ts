@@ -106,28 +106,58 @@ function assetsText(list: string[]): string {
   return `${list[0]}, ${list[1]} and ${list[2]}`;
 }
 
+function topLeader(input: LiveNarrativeInput): SocialAttentionItem | undefined {
+  return input.basicSignals?.attentionLeaders?.[0];
+}
+
+function topLoser(input: LiveNarrativeInput): SocialAttentionItem | undefined {
+  return input.basicSignals?.attentionLosers?.[0];
+}
+
 function buildHeadline(args: {
   state: NarrativeState;
   breadth: NarrativeBreadth;
   confidence: NarrativeConfidence;
   leadership: NarrativeLeadership;
+  basicSignals?: LiveNarrativeInput["basicSignals"];
 }): string {
-  const { state, breadth, confidence, leadership } = args;
+  const { state, breadth, confidence, leadership, basicSignals } = args;
 
+  const leader = basicSignals?.attentionLeaders?.[0]?.asset;
+  const hasRealSignals = Boolean(basicSignals);
 
   if (state === "bullish") {
+    if (hasRealSignals && leader) {
+      if (breadth === "broad") return `Real attention is expanding higher with ${leader} leading the flow.`;
+      if (breadth === "selective") return `Real attention is rotating higher with ${leader} at the center.`;
+      return `Bullish attention is building around ${leader}, but breadth remains limited.`;
+    }
+
     if (breadth === "broad") return "Upside pressure is building with broad participation.";
     if (breadth === "selective") return "Attention is rotating higher with selective participation.";
     return "Bullish pressure is emerging, but breadth remains limited.";
   }
 
   if (state === "bearish") {
+    if (hasRealSignals && leader) {
+      if (breadth === "broad") return `Real attention is turning defensive with ${leader} still dominating the tape.`;
+      if (breadth === "selective") return `Risk-off attention is building with ${leader} in focus.`;
+      return `Bearish pressure is visible around ${leader}, though participation remains narrow.`;
+    }
+
     if (breadth === "broad") return "Risk-off pressure is spreading across the market.";
     if (breadth === "selective") return "Defensive rotation is building with selective participation.";
     return "Bearish pressure is visible, though participation remains narrow.";
   }
 
   if (state === "mixed") {
+    if (hasRealSignals) {
+      if (leadership === "concentrated") {
+        return "Real attention is mixed and leadership remains narrow.";
+      }
+      return "Real attention is mixed and directional control is still unresolved.";
+    }
+
     if (leadership === "concentrated") {
       return "Market attention is mixed and leadership remains concentrated.";
     }
@@ -135,6 +165,10 @@ function buildHeadline(args: {
       return "Market attention is mixed, but conviction remains elevated.";
     }
     return "Market attention is mixed and direction remains unresolved.";
+  }
+
+  if (hasRealSignals && basicSignals?.coverage === "low") {
+    return "Real attention remains limited and directional control is still unclear.";
   }
 
   if (breadth === "weak") {
@@ -151,26 +185,43 @@ function buildSubline(args: {
   leaders: string[];
   trends: LiveNarrativeInput["trends"];
   hasRealSignals: boolean;
+  basicSignals?: LiveNarrativeInput["basicSignals"];
 }): string {
-  const { state, breadth, confidence, leaders, trends, hasRealSignals } = args;
+  const { state, breadth, confidence, leaders, trends, hasRealSignals, basicSignals } = args;
   const assets = assetsText(leaders);
 
+  const loserA = basicSignals?.attentionLosers?.[0]?.asset;
+  const loserB = basicSignals?.attentionLosers?.[1]?.asset;
+
   if (state === "bullish") {
-  if (breadth === "broad") {
+    if (breadth === "broad") {
+      return hasRealSignals
+        ? `${assets} are leading real attention flows while broader participation continues to improve.`
+        : `${assets} are leading the tape while broader participation continues to improve.`;
+    }
+
+    if (loserA) {
+      return hasRealSignals
+        ? `${assets} are drawing the strongest real attention while ${loserA} starts to fade from focus.`
+        : `${assets} are drawing the most attention, though confirmation remains ${confidence}.`;
+    }
+
     return hasRealSignals
-      ? `${assets} are leading real attention flows while broader participation continues to improve.`
-      : `${assets} are leading the tape while broader participation continues to improve.`;
+      ? `${assets} are drawing the strongest real attention, though confirmation remains ${confidence}.`
+      : `${assets} are drawing the most attention, though confirmation remains ${confidence}.`;
   }
-  return hasRealSignals
-    ? `${assets} are drawing the strongest real attention, though confirmation remains ${confidence}.`
-    : `${assets} are drawing the most attention, though confirmation remains ${confidence}.`;
-}
 
   if (state === "bearish") {
+    if (loserA && loserB) {
+      return `${assets} remain central to attention while ${loserA} and ${loserB} continue losing momentum.`;
+    }
     return `${assets} sit at the center of market attention while downside pressure remains ${confidence}.`;
   }
 
   if (state === "mixed") {
+    if (loserA) {
+      return `${assets} are active, but leadership is uneven as ${loserA} fades from attention.`;
+    }
     return `${assets} are active, but the broader tape still shows uneven participation and mixed follow-through.`;
   }
 
@@ -280,6 +331,7 @@ export function buildLiveNarrative(input: LiveNarrativeInput): LiveNarrative {
     breadth,
     confidence,
     leadership,
+    basicSignals: input.basicSignals,
   });
 
   const subline = buildSubline({
@@ -289,6 +341,7 @@ export function buildLiveNarrative(input: LiveNarrativeInput): LiveNarrative {
     leaders,
     trends: input.trends,
     hasRealSignals,
+    basicSignals: input.basicSignals,
   });
 
   const fallbackThemes = buildThemes({
