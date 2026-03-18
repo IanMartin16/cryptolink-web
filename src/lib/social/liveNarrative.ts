@@ -76,27 +76,29 @@ function compactAssets(list: string[], max = 3): string[] {
 }
 
  function resolveFocusAssets(input: LiveNarrativeInput): string[] {
-  const real = input.basicSignals?.topAssets ?? [];
+  const leaders = input.basicSignals?.attentionLeaders?.map((x) => x.asset) ?? [];
+  const realTop = input.basicSignals?.topAssets ?? [];
   const derived = [
     ...input.socialPulse.topAssets,
     ...input.trends.topSymbols,
   ];
 
-  return compactAssets([...real, ...derived], 3);
+  return compactAssets([...leaders,...realTop, ...derived], 3);
 }
 
 function resolveAttentionLeaders(input: LiveNarrativeInput): string[] {
   const leaders = input.basicSignals?.attentionLeaders?.map((x) => x.asset) ?? [];
-  if (leaders.length) return compactAssets(leaders, 3);
-  return compactAssets(input.socialPulse.topAssets, 3);
+  const realTop = input.basicSignals?.topAssets ?? [];
+  const derived = input.socialPulse.topAssets ?? [];
+  return compactAssets([...leaders, ...realTop, ...derived], 3);
 }
 
 function resolveThemes(input: LiveNarrativeInput, fallback: string[]): string[] {
   const realTags = input.basicSignals?.tags ?? [];
   if (realTags.length) {
-    return [...new Set([...realTags, ...fallback])].slice(0, 4);
+    return [...new Set([...realTags, ...fallback])].slice(0, 3);
   }
-  return fallback.slice(0, 4);
+  return fallback.slice(0, 3);
 }
 
 function assetsText(list: string[]): string {
@@ -153,7 +155,7 @@ function buildHeadline(args: {
   if (state === "mixed") {
     if (hasRealSignals) {
       if (leadership === "concentrated") {
-        return "Real attention is mixed and leadership remains narrow.";
+        return "Real attention is mixed and leadership remains uneven.";
       }
       return "Real attention is mixed and directional control is still unresolved.";
     }
@@ -219,11 +221,11 @@ function buildSubline(args: {
   }
 
   if (state === "mixed") {
-    if (loserA) {
-      return `${assets} are active, but leadership is uneven as ${loserA} fades from attention.`;
-    }
-    return `${assets} are active, but the broader tape still shows uneven participation and mixed follow-through.`;
+  if (loserA) {
+    return `${assets} remain central to attention, though leadership is uneven as ${loserA} fades from focus.`;
   }
+  return `${assets} remain active, but broader participation still looks uneven and lacks clean follow-through.`;
+}
 
   if (trends.up > trends.down) {
     return `${assets} are active, though broader confirmation is still limited.`;
