@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { UI } from "@/lib/ui";
 import { fetchSocialPulse } from "@/lib/cryptoLink";
 import { useMarketSignalsStore } from "@/lib/stores/marketSignalsStore";
+import { buildLiveNarrative } from "@/lib/social/liveNarrative";
 
 type SocialPulseResponse = {
   ok: boolean;
@@ -102,6 +103,31 @@ export default function SocialPulseBoard() {
   const tone = pulseTone(pulse?.state || "neutral");
   const glow = pulseGlow(pulse?.state || "neutral");
 
+  const narrative = useMemo(() => {
+  if (!pulse || !data?.ts) return null;
+
+  return buildLiveNarrative({
+    socialPulse: {
+      state: pulse.state,
+      score: pulse.score,
+      breadth: pulse.breadth,
+      conviction: pulse.conviction,
+      leadership: pulse.leadership,
+      summary: pulse.summary,
+      topAssets: pulse.topAssets,
+      tags: pulse.tags,
+    },
+    trends: {
+      up: 0,
+      down: 0,
+      flat: 0,
+      avgScore: 0,
+      topSymbols: pulse.topAssets ?? [],
+    },
+    updatedAt: data.ts,
+  });
+}, [pulse, data?.ts]);
+
   const intensityWidth = useMemo(() => {
     const score = Number(pulse?.score ?? 0);
     return `${Math.max(8, Math.min(100, score))}%`;
@@ -177,12 +203,7 @@ export default function SocialPulseBoard() {
         }}
       >
        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "minmax(0, 1.05fr) minmax(320px, 0.95fr)",
-            gap: 14,
-            alignItems: "stretch",
-          }}
+        className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]"
         >
           <div
             style={{
@@ -456,26 +477,81 @@ export default function SocialPulseBoard() {
       </div>
 
       <div
-        style={{
-          padding: 16,
-          borderRadius: 20,
-          border: `1px solid rgba(255,255,255,0.10)`,
-          background: "rgba(255,255,255,0.03)",
-          display: "grid",
-          gap: 8,
-          boxShadow: "inset 0 0 16px rgba(255,255,255,0.015)",
-        }}
-      >
-        <div style={{ fontSize: 13, opacity: 0.68 }}>Market Note</div>
+  style={{
+    padding: 16,
+    borderRadius: 20,
+    border: `1px solid rgba(255,255,255,0.10)`,
+    background: "rgba(255,255,255,0.03)",
+    display: "grid",
+    gap: 10,
+    boxShadow: "inset 0 0 16px rgba(255,255,255,0.015)",
+  }}
+>
+  <div style={{ fontSize: 13, opacity: 0.68 }}>Live Narrative</div>
+
+  <div
+    style={{
+      fontSize: 18,
+      lineHeight: 1.35,
+      fontWeight: 900,
+      color: "rgba(255,255,255,0.92)",
+      letterSpacing: -0.2,
+    }}
+  >
+    {narrative?.headline ?? pulse.summary}
+  </div>
+
+  <div
+    style={{
+      fontSize: 14,
+      lineHeight: 1.55,
+      color: "rgba(255,255,255,0.74)",
+      maxWidth: 1100,
+    }}
+  >
+    {narrative?.subline ?? "Narrative layer is building from current market attention."}
+  </div>
+
+  {narrative?.themes?.length ? (
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        gap: 8,
+      }}
+    >
+      {narrative.themes.map((tag) => (
         <div
+          key={tag}
           style={{
-            fontSize: 16,
-            lineHeight: 1.55,
-            opacity: 0.9,
-            maxWidth: 1100,
+            padding: "8px 12px",
+            borderRadius: 999,
+            border: "1px solid rgba(255,255,255,0.10)",
+            background: "rgba(255,255,255,0.035)",
+            fontSize: 12,
+            color: "rgba(255,255,255,0.82)",
+            whiteSpace: "nowrap",
           }}
         >
-          {pulse.summary}
+          {tag}
+        </div>
+      ))}
+    </div>
+  ) : null}
+
+  {narrative?.note ? (
+    <div
+      style={{
+        fontSize: 13,
+        lineHeight: 1.5,
+        color: "rgba(255,255,255,0.62)",
+      }}
+    >
+      {narrative.note}
+    </div>
+  ) : null}
+</div>
+      {pulse.summary}
         <style jsx>{`
         @keyframes pulseBars {
           0% {
@@ -503,9 +579,7 @@ export default function SocialPulseBoard() {
             opacity: 0.55;
           }
         }
-      `}</style>  
-        </div>
-      </div>
+      `}</style> 
     </div>
     </section>
   );
