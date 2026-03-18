@@ -109,7 +109,7 @@ useEffect(() => {
 }, [trendsFeed.items]);
 
   return (
-  <div className="mx-auto w-full max-w-6xl px-3 sm:px-4 md:px-6">
+  <div>
     <TopHeader
       title={
         <>
