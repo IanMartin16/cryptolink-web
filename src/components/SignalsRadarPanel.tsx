@@ -44,6 +44,27 @@ function polarToCartesian(cx: number, cy: number, r: number, angleDeg: number) {
     y: cy + r * Math.sin(a),
   };
 }
+function signalTone(value: number) {
+    if (value >= 70) {
+      return {
+        border: "rgba(46,229,157,0.18)",
+        bg: "rgba(46,229,157,0.06)",
+        value: "#8af0b8",
+      };
+    }
+    if (value >= 35) {
+      return {
+        border: "rgba(255,159,67,0.16)",
+        bg: "rgba(255,159,67,0.05)",
+        value: "#ffd08a",
+      };
+    }
+    return {
+      border: "rgba(255,255,255,0.10)",
+      bg: "rgba(255,255,255,0.03)",
+      value: "rgba(255,255,255,0.92)",
+    };
+  }
 
 function polygonPath(points: { x: number; y: number }[]) {
   return points.map((p) => `${p.x},${p.y}`).join(" ");
@@ -106,6 +127,7 @@ export default function SignalsRadarPanel() {
     const points = axes.map((a) =>
       polarToCartesian(cx, cy, maxR * (Math.max(0, Math.min(100, a.value)) / 100), a.angle)
     );
+
 
     return { rings, axes, points };
   }, [data]);
@@ -257,6 +279,7 @@ export default function SignalsRadarPanel() {
               stroke="#2BFF88"
               strokeWidth="2"
             />
+            
 
             {chart.points.map((p, idx) => (
               <circle
@@ -270,32 +293,80 @@ export default function SignalsRadarPanel() {
             ))}
           </svg>
         </div>
-
+        
         <div
           style={{
             display: "grid",
             gap: 10,
           }}
         >
-          {data.signals.map((s) => (
+  
+          {data.signals.map((s) => {
+          const tone = signalTone(s.value);
+
+          return (
             <div
               key={s.label}
               style={{
-                padding: 12,
-                borderRadius: 14,
-                border: `1px solid ${UI.border}`,
-                background: "rgba(255,255,255,0.045)",
+                padding: "14px 16px",
+                borderRadius: 18,
+                border: `1px solid ${tone.border}`,
+                background: tone.bg,
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
                 gap: 12,
+                minHeight: 68,
+                boxShadow: "inset 0 0 10px rgba(255,255,255,0.015)",
               }}
             >
-              <div style={{ fontSize: 13, opacity: 0.75 }}>{s.label}</div>
-              <div style={{ fontSize: 20, fontWeight: 900 }}>{s.value}</div>
+              <div
+                style={{
+                  fontSize: 14,
+                  opacity: 0.72,
+                  fontWeight: 700,
+                  letterSpacing: 0.2,
+                  color: "rgba(255,255,255,0.82)",
+                }}
+              >
+                {s.label}
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "baseline",
+                  gap: 6,
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: 26,
+                    fontWeight: 950,
+                    color: tone.value,
+                    lineHeight: 1,
+                    textShadow: "0 0 10px rgba(0,0,0,0.18)",
+                    fontVariantNumeric: "tabular-nums",
+                  }}
+                >
+                  {s.value}
+                </span>
+
+                <span
+                  style={{
+                    fontSize: 11,
+                    color: "rgba(255,255,255,0.38)",
+                    fontWeight: 800,
+                    letterSpacing: "0.08em",
+                  }}
+                >
+                  /100
+                </span>
+              </div>
             </div>
-          ))}
-        </div>
+          );
+        })}
+      </div>
       </div>
     </section>
   );
