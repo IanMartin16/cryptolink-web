@@ -154,28 +154,37 @@ useEffect(() => {
       subtitle="watchlist · Chart overlays · Real-time view"
       badge="BETA"
     />
-    <StatusBar prices={health} />
-    {/* TOP GRID */}
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-      {/* RIGHT */}
-      <div className="min-w-0 rounded-xl border border-white/10 bg-white/[0.03] p-2 lg:col-span-2">
-      {/* Stack principal: siempre 1 columna, spacing constante */}
-          <div className="mt-4 grid gap-4">
-            <MarketMood
-              score={mood.score}
-              confidence={mood.confidence}
-              updatedAt={moodUpdatedAt}
-              insight={moodInsight}
-            />
+    <div className="mb-4 rounded-3xl border border-emerald-400/20 bg-emerald-400/[0.08] px-5 py-4 shadow-[0_12px_40px_rgba(0,0,0,0.22)]">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-3">
+          <span className="inline-flex h-4 w-4 rounded-full bg-emerald-300 shadow-[0_0_14px_rgba(110,235,143,0.35)]" />
+          <div>
+            <div className="text-[15px] font-extrabold tracking-wide text-white">
+            Symbols Active
+            </div>
+            <div className="text-sm text-white/70">
+            watchlist · compare · overlays ready
+          </div>
+        </div>
+      </div>
+
+      <div className="text-sm font-semibold text-emerald-200/80">
+        linked to market feed
+      </div>
+    </div>
+  </div>
+      
+      <MarketMood
+        score={mood.score}
+        confidence={mood.confidence}
+        updatedAt={moodUpdatedAt}
+        insight={moodInsight}
+        />
       
         {/* 👇 asegura que el chart tenga espacio en iPhone */}
         <div className="min-h-[320px] sm:min-h-[360px]">
           <PriceComparePanel rows={rows} symbol={main} onSymbolChange={setMain} />
         </div>
-      </div>
-      </div>
-      
-    </div>
-  </div>
-);
+      </div>    
+  );
 }
