@@ -1,4 +1,4 @@
-import type { SocialLinkBasicSignalsResponse } from "@/lib/social/liveNarrative";
+import type { SocialLinkBasicSignalsResponse } from "@/lib/social/basicSignalsMock";
 
 export async function fetchBasicSignals(args?: {
   window?: "15m" | "30m" | "1h" | "4h";

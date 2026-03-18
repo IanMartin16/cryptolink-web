@@ -5,6 +5,7 @@ import { UI } from "@/lib/ui";
 import { fetchSocialPulse } from "@/lib/cryptoLink";
 import { useMarketSignalsStore } from "@/lib/stores/marketSignalsStore";
 import { buildLiveNarrative } from "@/lib/social/liveNarrative";
+import { fetchBasicSignals } from "@/lib/social/fetchBasicSignals"
 
 type SocialPulseResponse = {
   ok: boolean;
@@ -70,6 +71,7 @@ export default function SocialPulseBoard() {
   const [status, setStatus] = useState<"live" | "restored" | "refreshing">(
     socialPulseUpdatedAt ? "restored" : "refreshing"
   );
+  const [basicSignals, setBasicSignals] = useState<any>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -79,16 +81,30 @@ export default function SocialPulseBoard() {
         setError("");
         setStatus((prev) => (data ? "refreshing" : prev));
 
-        const res = await fetchSocialPulse(["BTC", "ETH", "SOL"]);
-        if (!cancelled) {
-          setData(res);
-          setSocialPulseStore(res);
-          setStatus("live");
-        }
-      } catch (e: any) {
-        if (!cancelled) setError(e?.message ?? "unknown");
+    const pulseRes = await fetchSocialPulse(["BTC", "ETH", "SOL"]);
+
+      let basicMarket = null;
+      try {
+        const basicRes = await fetchBasicSignals({
+          window: "1h",
+          assets: ["BTC", "ETH", "SOL"],
+          limit: 3,
+        });
+        basicMarket = basicRes.market;
+      } catch {
+        basicMarket = null;
       }
+
+      if (!cancelled) {
+        setData(pulseRes);
+        setSocialPulseStore(pulseRes);
+        setBasicSignals(basicMarket);
+        setStatus("live");
+      }
+    } catch (e: any) {
+      if (!cancelled) setError(e?.message ?? "unknown");
     }
+  }
 
     load();
     const id = setInterval(load, 10000);
@@ -124,9 +140,10 @@ export default function SocialPulseBoard() {
       avgScore: 0,
       topSymbols: pulse.topAssets ?? [],
     },
+    basicSignals: basicSignals ?? undefined,
     updatedAt: data.ts,
   });
-}, [pulse, data?.ts]);
+}, [pulse, data?.ts, basicSignals]);
 
   const intensityWidth = useMemo(() => {
     const score = Number(pulse?.score ?? 0);
