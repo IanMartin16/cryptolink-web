@@ -308,7 +308,7 @@ export default function SignalsRadarPanel() {
             <div
               key={s.label}
               style={{
-                padding: "14px 16px",
+                padding: "12px 14px",
                 borderRadius: 18,
                 border: `1px solid ${tone.border}`,
                 background: tone.bg,
@@ -316,7 +316,7 @@ export default function SignalsRadarPanel() {
                 justifyContent: "space-between",
                 alignItems: "center",
                 gap: 12,
-                minHeight: 68,
+                minHeight: 60,
                 boxShadow: "inset 0 0 10px rgba(255,255,255,0.015)",
               }}
             >
