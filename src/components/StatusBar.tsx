@@ -8,6 +8,13 @@ function fmt(iso?: string) {
   return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
+type StatusItem = {
+  label: string;
+  ok: boolean;
+  lastOkAt?: string;
+  lastErr?: string;
+};
+
 function Pill({
   label,
   h,
@@ -33,7 +40,7 @@ function Pill({
         borderRadius: 14,
         border: `1px solid ${border}`,
         background: bg,
-        minWidth: 240,
+        minWidth: 220,
       }}
       title={!ok ? err : undefined}
     >
@@ -77,10 +84,21 @@ function Pill({
 export default function StatusBar({
   prices,
   trends,
+  items,
+  trailingLabel = "LIVE · 10s cache · BFF",
 }: {
   prices?: Health;
   trends?: Health;
+  items?: StatusItem[];
+  trailingLabel?: string;
 }) {
+  const derivedItems: StatusItem[] = items
+    ? items
+    : [
+        ...(prices ? [{ label: "Prices", ...prices }] : []),
+        ...(trends ? [{ label: "Trends", ...trends }] : []),
+      ];
+
   return (
     <div
       style={{
@@ -91,23 +109,34 @@ export default function StatusBar({
         alignItems: "center",
       }}
     >
-      { prices && <Pill label="Prices"  h={prices} /> }
-      { trends && <Pill label="Trends" h={trends} /> }
+      {derivedItems.map((item) => (
+        <Pill
+          key={item.label}
+          label={item.label}
+          h={{
+            ok: item.ok,
+            lastOkAt: item.lastOkAt,
+            lastErr: item.lastErr,
+          }}
+        />
+      ))}
 
-      <div
-        style={{
-          marginLeft: "auto",
-          fontSize: 12,
-          opacity: 0.7,
-          padding: "6px 10px",
-          borderRadius: 999,
-          border: "1px solid rgba(255,159,67,0.20)",
-          background: "rgba(255,159,67,0.08)",
-          color: "#ffb86b",
-        }}
-      >
-        LIVE · 10s cache · BFF
-      </div>
+      {trailingLabel ? (
+        <div
+          style={{
+            marginLeft: "auto",
+            fontSize: 12,
+            opacity: 0.7,
+            padding: "6px 10px",
+            borderRadius: 999,
+            border: "1px solid rgba(255,159,67,0.20)",
+            background: "rgba(255,159,67,0.08)",
+            color: "#ffb86b",
+          }}
+        >
+          {trailingLabel}
+        </div>
+      ) : null}
     </div>
   );
 }

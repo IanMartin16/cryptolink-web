@@ -154,26 +154,16 @@ useEffect(() => {
       subtitle="watchlist · Chart overlays · Real-time view"
       badge="BETA"
     />
-      <div className="mb-4 w-full max-w-3x1 rounded-2xl border border-emerald-400/20 bg-emerald-400/[0.08] px-5 py-4 shadow-[0_12px_40px_rgba(0,0,0,0.22)]">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-3">
-            <span className="inline-flex h-4 w-4 rounded-full bg-emerald-300 shadow-[0_0_14px_rgba(110,235,143,0.35)]" />
-            <div>
-              <div className="text-[15px] font-extrabold tracking-wide text-white">
-              Symbols Active
-              </div>
-              <div className="text-sm text-white/70">
-              watchlist · compare · overlays ready
-            </div>
-          </div>
-        </div>
-
-        <div className="text-sm font-semibold text-emerald-200/80">
-          linked to market feed
-        </div>
-      </div>
-    </div>
-      
+      <StatusBar
+        items={[
+          {
+            label: "Symbols",
+            ok: true,
+            lastOkAt: pricesHealth?.lastOkAt,
+          },
+        ]}
+        trailingLabel="watchlist · compare · overlays"
+      />
       <MarketMood
         score={mood.score}
         confidence={mood.confidence}
