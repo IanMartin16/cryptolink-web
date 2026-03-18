@@ -477,81 +477,81 @@ export default function SocialPulseBoard() {
       </div>
 
       <div
-  style={{
-    padding: 16,
-    borderRadius: 20,
-    border: `1px solid rgba(255,255,255,0.10)`,
-    background: "rgba(255,255,255,0.03)",
-    display: "grid",
-    gap: 10,
-    boxShadow: "inset 0 0 16px rgba(255,255,255,0.015)",
-  }}
->
-  <div style={{ fontSize: 13, opacity: 0.68 }}>Live Narrative</div>
+        style={{
+          padding: 16,
+          borderRadius: 20,
+          border: `1px solid rgba(255,255,255,0.10)`,
+          background: "rgba(255,255,255,0.03)",
+          display: "grid",
+          gap: 10,
+          boxShadow: "inset 0 0 16px rgba(255,255,255,0.015)",
+        }}
+      >
+        <div style={{ fontSize: 13, opacity: 0.68 }}>Live Narrative</div>
 
-  <div
-    style={{
-      fontSize: 18,
-      lineHeight: 1.35,
-      fontWeight: 900,
-      color: "rgba(255,255,255,0.92)",
-      letterSpacing: -0.2,
-    }}
-  >
-    {narrative?.headline ?? pulse.summary}
-  </div>
-
-  <div
-    style={{
-      fontSize: 14,
-      lineHeight: 1.55,
-      color: "rgba(255,255,255,0.74)",
-      maxWidth: 1100,
-    }}
-  >
-    {narrative?.subline ?? "Narrative layer is building from current market attention."}
-  </div>
-
-  {narrative?.themes?.length ? (
-    <div
-      style={{
-        display: "flex",
-        flexWrap: "wrap",
-        gap: 8,
-      }}
-    >
-      {narrative.themes.map((tag) => (
         <div
-          key={tag}
           style={{
-            padding: "8px 12px",
-            borderRadius: 999,
-            border: "1px solid rgba(255,255,255,0.10)",
-            background: "rgba(255,255,255,0.035)",
-            fontSize: 12,
-            color: "rgba(255,255,255,0.82)",
-            whiteSpace: "nowrap",
+            fontSize: 18,
+            lineHeight: 1.35,
+            fontWeight: 900,
+            color: "rgba(255,255,255,0.92)",
+            letterSpacing: -0.2,
           }}
         >
-          {tag}
+          {narrative?.headline ?? pulse.summary}
         </div>
-      ))}
-    </div>
-  ) : null}
 
-  {narrative?.note ? (
-    <div
-      style={{
-        fontSize: 13,
-        lineHeight: 1.5,
-        color: "rgba(255,255,255,0.62)",
-      }}
-    >
-      {narrative.note}
-    </div>
-  ) : null}
-</div>
-      {pulse.summary}
+        <div
+          style={{
+            fontSize: 14,
+            lineHeight: 1.55,
+            color: "rgba(255,255,255,0.74)",
+            maxWidth: 1100,
+          }}
+        >
+          {narrative?.subline ?? "Narrative layer is building from current market attention."}
+        </div>
+
+          {narrative?.themes?.length ? (
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 8,
+              }}
+            >
+              {narrative.themes.map((tag) => (
+                <div
+                  key={tag}
+                  style={{
+                    padding: "8px 12px",
+                    borderRadius: 999,
+                    border: "1px solid rgba(255,255,255,0.10)",
+                    background: "rgba(255,255,255,0.035)",
+                    fontSize: 12,
+                    color: "rgba(255,255,255,0.82)",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {tag}
+                </div>
+              ))}
+            </div>
+          ) : null}
+
+           {narrative?.note ? (
+            <div
+              style={{
+                fontSize: 13,
+                lineHeight: 1.5,
+                color: "rgba(255,255,255,0.62)",
+              }}
+            >
+              {narrative.note}
+            </div>
+          ) : null}
+        </div>
+          
         <style jsx>{`
         @keyframes pulseBars {
           0% {
