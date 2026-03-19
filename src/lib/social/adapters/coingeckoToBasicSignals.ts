@@ -108,8 +108,31 @@ export function mapCoinGeckoTrendingToBasicSignals(args: {
 }): SocialLinkBasicSignalsResponse {
   const { trending, window = "1h", ts = new Date().toISOString() } = args;
 
-  const rawCoins = trending.coins ?? [];
+  const FALLBACK_ASSETS = ["BTC", "ETH", "SOL"];
+  const ALLOWED_SOCIAL_ASSETS = new Set([
+  "BTC", "ETH", "SOL", "XRP", "ADA", "BNB", "DOGE", "POL", "AVAX", "DOT",
+  "LINK", "UNI","LTC","USDT","USDC","SHIB","DAI","BCH","XLM","NEAR",
+  "VET","TRX","ATOM","SUI","ARB","FTM", "OP","HYPE","PYUSD","TON",
+  "OKB","PI","LEO","XMR","USDE","CC","WLFI","HBAR","MNT","PAXG"
+  ]);
 
+  function ensureMinimumLeaders(leaders: SocialAttentionItem[]): SocialAttentionItem[] {
+  const existing = new Set(leaders.map((x) => x.asset));
+
+  const fillers = FALLBACK_ASSETS
+    .filter((asset) => !existing.has(asset))
+    .map((asset, index) => ({
+      asset,
+      attentionScore: 45 - index * 5,
+      attentionDeltaPct: 0,
+      direction: "flat" as const,
+      tags: inferTags(asset, asset),
+    }));
+
+  return [...leaders, ...fillers].slice(0, 3);
+}
+
+  const rawCoins = trending.coins ?? [];
   const filteredLeaders = rawCoins
   .map((entry, index) => {
     const item = entry.item;
@@ -131,24 +154,6 @@ export function mapCoinGeckoTrendingToBasicSignals(args: {
   .slice(0, 5);
   const leaders = ensureMinimumLeaders(filteredLeaders);
 
-
-  const FALLBACK_ASSETS = ["BTC", "ETH", "SOL"];
-
-function ensureMinimumLeaders(leaders: SocialAttentionItem[]): SocialAttentionItem[] {
-  const existing = new Set(leaders.map((x) => x.asset));
-
-  const fillers = FALLBACK_ASSETS
-    .filter((asset) => !existing.has(asset))
-    .map((asset, index) => ({
-      asset,
-      attentionScore: 45 - index * 5,
-      attentionDeltaPct: 0,
-      direction: "flat" as const,
-      tags: inferTags(asset, asset),
-    }));
-
-  return [...leaders, ...fillers].slice(0, 3);
-}
 
   const topAssets = leaders.slice(0, 3).map((x) => x.asset);
   const rawTags = [...new Set(leaders.flatMap((x) => x.tags ?? []))];
