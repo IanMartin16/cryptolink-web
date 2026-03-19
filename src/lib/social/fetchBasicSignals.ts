@@ -43,11 +43,10 @@ export async function fetchBasicSignals(args?: {
       if (!remoteRes.ok) {
         throw new Error(`remote basic-signals HTTP ${remoteRes.status}`);
       }
-
+      console.log("fetchBasicSignals -> remote", remoteUrl);
       return remoteRes.json();
     } catch (error) {
       console.warn("Social Link remote failed, falling back to local route:", error);
-      console.log("fetchBasicSignals -> remote", remoteUrl);
     }
   }
 
