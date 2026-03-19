@@ -25,25 +25,27 @@ type CoinGeckoTrendingResponse = {
 function normalizeSymbol(symbol?: string): string {
   return (symbol ?? "").trim().toUpperCase();
 }
+const ALLOWED_SOCIAL_ASSETS = new Set([
+  "BTC", "ETH", "SOL", "XRP", "ADA", "BNB", "DOGE", "POL", "AVAX", "DOT",
+  "LINK", "UNI","LTC","USDT","USDC","SHIB","DAI","BCH","XLM","NEAR",
+  "VET","TRX","ATOM","SUI","ARB","FTM", "OP","HYPE","PYUSD","TON",
+  "OKB","PI","LEO","XMR","USDE","CC","WLFI","HBAR","MNT","PAXG"
+]);
 
 function attentionScoreFromRank(rank?: number, index = 0): number {
   const safeRank = typeof rank === "number" && rank > 0 ? rank : 9999;
-  const rankBoost = Math.max(0, 100 - Math.min(90, Math.floor(safeRank / 20)));
-  const positionBoost = Math.max(0, 18 - index * 4);function attentionScoreFromRank(rank?: number, index = 0): number {
-  const safeRank = typeof rank === "number" && rank > 0 ? rank : 9999;
 
   const rankComponent =
-    safeRank <= 3 ? 92 :
-    safeRank <= 10 ? 82 :
-    safeRank <= 25 ? 68 :
-    safeRank <= 50 ? 54 :
-    40;
+    safeRank <= 2 ? 92 :
+    safeRank <= 5 ? 84 :
+    safeRank <= 10 ? 74 :
+    safeRank <= 25 ? 60 :
+    safeRank <= 50 ? 48 :
+    34;
 
-  const positionPenalty = index * 8;
+  const positionPenalty = index * 10;
 
-  return Math.max(20, Math.min(100, rankComponent - positionPenalty));
-}
-  return Math.max(10, Math.min(100, rankBoost + positionBoost));
+  return Math.max(18, Math.min(100, rankComponent - positionPenalty));
 }
 
 function attentionDeltaFromPriceChange(change?: number, index = 0): number {
@@ -108,25 +110,45 @@ export function mapCoinGeckoTrendingToBasicSignals(args: {
 
   const rawCoins = trending.coins ?? [];
 
-  const leaders: SocialAttentionItem[] = rawCoins
-    .map((entry, index) => {
-      const item = entry.item;
-      const asset = normalizeSymbol(item.symbol);
-      const delta = attentionDeltaFromPriceChange(
-        item.data?.price_change_percentage_24h?.usd,
-        index
-      );
+  const filteredLeaders = rawCoins
+  .map((entry, index) => {
+    const item = entry.item;
+    const asset = normalizeSymbol(item.symbol);
+    const delta = attentionDeltaFromPriceChange(
+      item.data?.price_change_percentage_24h?.usd,
+      index
+    );
 
-      return {
-        asset,
-        attentionScore: attentionScoreFromRank(item.market_cap_rank, index),
-        attentionDeltaPct: delta,
-        direction: directionFromDelta(delta),
-        tags: inferTags(asset, item.name),
-      };
-    })
-    .filter((x) => !!x.asset)
-    .slice(0, 5);
+    return {
+      asset,
+      attentionScore: attentionScoreFromRank(item.market_cap_rank, index),
+      attentionDeltaPct: delta,
+      direction: directionFromDelta(delta),
+      tags: inferTags(asset, item.name),
+    };
+  })
+  .filter((x) => !!x.asset && ALLOWED_SOCIAL_ASSETS.has(x.asset))
+  .slice(0, 5);
+  const leaders = ensureMinimumLeaders(filteredLeaders);
+
+
+  const FALLBACK_ASSETS = ["BTC", "ETH", "SOL"];
+
+function ensureMinimumLeaders(leaders: SocialAttentionItem[]): SocialAttentionItem[] {
+  const existing = new Set(leaders.map((x) => x.asset));
+
+  const fillers = FALLBACK_ASSETS
+    .filter((asset) => !existing.has(asset))
+    .map((asset, index) => ({
+      asset,
+      attentionScore: 45 - index * 5,
+      attentionDeltaPct: 0,
+      direction: "flat" as const,
+      tags: inferTags(asset, asset),
+    }));
+
+  return [...leaders, ...fillers].slice(0, 3);
+}
 
   const topAssets = leaders.slice(0, 3).map((x) => x.asset);
   const rawTags = [...new Set(leaders.flatMap((x) => x.tags ?? []))];

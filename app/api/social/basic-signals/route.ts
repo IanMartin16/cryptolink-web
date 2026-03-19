@@ -4,13 +4,42 @@ import {
   mockCoinGeckoTrending,
 } from "@/lib/social/adapters/coingeckoToBasicSignals";
 
+const COINGECKO_TRENDING_URL = "https://api.coingecko.com/api/v3/search/trending";
+
 export async function GET() {
-  const result = mapCoinGeckoTrendingToBasicSignals({
-    trending: mockCoinGeckoTrending,
-    window: "1h",
-  });
+  try {
+    const res = await fetch(COINGECKO_TRENDING_URL, {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+      },
+      cache: "no-store",
+    });
 
-  console.log("BASIC SIGNALS ROUTE", result);
+    if (!res.ok) {
+      throw new Error(`CoinGecko HTTP ${res.status}`);
+    }
 
-  return NextResponse.json(result);
+    const trending = await res.json();
+
+    const result = mapCoinGeckoTrendingToBasicSignals({
+      trending,
+      window: "1h",
+      ts: new Date().toISOString(),
+    });
+
+    console.log("BASIC SIGNALS REAL", result);
+
+    return NextResponse.json(result);
+  } catch (error: any) {
+    console.warn("CoinGecko fallback to mock:", error?.message ?? error);
+
+    const fallback = mapCoinGeckoTrendingToBasicSignals({
+      trending: mockCoinGeckoTrending,
+      window: "1h",
+      ts: new Date().toISOString(),
+    });
+
+    return NextResponse.json(fallback);
+  }
 }

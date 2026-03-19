@@ -1,5 +1,5 @@
 export const SYMBOL_META: Record<string, { name: string }> = {
- BTC: { name: "Bitcoin" },
+  BTC: { name: "Bitcoin" },
   ETH: { name: "Ethereum" },
   SOL: { name: "Solana" },
   XRP: { name: "XRP" },
