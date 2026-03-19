@@ -39,6 +39,7 @@ export async function fetchBasicSignals(args?: {
         },
         cache: "no-store",
       });
+      console.log("🚀 Data desde Railway:", remoteUrl);
 
       if (!remoteRes.ok) {
         throw new Error(`remote basic-signals HTTP ${remoteRes.status}`);
@@ -49,6 +50,7 @@ export async function fetchBasicSignals(args?: {
       console.warn("Social Link remote failed, falling back to local route:", error);
     }
   }
+  
 
   // 2) fallback local
   const localRes = await fetch(localUrl, {

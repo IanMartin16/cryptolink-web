@@ -114,11 +114,6 @@ export default function SocialPulseBoard() {
       clearInterval(id);
     };
   }, []);
-  useEffect(() => {
-  if (basicSignals) {
-    console.log("BASIC SIGNALS SOURCE", basicSignals);
-  }
-}, [basicSignals]);
 
   const pulse = data?.socialPulse;
   const tone = pulseTone(pulse?.state || "neutral");
