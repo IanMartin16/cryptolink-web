@@ -157,6 +157,11 @@ useEffect(() => {
   }
 
 }, [narrative, data, pulse, basicSignals]);
+useEffect(() => {
+  if (basicSignals) {
+    console.log("BASIC SIGNALS SOURCE", basicSignals);
+  }
+}, [basicSignals]);
 
 
   const intensityWidth = useMemo(() => {
