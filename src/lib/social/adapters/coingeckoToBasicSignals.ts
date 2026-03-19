@@ -27,7 +27,6 @@ function normalizeSymbol(symbol?: string): string {
 }
 
 function attentionScoreFromRank(rank?: number, index = 0): number {
-  // score simple: mejor rank + mejor posición = más score
   const safeRank = typeof rank === "number" && rank > 0 ? rank : 9999;
   const rankBoost = Math.max(0, 100 - Math.min(90, Math.floor(safeRank / 20)));
   const positionBoost = Math.max(0, 18 - index * 4);
@@ -35,8 +34,6 @@ function attentionScoreFromRank(rank?: number, index = 0): number {
 }
 
 function attentionDeltaFromPriceChange(change?: number, index = 0): number {
-  // fallback simple y honesto para esta etapa:
-  // si hay cambio 24h úsalo; si no, usa una pendiente artificial pequeña por posición
   if (typeof change === "number" && Number.isFinite(change)) {
     return Number(change.toFixed(2));
   }
@@ -79,12 +76,6 @@ export function mapCoinGeckoTrendingToBasicSignals(args: {
   ts?: string;
 }): SocialLinkBasicSignalsResponse {
   const { trending, window = "1h", ts = new Date().toISOString() } = args;
-  const basicSignals = mapCoinGeckoTrendingToBasicSignals({
-  trending: mockCoinGeckoTrending,
-  window: "1h",
-});
-
-console.log("BASIC SIGNALS", basicSignals);
 
   const rawCoins = trending.coins ?? [];
 
@@ -109,9 +100,7 @@ console.log("BASIC SIGNALS", basicSignals);
     .slice(0, 5);
 
   const topAssets = leaders.slice(0, 3).map((x) => x.asset);
-
   const tags = [...new Set(leaders.flatMap((x) => x.tags ?? []))].slice(0, 4);
-
   const coverage = deriveCoverage(topAssets, tags);
 
   return {
@@ -175,3 +164,10 @@ export const mockCoinGeckoTrending: CoinGeckoTrendingResponse = {
     },
   ],
 };
+
+const basicSignals = mapCoinGeckoTrendingToBasicSignals({
+  trending: mockCoinGeckoTrending,
+  window: "1h",
+});
+
+console.log("BASIC SIGNALS", basicSignals);

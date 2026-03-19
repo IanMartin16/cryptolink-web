@@ -1,6 +1,16 @@
 import { NextResponse } from "next/server";
-import { socialLinkBasicSignalsMock } from "@/lib/social/basicSignalsMock";
+import {
+  mapCoinGeckoTrendingToBasicSignals,
+  mockCoinGeckoTrending,
+} from "@/lib/social/adapters/coingeckoToBasicSignals";
 
 export async function GET() {
-  return NextResponse.json(socialLinkBasicSignalsMock);
+  const result = mapCoinGeckoTrendingToBasicSignals({
+    trending: mockCoinGeckoTrending,
+    window: "1h",
+  });
+
+  console.log("BASIC SIGNALS ROUTE", result);
+
+  return NextResponse.json(result);
 }
