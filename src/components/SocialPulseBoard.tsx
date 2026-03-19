@@ -105,11 +105,6 @@ export default function SocialPulseBoard() {
       if (!cancelled) setError(e?.message ?? "unknown");
     }
   }
-  useEffect(() => {
-  if (basicSignals) {
-    console.log("BASIC SIGNALS SOURCE", basicSignals);
-  }
-}, [basicSignals]);
 
     load();
     const id = setInterval(load, 10000);
@@ -119,6 +114,11 @@ export default function SocialPulseBoard() {
       clearInterval(id);
     };
   }, []);
+  useEffect(() => {
+  if (basicSignals) {
+    console.log("BASIC SIGNALS SOURCE", basicSignals);
+  }
+}, [basicSignals]);
 
   const pulse = data?.socialPulse;
   const tone = pulseTone(pulse?.state || "neutral");
