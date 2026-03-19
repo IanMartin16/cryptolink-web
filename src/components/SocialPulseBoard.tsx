@@ -83,22 +83,23 @@ export default function SocialPulseBoard() {
 
     const pulseRes = await fetchSocialPulse(["BTC", "ETH", "SOL"]);
 
-      let basicMarket = null;
+      let basicResData = null;
       try {
         const basicRes = await fetchBasicSignals({
           window: "1h",
           assets: ["BTC", "ETH", "SOL"],
           limit: 3,
         });
-        basicMarket = basicRes.market;
-      } catch {
-        basicMarket = null;
+        basicResData = basicRes;
+      } catch (error){
+        console.error("basicSignals fetch failed", error);
+        basicResData = null;
       }
 
       if (!cancelled) {
         setData(pulseRes);
         setSocialPulseStore(pulseRes);
-        setBasicSignals(basicMarket);
+        setBasicSignals(basicResData);
         setStatus("live");
       }
     } catch (e: any) {
@@ -140,23 +141,24 @@ export default function SocialPulseBoard() {
       avgScore: 0,
       topSymbols: pulse.topAssets ?? [],
     },
-    basicSignals: basicSignals ?? undefined,
+    basicSignals: basicSignals?.market ?? undefined,
     updatedAt: data.ts,
   });
 }, [pulse, data?.ts, basicSignals]);
 
 useEffect(() => {
-  if (!narrative) {
-    console.log("LIVE NARRATIVE: not ready yet", {
-      hasData: !!data,
-      hasPulse: !!pulse,
-      hasTs: !!data?.ts,
-      hasBasicSignals: !!basicSignals,
-    });
+  if (!basicSignals) {
+    console.log("BASIC SIGNALS: not loaded");
     return;
   }
 
-}, [narrative, data, pulse, basicSignals]);
+  console.log("BASIC SIGNALS READY", {
+    source: basicSignals.source,
+    ts: basicSignals.ts,
+    window: basicSignals.window,
+    market: basicSignals.market,
+  });
+}, [basicSignals]);
 
   const intensityWidth = useMemo(() => {
     const score = Number(pulse?.score ?? 0);

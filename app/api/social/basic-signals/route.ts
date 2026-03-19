@@ -1,3 +1,5 @@
+//app/api/social/basic-signals/route.ts
+
 import { NextResponse } from "next/server";
 import {
   mapCoinGeckoTrendingToBasicSignals,
