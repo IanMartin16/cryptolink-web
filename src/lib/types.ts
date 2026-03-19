@@ -9,6 +9,9 @@ export type PriceRow = {
   cache?: string;
   ts?: string;
   source?: string;
+  change24h?: number;
+  marketCap?: number;
+  volume24h?: number;
 };
 
 export type TrendItem = {

@@ -62,6 +62,19 @@ export function usePricesFeed({
           const err = d?.error || d?.message || (!item.ok ? "upstream_error" : undefined);
           const ts = d?.ts ?? d?.data?.ts;
           const source = d?.source ?? d?.data?.source;
+          const change24h =
+            d?.change24h ??
+            d?.change_24h ??
+            d?.price_change_percentage_24h ??
+            d?.data?.change24h ??
+            d?.data?.change_24h ??
+            d?.data?.price_change_percentage_24h;
+
+          const marketCap =
+            d?.marketCap ??
+            d?.market_cap ??
+            d?.data?.marketCap ??
+            d?.data?.market_cap;
 
           return {
             symbol: item.symbol,
@@ -73,6 +86,8 @@ export function usePricesFeed({
             ts,
             source,
             updatedAt: new Date().toISOString(),
+            change24h: typeof change24h === "number" ? change24h : undefined,
+            marketCap: typeof marketCap === "number" ? marketCap : undefined,
           };
         });
 

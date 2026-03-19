@@ -114,6 +114,19 @@ export default function PricesPanel({
     });
   }
 
+  function formatCompactMarketCap(value?: number) {
+    if (typeof value !== "number" || !Number.isFinite(value)) return "—";
+
+    const abs = Math.abs(value);
+
+    if (abs >= 1_000_000_000_000) return `${(value / 1_000_000_000_000).toFixed(2)}T`;
+    if (abs >= 1_000_000_000) return `${(value / 1_000_000_000).toFixed(2)}B`;
+    if (abs >= 1_000_000) return `${(value / 1_000_000).toFixed(2)}M`;
+    if (abs >= 1_000) return `${(value / 1_000).toFixed(2)}K`;
+
+    return value.toFixed(0);
+  }
+
   function Chip({ children }: { children: React.ReactNode }) {
     return (
       <span
@@ -260,8 +273,8 @@ export default function PricesPanel({
                 <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800}}>Symbol</th>
                 <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Status</th>
                 <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Price</th>
-                <th style={{ padding: "8px 6px" }}>Updated</th>
-                <th style={{ padding: "8px 6px" }}>Source</th>
+                <th style={{ padding: "8px 6px" }}>24h</th>
+                <th style={{ padding: "8px 6px" }}>MCap</th>
               </tr>
             </thead>
             <tbody>
@@ -291,8 +304,8 @@ export default function PricesPanel({
                 <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Symbol</th>
                 <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Status</th>
                 <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Price</th>
-                <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Updated</th>
-                <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Source</th>
+                <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>24h</th>
+                <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>MCap</th>
               </tr>
             </thead>
             <tbody>
@@ -388,13 +401,27 @@ export default function PricesPanel({
                     </span>
                   </td>
 
-                  <td style={{ padding: "12px 8px", opacity: 0.85, fontSize: 12 }}>
-                    {shortTime(r.updatedAt ?? r.ts)}
-                  </td>
-
-                  <td style={{ padding: "12px 8px", opacity: 0.85, fontSize: 12 }}>
-                    {r.source ?? "—"}
-                  </td>
+                  <td style={{ padding: "12px 8px", fontSize: 12, fontWeight: 800 }}>
+                    <span
+                      style={{
+                        color:
+                          typeof r.change24h !== "number"
+                            ? "rgba(255,255,255,0.55)"
+                            : r.change24h > 0
+                            ? UI.green
+                            : r.change24h < 0
+                            ? UI.red
+                            : "rgba(255,255,255,0.65)",
+                          }}
+                        >
+                          {typeof r.change24h === "number"
+                            ? `${r.change24h > 0 ? "+" : ""}${r.change24h.toFixed(2)}%`
+                            : "—"}
+                        </span>
+                      </td>
+                    <td style={{ padding: "12px 8px", opacity: 0.88, fontSize: 12, fontWeight: 700 }}>
+                      {formatCompactMarketCap(r.marketCap)}
+                    </td>
                 </tr>
                 );
               })}
