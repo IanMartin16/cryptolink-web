@@ -61,6 +61,22 @@ function directionFromDelta(delta: number): "up" | "down" | "flat" {
   return "flat";
 }
 
+const NARRATIVE_TAGS = new Set([
+  "majors-led",
+  "layer1",
+  "meme",
+  "defi",
+  "selective breadth",
+  "mixed participation",
+  "trend expansion",
+  "risk-off",
+]);
+
+const ASSET_DESCRIPTOR_TAGS = new Set([
+  "store-of-value",
+  "smart-contracts",
+]);
+
 function inferTags(symbol: string, name?: string): string[] {
   const s = symbol.toUpperCase();
   const n = (name ?? "").toLowerCase();
@@ -113,7 +129,14 @@ export function mapCoinGeckoTrendingToBasicSignals(args: {
     .slice(0, 5);
 
   const topAssets = leaders.slice(0, 3).map((x) => x.asset);
-  const tags = [...new Set(leaders.flatMap((x) => x.tags ?? []))].slice(0, 4);
+  const rawTags = [...new Set(leaders.flatMap((x) => x.tags ?? []))];
+
+  const narrativeTags = rawTags.filter((tag) => NARRATIVE_TAGS.has(tag));
+  const descriptorTags = rawTags.filter((tag) => ASSET_DESCRIPTOR_TAGS.has(tag));
+  const tags =
+  narrativeTags.length > 0
+    ? narrativeTags.slice(0, 4)
+    : rawTags.slice(0, 4);
   const coverage = deriveCoverage(topAssets, tags);
 
   return {
