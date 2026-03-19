@@ -21,7 +21,7 @@ export async function fetchBasicSignals(args?: {
   limit?: number;
 }): Promise<SocialLinkBasicSignalsResponse> {
   const qs = buildQuery(args);
-
+console.log("NEXT_PUBLIC_SOCIAL_LINK_BASE_URL =", process.env.NEXT_PUBLIC_SOCIAL_LINK_BASE_URL);
   const remoteBase = process.env.NEXT_PUBLIC_SOCIAL_LINK_BASE_URL;
   const remoteUrl = remoteBase
     ? `${remoteBase}/internal/v1/basic-signals${qs}`
