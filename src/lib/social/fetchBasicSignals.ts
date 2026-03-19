@@ -62,6 +62,7 @@ export async function fetchBasicSignals(args?: {
   if (!localRes.ok) {
     throw new Error(`local basic-signals HTTP ${localRes.status}`);
   }
-
+console.warn("fetchBasicSignals -> fallback local");
   return localRes.json();
+  
 }
