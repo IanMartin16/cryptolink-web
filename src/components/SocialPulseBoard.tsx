@@ -145,6 +145,21 @@ export default function SocialPulseBoard() {
   });
 }, [pulse, data?.ts, basicSignals]);
 
+useEffect(() => {
+  if (!narrative) {
+    console.log("LIVE NARRATIVE: not ready yet", {
+      hasData: !!data,
+      hasPulse: !!pulse,
+      hasTs: !!data?.ts,
+      hasBasicSignals: !!basicSignals,
+    });
+    return;
+  }
+
+  console.log("LIVE NARRATIVE READY", narrative);
+}, [narrative, data, pulse, basicSignals]);
+
+
   const intensityWidth = useMemo(() => {
     const score = Number(pulse?.score ?? 0);
     return `${Math.max(8, Math.min(100, score))}%`;
@@ -505,6 +520,11 @@ export default function SocialPulseBoard() {
         }}
       >
         <div style={{ fontSize: 13, opacity: 0.68 }}><span style={{ color: UI.orange }}>Live Narrative</span></div>
+        <div style={{ fontSize: 12, opacity: 0.58 }}>
+          {narrative?.sourceType === "hybrid"
+            ? "derived + real attention"
+            : "derived narrative"}
+        </div>
 
         <div
           style={{

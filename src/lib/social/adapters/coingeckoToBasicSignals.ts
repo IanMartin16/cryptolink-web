@@ -29,7 +29,20 @@ function normalizeSymbol(symbol?: string): string {
 function attentionScoreFromRank(rank?: number, index = 0): number {
   const safeRank = typeof rank === "number" && rank > 0 ? rank : 9999;
   const rankBoost = Math.max(0, 100 - Math.min(90, Math.floor(safeRank / 20)));
-  const positionBoost = Math.max(0, 18 - index * 4);
+  const positionBoost = Math.max(0, 18 - index * 4);function attentionScoreFromRank(rank?: number, index = 0): number {
+  const safeRank = typeof rank === "number" && rank > 0 ? rank : 9999;
+
+  const rankComponent =
+    safeRank <= 3 ? 92 :
+    safeRank <= 10 ? 82 :
+    safeRank <= 25 ? 68 :
+    safeRank <= 50 ? 54 :
+    40;
+
+  const positionPenalty = index * 8;
+
+  return Math.max(20, Math.min(100, rankComponent - positionPenalty));
+}
   return Math.max(10, Math.min(100, rankBoost + positionBoost));
 }
 
