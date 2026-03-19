@@ -94,6 +94,11 @@ export default function SocialPulseBoard() {
       } catch {
         basicMarket = null;
       }
+      useEffect(() => {
+  if (basicSignals) {
+    console.log("BASIC SIGNALS SOURCE", basicSignals);
+  }
+}, [basicSignals]);
 
       if (!cancelled) {
         setData(pulseRes);
@@ -157,12 +162,6 @@ useEffect(() => {
   }
 
 }, [narrative, data, pulse, basicSignals]);
-useEffect(() => {
-  if (basicSignals) {
-    console.log("BASIC SIGNALS SOURCE", basicSignals);
-  }
-}, [basicSignals]);
-
 
   const intensityWidth = useMemo(() => {
     const score = Number(pulse?.score ?? 0);
