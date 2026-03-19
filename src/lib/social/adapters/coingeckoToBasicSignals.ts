@@ -25,12 +25,6 @@ type CoinGeckoTrendingResponse = {
 function normalizeSymbol(symbol?: string): string {
   return (symbol ?? "").trim().toUpperCase();
 }
-const ALLOWED_SOCIAL_ASSETS = new Set([
-  "BTC", "ETH", "SOL", "XRP", "ADA", "BNB", "DOGE", "POL", "AVAX", "DOT",
-  "LINK", "UNI","LTC","USDT","USDC","SHIB","DAI","BCH","XLM","NEAR",
-  "VET","TRX","ATOM","SUI","ARB","FTM", "OP","HYPE","PYUSD","TON",
-  "OKB","PI","LEO","XMR","USDE","CC","WLFI","HBAR","MNT","PAXG"
-]);
 
 function attentionScoreFromRank(rank?: number, index = 0): number {
   const safeRank = typeof rank === "number" && rank > 0 ? rank : 9999;

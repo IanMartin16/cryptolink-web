@@ -156,7 +156,6 @@ useEffect(() => {
     return;
   }
 
-  console.log("LIVE NARRATIVE READY", narrative);
 }, [narrative, data, pulse, basicSignals]);
 
 
