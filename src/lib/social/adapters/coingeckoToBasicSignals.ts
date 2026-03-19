@@ -79,6 +79,12 @@ export function mapCoinGeckoTrendingToBasicSignals(args: {
   ts?: string;
 }): SocialLinkBasicSignalsResponse {
   const { trending, window = "1h", ts = new Date().toISOString() } = args;
+  const basicSignals = mapCoinGeckoTrendingToBasicSignals({
+  trending: mockCoinGeckoTrending,
+  window: "1h",
+});
+
+console.log("BASIC SIGNALS", basicSignals);
 
   const rawCoins = trending.coins ?? [];
 
@@ -169,10 +175,3 @@ export const mockCoinGeckoTrending: CoinGeckoTrendingResponse = {
     },
   ],
 };
-
-const basicSignals = mapCoinGeckoTrendingToBasicSignals({
-  trending: mockCoinGeckoTrending,
-  window: "1h",
-});
-
-console.log("BASIC SIGNALS", basicSignals);
