@@ -76,13 +76,14 @@ function compactAssets(list: string[], max = 3): string[] {
 }
 
  function resolveFocusAssets(input: LiveNarrativeInput): string[] {
-  const real = input.basicSignals?.topAssets ?? [];
+  const leaders = input.basicSignals?.attentionLeaders?.map((x) => x.asset) ?? [];
+  const realTop = input.basicSignals?.topAssets ?? [];
   const derived = [
     ...input.socialPulse.topAssets,
     ...input.trends.topSymbols,
   ];
 
-  return compactAssets([...real, ...derived], 3);
+  return compactAssets([...leaders, ...realTop, ...derived], 3);
 }
 
 function resolveAttentionLeaders(input: LiveNarrativeInput): string[] {
