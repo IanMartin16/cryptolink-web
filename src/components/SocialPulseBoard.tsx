@@ -115,6 +115,19 @@ export default function SocialPulseBoard() {
       clearInterval(id);
     };
   }, []);
+  useEffect(() => {
+  if (!basicSignals) {
+    console.log("BASIC SIGNALS: not loaded");
+    return;
+  }
+
+  console.log("BASIC SIGNALS READY", {
+    source: basicSignals.source,
+    ts: basicSignals.ts,
+    window: basicSignals.window,
+    market: basicSignals.market,
+  });
+}, [basicSignals]);
 
   const pulse = data?.socialPulse;
   const tone = pulseTone(pulse?.state || "neutral");
