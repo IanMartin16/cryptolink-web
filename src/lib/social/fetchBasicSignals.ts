@@ -39,6 +39,7 @@ export async function fetchBasicSignals(args?: {
         },
         cache: "no-store",
       });
+      
 
       if (!remoteRes.ok) {
         throw new Error(`remote basic-signals HTTP ${remoteRes.status}`);
@@ -48,7 +49,6 @@ export async function fetchBasicSignals(args?: {
       console.log("🚀 Data desde Railway:", remoteUrl);
     }
   }
-  
 
   // 2) fallback local
   const localRes = await fetch(localUrl, {

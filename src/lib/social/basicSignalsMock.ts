@@ -6,6 +6,13 @@ export type SocialAttentionItem = {
   tags?: string[];
 };
 
+export type MarketBackdrop = {
+  fearGreedValue?: number;
+  fearGreedLabel?: string;
+  source?: string;
+  ts?: string;
+}
+
 export type SocialLinkBasicSignalsResponse = {
   ok: boolean;
   source: string;
@@ -18,6 +25,7 @@ export type SocialLinkBasicSignalsResponse = {
     tags: string[];
     coverage: "low" | "moderate" | "broad";
   };
+  backdrop?: MarketBackdrop;
 };
 
 export const socialLinkBasicSignalsMock: SocialLinkBasicSignalsResponse = {

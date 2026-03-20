@@ -6,6 +6,7 @@ import { fetchSocialPulse } from "@/lib/cryptoLink";
 import { useMarketSignalsStore } from "@/lib/stores/marketSignalsStore";
 import { buildLiveNarrative } from "@/lib/social/liveNarrative";
 import { fetchBasicSignals } from "@/lib/social/fetchBasicSignals"
+import { MarketBackdrop, SocialLinkBasicSignalsResponse } from  "@/lib/social/basicSignalsMock"
 
 type SocialPulseResponse = {
   ok: boolean;
