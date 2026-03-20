@@ -160,6 +160,7 @@ export default function SocialPulseBoard() {
   });
 }, [pulse, data?.ts, basicSignals]);
 
+console.log("live narrative ready", narrative);
   const intensityWidth = useMemo(() => {
     const score = Number(pulse?.score ?? 0);
     return `${Math.max(8, Math.min(100, score))}%`;
