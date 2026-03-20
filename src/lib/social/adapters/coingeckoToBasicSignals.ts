@@ -89,9 +89,24 @@ function inferTags(symbol: string, name?: string): string[] {
   return [...new Set(tags)];
 }
 
-function deriveCoverage(topAssets: string[], tags: string[]): "low" | "moderate" | "broad" {
-  if (topAssets.length >= 4 && tags.length >= 4) return "broad";
-  if (topAssets.length >= 2 && tags.length >= 2) return "moderate";
+function deriveCoverage(args: {
+  leaders: SocialAttentionItem[];
+  losers: SocialAttentionItem[];
+  tags: string[];
+}): "low" | "moderate" | "broad" {
+  const { leaders, losers, tags } = args;
+
+  const totalSignals = leaders.length + losers.length;
+  const tagCount = tags.length;
+
+  if (leaders.length >= 4 && losers.length >= 2 && tagCount >= 3) {
+    return "broad";
+  }
+
+  if (leaders.length >= 3 && totalSignals >= 4 && tagCount >= 2) {
+    return "moderate";
+  }
+
   return "low";
 }
 
@@ -188,14 +203,11 @@ export function mapCoinGeckoTrendingToBasicSignals(args: {
       ...attentionLosers.flatMap((x) => x.tags ?? []),
     ]),
   ];
-
-  const narrativeTags = rawTags.filter((tag) => NARRATIVE_TAGS.has(tag));
-  const descriptorTags = rawTags.filter((tag) => ASSET_DESCRIPTOR_TAGS.has(tag));
-  const tags =
-  narrativeTags.length > 0
-    ? narrativeTags.slice(0, 4)
-    : rawTags.slice(0, 4);
-  const coverage = deriveCoverage(topAssets, tags);
+  const marketTags = buildMarketNarrativeTags({ leaders, losers: attentionLosers });
+  const filteredRawTags = rawTags.filter((tag) => NARRATIVE_TAGS.has(tag));
+  const tags = [...new Set([...marketTags, ...filteredRawTags])].slice(0, 4);
+  
+  const coverage = deriveCoverage({leaders, losers: attentionLosers, tags});
 
   return {
     ok: true,
@@ -211,6 +223,74 @@ export function mapCoinGeckoTrendingToBasicSignals(args: {
     },
   };
 }
+
+function buildMarketNarrativeTags(args: {
+  leaders: SocialAttentionItem[];
+  losers: SocialAttentionItem[];
+}): string[] {
+  const { leaders, losers } = args;
+
+  const tags: string[] = [];
+
+  const leaderAssets = leaders.map((x) => x.asset);
+  const loserAssets = losers.map((x) => x.asset);
+
+  const leaderMajors = leaderAssets.filter(isMajorAsset).length;
+  const leaderMemes = leaderAssets.filter(isMemeAsset).length;
+  const leaderLayer1 = leaderAssets.filter(isLayer1Asset).length;
+  const leaderDefi = leaderAssets.filter(isDefiAsset).length;
+
+  const loserMajors = loserAssets.filter(isMajorAsset).length;
+  const loserMemes = loserAssets.filter(isMemeAsset).length;
+
+  // liderazgo de majors
+  if (leaderMajors >= 1) tags.push("majors-led");
+
+  // breadth / participation
+  if (leaders.length >= 3) tags.push("selective breadth");
+  if (leaders.length >= 4) tags.push("broad participation");
+
+  // mezcla de sectores
+  const sectorKinds =
+    Number(leaderMajors > 0) +
+    Number(leaderLayer1 > 0) +
+    Number(leaderMemes > 0) +
+    Number(leaderDefi > 0);
+
+  if (sectorKinds >= 2) tags.push("mixed participation");
+  if (sectorKinds >= 3) tags.push("trend expansion");
+
+  // sesgo risk-off simple
+  if (leaderMajors >= 1 && loserMemes >= 1) tags.push("risk-off");
+
+  // si el liderazgo viene más de meme
+  if (leaderMemes >= 1 && leaderMajors === 0) tags.push("meme-led");
+
+  // si domina L1
+  if (leaderLayer1 >= 2) tags.push("layer1 rotation");
+
+  // si majors están perdiendo foco
+  if (loserMajors >= 1 && leaderMajors === 0) tags.push("weak major participation");
+
+  return [...new Set(tags)].slice(0, 4);
+}
+
+function isMajorAsset(asset: string): boolean {
+  return asset === "BTC" || asset === "ETH";
+}
+
+function isMemeAsset(asset: string): boolean {
+  return ["DOGE", "SHIB", "PEPE", "FLOKI"].includes(asset);
+}
+
+function isLayer1Asset(asset: string): boolean {
+  return ["SOL", "ADA", "AVAX", "ATOM", "NEAR"].includes(asset);
+}
+
+function isDefiAsset(asset: string): boolean {
+  return ["LINK", "UNI", "AAVE", "MKR"].includes(asset);
+}
+
 
 export const mockCoinGeckoTrending: CoinGeckoTrendingResponse = {
   coins: [

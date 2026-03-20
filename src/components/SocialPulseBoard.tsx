@@ -417,7 +417,7 @@ export default function SocialPulseBoard() {
               }}
             >
               <div>
-              <div style={{ fontSize: 13, opacity: 0.68 }}>Focus Assets</div>
+              <div style={{ fontSize: 13, opacity: 0.68 }}><span style={{ color: UI.orange }}>Focus Assets</span></div>
 
               <div
                 style={{
