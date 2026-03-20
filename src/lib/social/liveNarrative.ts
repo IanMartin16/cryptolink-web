@@ -40,6 +40,12 @@ export type LiveNarrativeInput = {
     confidence: number;
   };
   basicSignals?: BasicSignalsInput;
+  backdrop?: {
+    fearGreedValue?: number;
+    fearGreedLabel?: string;
+    source?: string;
+    ts?: string;
+  }
   updatedAt: string;
 };
 
@@ -282,6 +288,7 @@ function buildNote(args: {
   trends: LiveNarrativeInput["trends"];
   mood?: LiveNarrativeInput["mood"];
   basicSignals?: LiveNarrativeInput["basicSignals"];
+  backdrop?: LiveNarrativeInput["backdrop"];
 }): string | undefined {
   const { state, breadth, confidence, leadership, trends, mood, basicSignals } = args;
 
@@ -313,6 +320,23 @@ function buildNote(args: {
   if (breadth === "weak" && state === "bearish") {
     return "Downside pressure is visible, though participation is still too narrow for broad confirmation.";
   }
+  
+  if (args.backdrop?.fearGreedValue != null) {
+  const fg = args.backdrop.fearGreedValue;
+  const label = args.backdrop.fearGreedLabel?.toLowerCase() ?? "";
+
+  if (fg <= 30) {
+    return "Broader risk appetite remains fragile; treat upside attention with caution.";
+  }
+
+  if (fg >= 70) {
+    return "Broader risk appetite is supportive; attention leaders may see cleaner follow-through.";
+  }
+
+  if (label.includes("neutral")) {
+    // no fuerces nota si ya hay otra mejor
+  }
+}
 
   return undefined;
 }

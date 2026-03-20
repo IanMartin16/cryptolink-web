@@ -142,6 +142,7 @@ export default function SocialPulseBoard() {
       topSymbols: pulse.topAssets ?? [],
     },
     basicSignals: basicSignals?.market ?? undefined,
+    backdrop: basicSignals?.backdrop ?? undefined,
     updatedAt: data.ts,
   });
 }, [pulse, data?.ts, basicSignals]);
