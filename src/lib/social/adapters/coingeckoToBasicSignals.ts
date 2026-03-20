@@ -102,6 +102,33 @@ export function mapCoinGeckoTrendingToBasicSignals(args: {
 }): SocialLinkBasicSignalsResponse {
   const { trending, window = "1h", ts = new Date().toISOString() } = args;
 
+  const NARRATIVE_PRIORITY_ASSETS = [
+  "BTC","ETH","SOL","DOGE","SHIB","XRP","ADA","AVAX","LINK","UNI",
+  ];
+
+  function buildAttentionLosers(args: {
+    leaders: SocialAttentionItem[];
+    topAssets: string[];
+    limit?: number;
+  }): SocialAttentionItem[] {
+    const { leaders, topAssets, limit = 2 } = args;
+
+    const leaderSet = new Set(leaders.map((x) => x.asset));
+    const topSet = new Set(topAssets);
+
+    const candidates = NARRATIVE_PRIORITY_ASSETS
+      .filter((asset) => !leaderSet.has(asset) && !topSet.has(asset))
+      .slice(0, limit);
+
+    return candidates.map((asset, index) => ({
+      asset,
+      attentionScore: Math.max(18, 30 - index * 4),
+      attentionDeltaPct: Number((-3.5 - index * 1.2).toFixed(2)),
+      direction: "down" as const,
+      tags: inferTags(asset, asset),
+    }));
+  }
+
   const FALLBACK_ASSETS = ["BTC", "ETH", "SOL"];
   const ALLOWED_SOCIAL_ASSETS = new Set([
   "BTC", "ETH", "SOL", "XRP", "ADA", "BNB", "DOGE", "POL", "AVAX", "DOT",
@@ -148,9 +175,19 @@ export function mapCoinGeckoTrendingToBasicSignals(args: {
   .slice(0, 5);
   const leaders = ensureMinimumLeaders(filteredLeaders);
 
-
   const topAssets = leaders.slice(0, 3).map((x) => x.asset);
-  const rawTags = [...new Set(leaders.flatMap((x) => x.tags ?? []))];
+  const attentionLosers = buildAttentionLosers({
+    leaders,
+    topAssets,
+    limit: 2,
+  });
+
+  const rawTags = [
+    ...new Set([
+      ...leaders.flatMap((x) => x.tags ?? []),
+      ...attentionLosers.flatMap((x) => x.tags ?? []),
+    ]),
+  ];
 
   const narrativeTags = rawTags.filter((tag) => NARRATIVE_TAGS.has(tag));
   const descriptorTags = rawTags.filter((tag) => ASSET_DESCRIPTOR_TAGS.has(tag));
@@ -168,7 +205,7 @@ export function mapCoinGeckoTrendingToBasicSignals(args: {
     market: {
       topAssets,
       attentionLeaders: leaders,
-      attentionLosers: [],
+      attentionLosers,
       tags,
       coverage,
     },

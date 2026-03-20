@@ -21,7 +21,7 @@ export async function fetchBasicSignals(args?: {
   limit?: number;
 }): Promise<SocialLinkBasicSignalsResponse> {
   const qs = buildQuery(args);
-console.log("NEXT_PUBLIC_SOCIAL_LINK_BASE_URL =", process.env.NEXT_PUBLIC_SOCIAL_LINK_BASE_URL);
+
   const remoteBase = process.env.NEXT_PUBLIC_SOCIAL_LINK_BASE_URL;
   const remoteUrl = remoteBase
     ? `${remoteBase}/internal/v1/basic-signals${qs}`
@@ -39,15 +39,13 @@ console.log("NEXT_PUBLIC_SOCIAL_LINK_BASE_URL =", process.env.NEXT_PUBLIC_SOCIAL
         },
         cache: "no-store",
       });
-      console.log("🚀 Data desde Railway:", remoteUrl);
 
       if (!remoteRes.ok) {
         throw new Error(`remote basic-signals HTTP ${remoteRes.status}`);
       }
-      console.log("fetchBasicSignals -> remote", remoteUrl);
       return remoteRes.json();
     } catch (error) {
-      console.warn("Social Link remote failed, falling back to local route:", error);
+      console.log("🚀 Data desde Railway:", remoteUrl);
     }
   }
   

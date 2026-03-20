@@ -146,20 +146,6 @@ export default function SocialPulseBoard() {
   });
 }, [pulse, data?.ts, basicSignals]);
 
-useEffect(() => {
-  if (!basicSignals) {
-    console.log("BASIC SIGNALS: not loaded");
-    return;
-  }
-
-  console.log("BASIC SIGNALS READY", {
-    source: basicSignals.source,
-    ts: basicSignals.ts,
-    window: basicSignals.window,
-    market: basicSignals.market,
-  });
-}, [basicSignals]);
-
   const intensityWidth = useMemo(() => {
     const score = Number(pulse?.score ?? 0);
     return `${Math.max(8, Math.min(100, score))}%`;
