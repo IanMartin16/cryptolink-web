@@ -159,7 +159,7 @@ export default function SocialPulseBoard() {
     updatedAt: data.ts,
   });
 }, [pulse, data?.ts, basicSignals]);
-
+console.log("BASIC SIGNALS READY", basicSignals);
 console.log("live narrative ready", narrative);
   const intensityWidth = useMemo(() => {
     const score = Number(pulse?.score ?? 0);
