@@ -257,7 +257,7 @@ export default function SocialPulseBoard() {
                 }}
               >
                 <div>
-                <div style={{ fontSize: 13, opacity: 0.68 }}>Narrative State</div>
+                <div style={{ fontSize: 13, opacity: 0.68 }}><span style={{ color: UI.orange }}>Narrative State</span></div>
                 <div
                   style={{
                     marginTop: 8,
@@ -374,7 +374,7 @@ export default function SocialPulseBoard() {
                 style={{
                   display: "grid",
                   gridTemplateColumns: "repeat(12, 1fr)",
-                  gap: 10,
+                  gap: 12,
                   alignItems: "end",
                   position: "relative",
                   minHeight: 96,
