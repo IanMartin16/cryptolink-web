@@ -8,6 +8,7 @@ import SymbolCell from "@/components/SymbolCell";
 import type { Health } from "@/lib/health";
 import type { PriceRow } from "@/lib/types";
 import { usePricesFeed } from "@/lib/hooks/usePricesFeed";
+import { getSymbolName } from "@/lib/symbolMeta";
 
 // CacheBadge inline.
 function CacheBadge({ v }: { v?: string }) {
@@ -327,6 +328,7 @@ export default function PricesPanel({
 
                 const pctTone =
                 pct == null ? "rgba(255,255,255,0.55)" : pct > 0 ? UI.green : pct < 0 ? UI.red : "rgba(255,255,255,0.55)";
+                const fullName = getSymbolName(r.symbol);
 
                return (
                 <tr
@@ -372,6 +374,13 @@ export default function PricesPanel({
                           ⧉
                         </span>
                       )}
+                      <div className="flex flex-col min-w-0">
+                          {fullName ? (
+                            <div className="hidden sm:block text-[13px] text-white/45 truncate">
+                              {fullName}
+                          </div>
+                          ) : null}
+                        </div>
                     </div>
                   </td>
                   <td style={{ padding: "12px 8px" }}>
