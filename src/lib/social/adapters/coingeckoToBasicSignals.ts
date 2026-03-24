@@ -344,4 +344,3 @@ const basicSignals = mapCoinGeckoTrendingToBasicSignals({
   window: "1h",
 });
 
-console.log("BASIC SIGNALS", basicSignals);
