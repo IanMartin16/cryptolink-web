@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getSymbols } from "@/lib/symbolsStore";
 import { pushTrendHistory } from "@/lib/useTrendHistory";
+import { getFiat } from "@/lib/fiatStore";
 
 export type TrendItem = {
   symbol: string;
@@ -10,13 +11,32 @@ export type TrendItem = {
   score: number;
   reason: string;
   ts?: string;
+  change24h?: number;
+  marketCap?: number;
+  volume24h?: number;
+};
+
+type RawTrendApiItem = {
+  symbol?: string;
+  trend?: "up" | "down" | "flat";
+  score?: number;
+  reason?: string;
+  ts?: string;
+  item?: {
+    symbol?: string;
+    data?: {
+      price_change_percentage_24h?: Record<string, number>;
+      market_cap?: string;
+      total_volume?: string;
+    };
+  };
 };
 
 type TrendsResponse = {
   ts?: string;
   updatedAt?: string;
-  data?: TrendItem[];
-  items?: TrendItem[];
+  data?: RawTrendApiItem[];
+  items?: RawTrendApiItem[];
 };
 
 export type TrendsHealth = {
@@ -42,6 +62,22 @@ export type MarketStats = {
 function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
 }
+
+  function parseMoneyString(value?: string): number | undefined {
+    if (!value) return undefined;
+    const cleaned = value.replace(/[^0-9.-]/g, "");
+    const parsed = Number(cleaned);
+    return Number.isFinite(parsed) ? parsed : undefined; 
+  }
+
+  function pick24hByFiat(
+    map?: Record<string, number>,
+    fiat?: string
+  ): number | undefined {
+    if (!map) return undefined;
+    const key = (fiat || "usd").toLowerCase();
+    return map[key] ?? map.usd; 
+  }
 
 async function fetchTrends(symbols: string[]) {
   const qs = encodeURIComponent(symbols.join(","));
@@ -131,21 +167,22 @@ export function useTrendsFeed({
         if (kind === "initial") setLoading(true);
         else setRefreshing(true);
 
-        const list = getSymbols();
-        if (!list.length) return;
+      const list = getSymbols();
+      if (!list.length) return;
 
-        const r = await fetchTrends(list);
-        if (seq !== reqSeq.current) return;
+      const r = await fetchTrends(list);
+      if (seq !== reqSeq.current) return;
 
-        const resolvedTs = r.updatedAt ?? r.ts ?? new Date().toISOString();
-        const raw = r.items ?? r.data ?? [];
+      const resolvedTs = r.updatedAt ?? r.ts ?? new Date().toISOString();
+      const raw: RawTrendApiItem[] = r.items ?? r.data ?? [];
+      const fiat = String(getFiat() || "USD").toLowerCase();
 
-        const nextItems: TrendItem[] = raw
-          .map((t) => {
-            const score = typeof t.score === "number" ? t.score : 0;
+      const nextItems = raw
+        .map((t): TrendItem | null => {
+          const score = typeof t.score === "number" ? t.score : 0;
 
-            const trend: TrendItem["trend"] =
-              t.trend === "up" || t.trend === "down"
+          const trend: TrendItem["trend"] =
+            t.trend === "up" || t.trend === "down" || t.trend === "flat"
               ? t.trend
               : score > 0.15
               ? "up"
@@ -153,54 +190,69 @@ export function useTrendsFeed({
               ? "down"
               : "flat";
 
+          const symbol =
+            t.symbol?.toUpperCase() ??
+            t.item?.symbol?.toUpperCase() ??
+            "";
+
+          if (!symbol) return null;
+
           return {
-            ...t,
+            symbol,
             trend,
             score,
+            reason: t.reason ?? "",
             ts: t.ts ?? resolvedTs,
+            change24h: pick24hByFiat(
+              t.item?.data?.price_change_percentage_24h,
+              fiat
+            ),
+            marketCap: parseMoneyString(t.item?.data?.market_cap),
+            volume24h: parseMoneyString(t.item?.data?.total_volume),
           };
         })
+        .filter((x): x is TrendItem => x !== null)
         .sort((a, b) => (b.score ?? 0) - (a.score ?? 0));
 
-          for(const it of nextItems) {
-            if (typeof it.score === "number") {
-              pushTrendHistory(it.symbol, it.score, 120);
-            }
-          }
+      for (const it of nextItems) {
+        if (typeof it.score === "number") {
+          pushTrendHistory(it.symbol, it.score, 120);
+        }
+      }
 
-        setTs(resolvedTs);
-        setItems(nextItems);
-        setLastUpdated(resolvedTs);
+      setTs(resolvedTs);
+      setItems(nextItems);
+      setLastUpdated(resolvedTs);
 
-        setHist((prev) => {
-          const next = { ...prev };
-          for (const it of nextItems) {
-            const arr = next[it.symbol] ? [...next[it.symbol]] : [];
-            arr.push(it.score ?? 0);
-            if (arr.length > 24) arr.splice(0, arr.length - 24);
-            next[it.symbol] = arr;
-          }
-          return next;
-        });
+      setHist((prev) => {
+        const next = { ...prev };
+        for (const it of nextItems) {
+          const arr = next[it.symbol] ? [...next[it.symbol]] : [];
+          arr.push(it.score ?? 0);
+          if (arr.length > 24) arr.splice(0, arr.length - 24);
+          next[it.symbol] = arr;
+        }
+        return next;
+      });
 
-        queueMicrotask(() => {
-          if (seq !== reqSeq.current) return;
-          onItems?.(nextItems);
-          onHealth?.({ ok: true, lastOkAt: resolvedTs });
-        });
-      } catch (e: any) {
+      queueMicrotask(() => {
         if (seq !== reqSeq.current) return;
-        const msg = e?.message ?? "Error cargando trends";
-        setError(msg);
+        onItems?.(nextItems);
+        onHealth?.({ ok: true, lastOkAt: resolvedTs });
+      });
+    } catch (e: any) {
+      if (seq !== reqSeq.current) return;
+      const msg = e?.message ?? "Error cargando trends";
+      setError(msg);
 
-        queueMicrotask(() => {
-          if (seq !== reqSeq.current) return;
-          onHealth?.({ ok: false, lastErr: msg });
-        });
-      } finally {
+      queueMicrotask(() => {
         if (seq !== reqSeq.current) return;
-        setLoading(false);
-        setRefreshing(false);
+        onHealth?.({ ok: false, lastErr: msg });
+      });
+    } finally {
+      if (seq !== reqSeq.current) return;
+      setLoading(false);
+      setRefreshing(false);
       }
     },
     [onHealth, onItems]

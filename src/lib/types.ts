@@ -19,6 +19,10 @@ export type TrendItem = {
   trend: "up" | "down" | "flat";
   score: number;
   reason?: string;
+  ts?: string;
+  change24h?: number;
+  marketCap?: number;
+  volume24h?: number;
 };
 
 export type MoodInsight = {

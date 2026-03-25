@@ -7,21 +7,14 @@ import Toast from "@/components/Toast";
 import Sparkline from "@/components/Sparkline";
 import SymbolCell from "@/components/SymbolCell";
 import { getSymbolName } from "@/lib/symbolMeta";
-import { useTrendsFeed } from "@/lib/trends/useTrendsFeed";
+import { useTrendsFeed, TrendItem } from "@/lib/trends/useTrendsFeed";
 import { getTrendHistory } from "@/lib/useTrendHistory";
 
-type TrendItem = {
-  symbol: string;
-  trend: "up" | "down" | "flat";
-  score: number;
-  reason: string;
-};
 
 
 function trendColor(trend: TrendItem["trend"]) {
   return trend === "up" ? UI.green : trend === "down" ? UI.red : "#bbb";
 }
-
 
 function TrendBadge({ trend }: { trend: TrendItem["trend"] }) {
   const c = trendColor(trend);
@@ -52,7 +45,6 @@ function TrendBadge({ trend }: { trend: TrendItem["trend"] }) {
     </span>
   );
 }
-
 
 export default function TrendsTable({
   onHealth,
@@ -162,6 +154,24 @@ export default function TrendsTable({
         {children}
       </span>
     );
+  }
+
+  function formatCompactNumber(value?: number) {
+    if (typeof value !== "number" || !Number.isFinite(value)) return "—";
+
+    const abs = Math.abs(value);
+
+    if (abs >= 1_000_000_000_000) return `${(value / 1_000_000_000_000).toFixed(2)}T`;
+    if (abs >= 1_000_000_000) return `${(value / 1_000_000_000).toFixed(2)}B`;
+    if (abs >= 1_000_000) return `${(value / 1_000_000).toFixed(2)}M`;
+    if (abs >= 1_000) return `${(value / 1_000).toFixed(2)}K`;
+
+    return value.toFixed(0);
+  }
+
+  function formatPct(value?: number) {
+    if (typeof value !== "number" || !Number.isFinite(value)) return "—";
+    return `${value > 0 ? "+" : ""}${value.toFixed(1)}%`;
   }
 
   function ChipBtn({
@@ -452,8 +462,9 @@ export default function TrendsTable({
                 <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>#</th>
                 <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Symbol</th>
                 <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Trend</th>
-                <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Score</th>
-                <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Reason</th>
+                <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>24h</th>
+                <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>MCap</th>
+                <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Vol</th>
               </tr>
             </thead>
             <tbody>
@@ -484,9 +495,9 @@ export default function TrendsTable({
                 <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>#</th>
                 <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Symbol</th>
                 <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Trend</th>
-                <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Score</th>
-                <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Reason</th>
-                <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Momentum</th>
+                <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>24h</th>
+                <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>MCap</th>
+                <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Vol</th>
               </tr>
             </thead>
             <tbody>
@@ -604,7 +615,7 @@ export default function TrendsTable({
                       {/* Trend (Badge + sparkline ) */}
                       <td style={{ padding: "12px 8px" }}>
                         <div style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
-                          <TrendBadge trend={t.trend} />
+                          <Chip>24h {formatPct(t.change24h)}</Chip>
                           {/* aquí deja tu sparkline si ya está integrado */}
                         </div>
                       </td>
@@ -627,53 +638,10 @@ export default function TrendsTable({
                       </td>
                       {/* ✅ Reason con ellipsis */}
                       <td style={{ padding: "12px 8px", fontSize: 12, opacity: 0.85, maxWidth: 260 }}>
-                        <span
-                        style={{
-                          display: "block",
-                          color: c,
-                          overflow: "hidden",
-                          whiteSpace: "nowrap",
-                          textOverflow: "ellipsis",
-                        }}
-                        title={t.reason || ""}
-                      >
-                        {t.reason }
-                        <Sparkline
-                          values={h}
-                          w={88}
-                          h={22}
-                          stroke={c}
-                          fill={t.trend === "up"
-                            ? "rgba(46,229,157,0.10)"
-                            : t.trend === "down"
-                            ? "rgba(255,107,107,0.10)"
-                            : "rgba(255,255,255,0.08)"
-                          }
-                        />
-                      </span>
+                         <Chip>MCap {formatCompactNumber(t.marketCap)}</Chip>
                       </td>
                       <td style={{ padding: "12px 8px" }}>
-                        <span
-                          style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: 8,
-                            padding: "3px 10px",
-                            borderRadius: 999,
-                            border: `1px solid ${mt.b}`,
-                            background: mt.bg,
-                            color: mt.c,
-                            fontSize: 12,
-                            fontWeight: 950,
-                            whiteSpace: "nowrap",
-                          }}
-                          title={`slope ${(sl*100).toFixed(2)}%`}
-                        >
-                          {mom}
-                          <span style={{ opacity: 0.75, fontWeight: 900, color: mt.c }}>
-                            {sl === 0 ? "·" : sl > 0 ? "↗" : "↘"}
-                          </span>
-                        </span>
+                        <Chip>Vol {formatCompactNumber(t.volume24h)}</Chip>
                       </td>
                     </tr>
                   );
