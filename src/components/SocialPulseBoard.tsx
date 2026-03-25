@@ -135,37 +135,37 @@ useEffect(() => {
     boxShadow: "0 16px 50px rgba(0,0,0,0.22)",
   };
 
+  const basicSignalsMarket = basicSignals?.market ?? null;
+  const basicSignalsBackdrop = basicSignals?.backdrop ?? null;
+  const hasBasicSignals = !!basicSignalsMarket;
+
   const narrative = useMemo(() => {
-    if (!pulse || !data?.ts) return null;
+  if (!pulse || !data?.ts) return null;
 
-    return buildLiveNarrative({
-      socialPulse: {
-        state: pulse.state,
-        score: pulse.score,
-        breadth: pulse.breadth,
-        conviction: pulse.conviction,
-        leadership: pulse.leadership,
-        summary: pulse.summary,
-        topAssets: pulse.topAssets,
-        tags: pulse.tags,
-      },
-      trends: {
-        up: 0,
-        down: 0,
-        flat: 0,
-        avgScore: 0,
-        topSymbols: pulse.topAssets ?? [],
-      },
-      basicSignals: basicSignals?.market ?? undefined,
-      backdrop: basicSignals?.backdrop ?? undefined,
-      updatedAt: data.ts,
-    });
-  }, [pulse, data?.ts, basicSignals]);
+  return buildLiveNarrative({
+    socialPulse: {
+      state: pulse.state,
+      score: pulse.score,
+      breadth: pulse.breadth,
+      conviction: pulse.conviction,
+      leadership: pulse.leadership,
+      summary: pulse.summary,
+      topAssets: pulse.topAssets,
+      tags: pulse.tags,
+    },
+    trends: {
+      up: 0,
+      down: 0,
+      flat: 0,
+      avgScore: 0,
+      topSymbols: pulse.topAssets ?? [],
+    },
+    basicSignals: basicSignalsMarket ?? undefined,
+    backdrop: basicSignalsBackdrop ?? undefined,
+    updatedAt: data.ts,
+  });
+}, [pulse, data?.ts, basicSignalsMarket, basicSignalsBackdrop]);
 
-  const intensityWidth = useMemo(() => {
-    const score = Number(pulse?.score ?? 0);
-    return `${Math.max(8, Math.min(100, score))}%`;
-  }, [pulse?.score]);
 
   if (error) {
     return (
@@ -409,7 +409,7 @@ useEffect(() => {
                         boxShadow: `0 0 8px ${glow}`,
                       }}
                     />
-                      Narrative Layer
+                    {hasBasicSignals ? "Narrative Layer" : "Narrative Layer • Limited"}
                   </div>
                 </div>
 
@@ -621,10 +621,43 @@ useEffect(() => {
       >
         <div style={{ fontSize: 13, opacity: 0.68 }}><span style={{ color: UI.orange }}>Live Narrative</span></div>
         <div style={{ fontSize: 12, opacity: 0.58 }}>
-          {narrative?.sourceType === "hybrid"
-            ? "derived + real attention"
-            : "derived narrative"}
+        <div style={{ fontSize: 12, opacity: 0.58}}>
+          { hasBasicSignals
+            ? narrative?.sourceType === "hybrid"
+            ? "real-time + derived signals"
+            : "derived narrative"
+            : "degraded narrative mode"}
+        </div>  
         </div>
+
+        {!hasBasicSignals ? (
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "8px 12px",
+              borderRadius: 999,
+              border: "1px solid rgba(255,255,255,0.10)",
+              background: "rgba(255,255,255,0.035)",
+              fontSize: 12,
+              color: "rgba(255,255,255,0.78)",
+              width: "fit-content",
+              marginTop: 2,
+            }}
+          >
+            <span
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                background: "#f59e0b",
+                boxShadow: "0 0 10px rgba(245,158,11,0.45)",
+              }}
+            />
+              limited narrative context
+          </div>
+        ) : null}
 
         <div
           style={{
@@ -646,7 +679,9 @@ useEffect(() => {
             maxWidth: 1100,
           }}
         >
-          {narrative?.subline ?? "Narrative layer is building from current market attention."}
+          {narrative?.subline ?? (hasBasicSignals
+            ? "Narrative layer is building from current market attention."
+            : "Narrative layer is running with pulse-only context while signal enrichment reconnects.")}
         </div>
 
           {narrative?.themes?.length ? (
