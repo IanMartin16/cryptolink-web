@@ -7,23 +7,17 @@ import SymbolChips from "@/components/SymbolChips";
 import ApiKeyBar from "@/components/ApiKeyBar";
 
 import { getSymbols, setSymbols } from "@/lib/symbolsStore";
-// Si ya tienes un source “oficial” de los 27 símbolos, úsalo aquí:
-import { SYMBOL_META  } from "@/lib/symbolMeta"; // <-- si no existe, te digo abajo cómo
-
+import { SYMBOL_META } from "@/lib/symbolMeta";
 
 export default function SettingsPage() {
   const [selected, setSelected] = useState<string[]>([]);
   const [showDev, setShowDev] = useState(false);
 
-  
-
-  // ✅ lista disponible (ideal: tus 27 símbolos)
   const available = useMemo(() => Object.keys(SYMBOL_META), []);
 
   useEffect(() => {
     setSelected(getSymbols());
 
-    // si en otro lado cambian symbols, nos sincronizamos
     const onSymbols = () => setSelected(getSymbols());
     window.addEventListener("cryptolink:symbols" as any, onSymbols);
     return () => window.removeEventListener("cryptolink:symbols" as any, onSymbols);
@@ -36,56 +30,79 @@ export default function SettingsPage() {
 
     const next = Array.from(S);
     setSelected(next);
-
-    // ✅ esto persiste y además dispara el evento (tu store ya lo hace)
     setSymbols(next);
   };
 
   return (
-    <div className="space-y-4">
-      <PageHeader title="Settings" subtitle="watchlist · fiat · dev tools" badge="BETA" />
+    <div className="space-y-5">
+      <PageHeader
+        title="Settings"
+        subtitle="watchlist · fiat · dev tools"
+        badge="BETA"
+      />
+
       <div className="mt-2 text-[14px] text-white/45">
-        These settings are stored locally (this device).
+        These settings are stored locally on this device.
       </div>
 
       {/* Fiat */}
-      <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3">
-        <div className="text-xs font-semibold tracking-wide text-white/70">DEFAULT FIAT</div>
-        <div className="mt-2">
-          <FiatToggle />
-        </div>
-      </div>
-
-      {/* Symbols */}
-      <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3">
-        <div className="flex items-center justify-between">
-          <div className="text-xs font-semibold tracking-wide text-white/70">WATCHLIST SYMBOLS</div>
-          <div className="text-[11px] text-white/45">
-            {selected.length}/{available.length || 30} selected
+      <section className="rounded-2xl border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.02))] p-4 shadow-[0_14px_40px_rgba(0,0,0,0.18)]">
+        <div className="grid gap-1">
+          <div className="text-[11px] font-semibold tracking-[0.16em] text-amber-300/80">
+            DEFAULT FIAT
+          </div>
+          <div className="text-sm text-white/52">
+            Configure the quote currency used across market views.
           </div>
         </div>
 
-        <div className="mt-3 max-h-[320px] overflow-auto pr-1">
-          <SymbolChips symbols={available} selected={selected} onToggle={toggleSymbol} />
+        <div className="mt-3">
+          <FiatToggle />
         </div>
-      </div>
+      </section>
 
-      {/* Dev tools (API key) */}
-      <div>
+      {/* Symbols */}
+      <section className="rounded-2xl border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.045),rgba(255,255,255,0.02))] p-4 shadow-[0_14px_40px_rgba(0,0,0,0.18)]">
+        <div className="flex items-start justify-between gap-4">
+          <div className="grid gap-1">
+            <div className="text-[11px] font-semibold tracking-[0.16em] text-amber-300/80">
+              WATCHLIST SYMBOLS
+            </div>
+            <div className="text-sm text-white/52">
+              Choose the assets that stay active across your default market workspace.
+            </div>
+          </div>
+
+          <div className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 text-[11px] text-white/55">
+            {selected.length}/{available.length || 50} selected
+          </div>
+        </div>
+
+        <div className="mt-4 max-h-[320px] overflow-auto pr-1">
+          <SymbolChips
+            symbols={available}
+            selected={selected}
+            onToggle={toggleSymbol}
+          />
+        </div>
+      </section>
+
+      {/* Dev tools */}
+      <section className="rounded-2xl border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.015))] p-3 shadow-[0_12px_32px_rgba(0,0,0,0.14)]">
         <button
           onClick={() => setShowDev((v) => !v)}
-          className="w-full rounded-lg border border-white/10 bg-white/[0.02] px-3 py-2 text-left text-[12px] font-semibold text-white/70 hover:bg-white/[0.04]"
+          className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-3 py-3 text-left text-[12px] font-semibold text-white/72 transition hover:bg-white/[0.05]"
         >
-          Dev tools <span className="text-white/40 font-normal">(API key)</span>
+          Dev tools <span className="font-normal text-white/40">(API key)</span>
           <span className="float-right text-white/40">{showDev ? "−" : "+"}</span>
         </button>
 
         {showDev ? (
-          <div className="mt-2 rounded-xl border border-white/10 bg-white/[0.03] p-2">
+          <div className="mt-3 rounded-2xl border border-white/10 bg-white/[0.03] p-3">
             <ApiKeyBar />
           </div>
         ) : null}
-      </div>
+      </section>
     </div>
   );
 }
