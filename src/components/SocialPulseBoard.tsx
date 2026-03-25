@@ -531,49 +531,115 @@ useEffect(() => {
               }}
             >
               <div>
-              <div style={{ fontSize: 13, opacity: 0.68 }}><span style={{ color: UI.orange }}>Focus Assets</span></div>
+                <div style={{ fontSize: 13, opacity: 0.68 }}>
+                  <span style={{ color: UI.orange }}>Focus Assets</span>
+                </div>
 
+                <div
+                  style={{
+                    marginTop: 12,
+                    display: "grid",
+                    gridTemplateColumns:
+                      pulse.topAssets.length >= 3 ? "1.25fr 1fr 0.95fr" : "1.25fr 1fr",
+                    gap: 10,
+    }}
+  >
+    {pulse.topAssets.slice(0, 3).map((asset, i) => {
+      const isPrimary = i === 0;
+
+      return (
+        <div
+          key={asset}
+          style={{
+            padding: isPrimary ? 18 : 14,
+            borderRadius: 18,
+            border: `1px solid ${
+              isPrimary ? "rgba(255,255,255,0.14)" : UI.border
+            }`,
+            background: isPrimary
+              ? "linear-gradient(180deg, rgba(255,255,255,0.075), rgba(255,255,255,0.04))"
+              : "rgba(255,255,255,0.03)",
+            display: "grid",
+            gap: 8,
+            minHeight: isPrimary ? 118 : 96,
+            alignContent: "end",
+            boxShadow: isPrimary
+              ? "inset 0 0 20px rgba(255,255,255,0.02), 0 10px 30px rgba(0,0,0,0.16)"
+              : "inset 0 0 12px rgba(255,255,255,0.012)",
+            position: "relative",
+            overflow: "hidden",
+          }}
+        >
+          {isPrimary ? (
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background: `radial-gradient(circle at 18% 28%, ${glow}, transparent 42%)`,
+                opacity: 0.22,
+                pointerEvents: "none",
+              }}
+            />
+          ) : null}
+
+          <div
+            style={{
+              position: "relative",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 8,
+            }}
+          >
+            <div style={{ fontSize: 11, opacity: 0.56 }}>
+              {isPrimary ? "Primary focus" : `Rank ${i + 1}`}
+            </div>
+
+            {isPrimary ? (
               <div
                 style={{
-                  marginTop: 12,
-                  display: "grid",
-                  gridTemplateColumns: pulse.topAssets.length >= 3 ? "1.2fr 1fr 0.9fr" : "1.2fr 1fr",
-                  gap: 10,
+                  padding: "5px 9px",
+                  borderRadius: 999,
+                  border: "1px solid rgba(255,255,255,0.10)",
+                  background: "rgba(255,255,255,0.05)",
+                  fontSize: 11,
+                  color: "rgba(255,255,255,0.78)",
+                  whiteSpace: "nowrap",
                 }}
               >
-                {pulse.topAssets.map((asset, i) => (
-                <div
-                  key={asset}
-                  style={{
-                    padding: i === 0 ? 16 : 14,
-                    borderRadius: 18,
-                    border: `1px solid ${UI.border}`,
-                    background: i === 0 ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.035)",
-                    display: "grid",
-                    gap: 6,
-                    minHeight: i === 0 ? 110 : 96,
-                    alignContent: "end",
-                  }}
-                >
-                  <div style={{ fontSize: 11, opacity: 0.56 }}>Rank {i + 1}</div>
-                  <div
-                    style={{
-                      fontSize: i === 0 ? 30 : 24,
-                      fontWeight: 900,
-                      color: i === 0 ? tone : "rgba(255,255,255,0.92)",
-                      lineHeight: 1,
-                      letterSpacing: -0.6,
-                    }}
-                  >
-                   {asset}
-                   </div>
-                   <div style={{ fontSize: 12, opacity: 0.58 }}>
-                    attention focus
-                  </div>
-                </div>
-              ))}
-            </div>
+                attention leader
+              </div>
+            ) : null}
           </div>
+
+          <div
+            style={{
+              position: "relative",
+              fontSize: isPrimary ? 32 : 24,
+              fontWeight: 900,
+              color: isPrimary ? tone : "rgba(255,255,255,0.92)",
+              lineHeight: 1,
+              letterSpacing: -0.7,
+            }}
+          >
+            {asset}
+          </div>
+
+          <div
+            style={{
+              position: "relative",
+              fontSize: 12,
+              opacity: isPrimary ? 0.7 : 0.58,
+              color: "rgba(255,255,255,0.78)",
+            }}
+          >
+            {isPrimary ? "leading current narrative attention" : "secondary market focus"}
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</div>
 
             <div>
               <div style={{ fontSize: 13, opacity: 0.68 }}>Narrative Tags</div>
