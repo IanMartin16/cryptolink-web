@@ -14,7 +14,6 @@ export default function PricesRouteBody() {
   const [rows, setRows] = useState<PriceRow[]>([]);
   const [pricesHealth, setPricesHealth] = useState<any>(undefined);
 
-  // ✅ alimenta historial sin llamadas extra (batch)
   useEffect(() => {
     if (!rows.length) return;
     pushPricesToHistory(rows);
@@ -31,8 +30,9 @@ export default function PricesRouteBody() {
         assetsCount={rows.length}
         lastUpdated={rows[0]?.updatedAt}
       />
-      <MarketPulse rows={rows} max={20} />
+
       <SignalsRadarPanel />
+      <MarketPulse rows={rows} max={20} />
 
       <PricesPanel onRows={setRows} onHealth={setPricesHealth} />
 
