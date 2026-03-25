@@ -7,10 +7,19 @@ import Toast from "@/components/Toast";
 import Sparkline from "@/components/Sparkline";
 import SymbolCell from "@/components/SymbolCell";
 import { getSymbolName } from "@/lib/symbolMeta";
-import { useTrendsFeed, TrendItem } from "@/lib/trends/useTrendsFeed";
+import { useTrendsFeed } from "@/lib/trends/useTrendsFeed";
 import { getTrendHistory } from "@/lib/useTrendHistory";
 
-
+export type TrendItem = {
+  symbol: string;
+  trend: "up" | "down" | "flat";
+  score: number;
+  reason: string;
+  ts?: string;
+  change24h?: number;
+  marketCap?: number;
+  volume24h?: number;
+};
 
 function trendColor(trend: TrendItem["trend"]) {
   return trend === "up" ? UI.green : trend === "down" ? UI.red : "#bbb";
@@ -154,24 +163,6 @@ export default function TrendsTable({
         {children}
       </span>
     );
-  }
-
-  function formatCompactNumber(value?: number) {
-    if (typeof value !== "number" || !Number.isFinite(value)) return "—";
-
-    const abs = Math.abs(value);
-
-    if (abs >= 1_000_000_000_000) return `${(value / 1_000_000_000_000).toFixed(2)}T`;
-    if (abs >= 1_000_000_000) return `${(value / 1_000_000_000).toFixed(2)}B`;
-    if (abs >= 1_000_000) return `${(value / 1_000_000).toFixed(2)}M`;
-    if (abs >= 1_000) return `${(value / 1_000).toFixed(2)}K`;
-
-    return value.toFixed(0);
-  }
-
-  function formatPct(value?: number) {
-    if (typeof value !== "number" || !Number.isFinite(value)) return "—";
-    return `${value > 0 ? "+" : ""}${value.toFixed(1)}%`;
   }
 
   function ChipBtn({
@@ -462,9 +453,9 @@ export default function TrendsTable({
                 <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>#</th>
                 <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Symbol</th>
                 <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Trend</th>
-                <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>24h</th>
-                <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>MCap</th>
-                <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Vol</th>
+                <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Score</th>
+                <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Reason</th>
+                <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Momentum</th>
               </tr>
             </thead>
             <tbody>
@@ -537,7 +528,7 @@ export default function TrendsTable({
                     ? `rgba(255,107,107,${0.25 + a * 0.55})`
                     : `rgba(255,255,255,${0.18 + a * 0.25})`;   
                     
-                const h = hist[t.symbol] ?? [];
+                const h = getTrendHistory(t.symbol).slice(-24);
                 const sl = slope(h);
                 const mom = momentumLabel(t.score, sl);
                 const mt = momentumTone(mom);
@@ -622,7 +613,7 @@ export default function TrendsTable({
 
                       <td style={{ marginLeft: 4 }}>
                         <Sparkline
-                          values={hist[t.symbol] ?? []}
+                          values={h}
                           w={82}
                           h={20}
                           stroke={c}
@@ -637,8 +628,8 @@ export default function TrendsTable({
                         {typeof t.score === "number" ? t.score.toFixed(2) : "—"}
                       </td>
                       {/* ✅ Reason con ellipsis */}
-                    <td style={{ padding: "12px 8px", fontSize: 12, opacity: 0.85, maxWidth: 260 }}>
-                      <span
+                      <td style={{ padding: "12px 8px", fontSize: 12, opacity: 0.85, maxWidth: 260 }}>
+                        <span
                         style={{
                           display: "block",
                           color: c,
@@ -650,7 +641,7 @@ export default function TrendsTable({
                       >
                         {t.reason }
                         <Sparkline
-                          values={hist[t.symbol] ?? []}
+                          values={h}
                           w={88}
                           h={22}
                           stroke={c}
@@ -662,7 +653,7 @@ export default function TrendsTable({
                           }
                         />
                       </span>
-                    </td>
+                      </td>
                       <td style={{ padding: "12px 8px" }}>
                         <span
                           style={{
