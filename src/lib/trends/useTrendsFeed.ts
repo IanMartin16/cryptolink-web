@@ -176,6 +176,7 @@ export function useTrendsFeed({
       const resolvedTs = r.updatedAt ?? r.ts ?? new Date().toISOString();
       const raw: RawTrendApiItem[] = r.items ?? r.data ?? [];
       const fiat = String(getFiat() || "USD").toLowerCase();
+      console.log("raw trend sample", raw[0]);
 
       const nextItems = raw
         .map((t): TrendItem | null => {
