@@ -122,35 +122,45 @@ useEffect(() => {
   
 
   const pulse = data?.socialPulse;
-  const tone = pulseTone(pulse?.state || "neutral");
-  const glow = pulseGlow(pulse?.state || "neutral");
+  const tone = pulseTone(pulse?.state ?? "neutral");
+  const glow = pulseGlow(pulse?.state ?? "neutral");
+
+  const shellStyle: React.CSSProperties = {
+    marginTop: UI.gap,
+    padding: 18,
+    border: `1px solid ${UI.border}`,
+    borderRadius: 22,
+    background:
+      "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))",
+    boxShadow: "0 16px 50px rgba(0,0,0,0.22)",
+  };
 
   const narrative = useMemo(() => {
-  if (!pulse || !data?.ts) return null;
+    if (!pulse || !data?.ts) return null;
 
-  return buildLiveNarrative({
-    socialPulse: {
-      state: pulse.state,
-      score: pulse.score,
-      breadth: pulse.breadth,
-      conviction: pulse.conviction,
-      leadership: pulse.leadership,
-      summary: pulse.summary,
-      topAssets: pulse.topAssets,
-      tags: pulse.tags,
-    },
-    trends: {
-      up: 0,
-      down: 0,
-      flat: 0,
-      avgScore: 0,
-      topSymbols: pulse.topAssets ?? [],
-    },
-    basicSignals: basicSignals?.market ?? undefined,
-    backdrop: basicSignals?.backdrop ?? undefined,
-    updatedAt: data.ts,
-  });
-}, [pulse, data?.ts, basicSignals]);
+    return buildLiveNarrative({
+      socialPulse: {
+        state: pulse.state,
+        score: pulse.score,
+        breadth: pulse.breadth,
+        conviction: pulse.conviction,
+        leadership: pulse.leadership,
+        summary: pulse.summary,
+        topAssets: pulse.topAssets,
+        tags: pulse.tags,
+      },
+      trends: {
+        up: 0,
+        down: 0,
+        flat: 0,
+        avgScore: 0,
+        topSymbols: pulse.topAssets ?? [],
+      },
+      basicSignals: basicSignals?.market ?? undefined,
+      backdrop: basicSignals?.backdrop ?? undefined,
+      updatedAt: data.ts,
+    });
+  }, [pulse, data?.ts, basicSignals]);
 
   const intensityWidth = useMemo(() => {
     const score = Number(pulse?.score ?? 0);
@@ -159,48 +169,146 @@ useEffect(() => {
 
   if (error) {
     return (
-      <section
-        style={{
-          marginTop: UI.gap,
-          padding: 18,
-          border: `1px solid ${UI.border}`,
-          borderRadius: 20,
-          background: UI.panel,
-        }}
-      >
-        <h2 style={{ margin: 0, fontSize: 22 }}>Social Pulse</h2>
-        <p style={{ marginTop: 8 }}>
-          Error loading Social Pulse: <b>{error}</b>
-        </p>
+      <section style={shellStyle}>
+        <div style={{ display: "grid", gap: 10 }}>
+          <div style={{ fontSize: 13, opacity: 0.68 }}>
+            <span style={{ color: UI.orange }}>Social Pulse</span>
+          </div>
+
+          <div
+            style={{
+              fontSize: "clamp(26px, 4vw, 34px)",
+              fontWeight: 900,
+              lineHeight: 1,
+              letterSpacing: -0.6,
+              color: "rgba(255,255,255,0.92)",
+            }}
+          >
+            Signal unavailable
+          </div>
+
+          <div
+            style={{
+              fontSize: 14,
+              lineHeight: 1.55,
+              color: "rgba(255,255,255,0.72)",
+              maxWidth: 820,
+            }}
+          >
+            Social Pulse could not be loaded right now. The rest of the dashboard
+            can continue operating while the narrative layer reconnects.
+          </div>
+
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "8px 12px",
+              borderRadius: 999,
+              border: "1px solid rgba(255,255,255,0.10)",
+              background: "rgba(255,255,255,0.035)",
+              fontSize: 12,
+              color: "rgba(255,255,255,0.78)",
+              width: "fit-content",
+            }}
+          >
+            <span
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                background: "#f59e0b",
+                boxShadow: "0 0 10px rgba(245,158,11,0.5)",
+              }}
+            />
+            degraded mode
+          </div>
+
+          <div
+            style={{
+              marginTop: 4,
+              fontSize: 12,
+              color: "rgba(255,255,255,0.52)",
+            }}
+          >
+            Details: <b style={{ color: "rgba(255,255,255,0.76)" }}>{error}</b>
+          </div>
+        </div>
       </section>
-    );
+    ); 
   }
 
   if (!data || !pulse) {
     return (
-      <section
-        style={{
-          marginTop: UI.gap,
-          padding: 18,
-          border: `1px solid ${UI.border}`,
-          borderRadius: 20,
-          background: UI.panel,
-        }}
-      >
-        <h2 style={{ margin: 0, fontSize: 22 }}>Social Pulse</h2>
-        <p style={{ marginTop: 8, opacity: 0.8 }}>Loading narrative layer...</p>
+      <section style={shellStyle}>
+        <div style={{ display: "grid", gap: 10 }}>
+          <div style={{ fontSize: 13, opacity: 0.68 }}>
+            <span style={{ color: UI.orange }}>Social Pulse</span>
+          </div>
+
+          <div
+            style={{
+              fontSize: "clamp(26px, 4vw, 34px)",
+              fontWeight: 900,
+              lineHeight: 1,
+              letterSpacing: -0.6,
+              color: "rgba(255,255,255,0.92)",
+            }}
+          >
+            Loading narrative layer
+          </div>
+
+          <div
+            style={{
+              fontSize: 14,
+              lineHeight: 1.55,
+              color: "rgba(255,255,255,0.72)",
+              maxWidth: 820,
+            }}
+          >
+            Gathering attention signals, narrative state, and focus assets for the
+            current market window.
+          </div>
+
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "8px 12px",
+              borderRadius: 999,
+              border: "1px solid rgba(255,255,255,0.10)",
+              background: "rgba(255,255,255,0.035)",
+              fontSize: 12,
+              color: "rgba(255,255,255,0.78)",
+              width: "fit-content",
+            }}
+          >
+            <span
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                background: UI.orange,
+                boxShadow: `0 0 10px ${UI.orange}`,
+              }}
+            />
+            loading
+          </div>
+        </div>
       </section>
     );
   }
 
   const barFill =
-  pulse?.state === "bullish"
-    ? "linear-gradient(180deg, rgba(110,235,143,0.78), rgba(110,235,143,0.16))"
-    : pulse?.state === "bearish"
-    ? "linear-gradient(180deg, rgba(255,123,123,0.78), rgba(255,123,123,0.16))"
-    : pulse?.state === "mixed"
-    ? "linear-gradient(180deg, rgba(231,184,102,0.78), rgba(231,184,102,0.16))"
-    : "linear-gradient(180deg, rgba(255,255,255,0.62), rgba(255,255,255,0.14))";
+    pulse.state === "bullish"
+      ? "linear-gradient(180deg, rgba(110,235,143,0.78), rgba(110,235,143,0.16))"
+      : pulse.state === "bearish"
+      ? "linear-gradient(180deg, rgba(255,123,123,0.78), rgba(255,123,123,0.16))"
+      : pulse.state === "mixed"
+      ? "linear-gradient(180deg, rgba(231,184,102,0.78), rgba(231,184,102,0.16))"
+      : "linear-gradient(180deg, rgba(255,255,255,0.62), rgba(255,255,255,0.14))";
 
   return (
     <section
