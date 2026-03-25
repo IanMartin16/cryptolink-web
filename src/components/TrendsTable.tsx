@@ -501,159 +501,211 @@ export default function TrendsTable({
               </tr>
             </thead>
             <tbody>
-              {viewItems.map((t, idx) => {
-                const rank = idx + 1;
-                const c = trendColor(t.trend);
-                const isHover = hover === t.symbol;
-                const a = intensityFromScore(t.score);
-                const isTop = rank <= 3;
-                const fullName = getSymbolName(t.symbol);
+  {viewItems.map((t, idx) => {
+    const rank = idx + 1;
+    const c = trendColor(t.trend);
+    const isHover = hover === t.symbol;
+    const a = intensityFromScore(t.score);
+    const isTop = rank <= 3;
+    const fullName = getSymbolName(t.symbol);
 
-                const rankStyle = isTop
-                  ? {
-                      background: "rgba(255,159,67,0.12)",
-                      border: `1px solid rgba(255,159,67,0.22)`,
-                      boxShadow: "0 0 18px rgba(255,159,67,0.10)",
-                      color: UI.orangeSoft,
-                    }
-                  : {
-                      background: "rgba(255,255,255,0.03)",
-                      border: `1px solid ${UI.border}`,
-                      color: "rgba(255,255,255,0.70)",
-                    };
-                
-                const bg =
-                  t.trend === "up"
-                    ? `rgba(46,229,157,${0.04 + a * 0.12})`
-                    : t.trend === "down"
-                    ? `rgba(255,107,107,${0.04 + a * 0.12})`
-                    : `rgba(255,255,255,${0.02 + a * 0.06})`;
+    const rankStyle = isTop
+      ? {
+          background: "rgba(255,159,67,0.12)",
+          border: `1px solid rgba(255,159,67,0.22)`,
+          boxShadow: "0 0 18px rgba(255,159,67,0.10)",
+          color: UI.orangeSoft,
+        }
+      : {
+          background: "rgba(255,255,255,0.03)",
+          border: `1px solid ${UI.border}`,
+          color: "rgba(255,255,255,0.70)",
+        };
 
-                     // bar lateral (heat bar)
-                const bar =
-                  t.trend === "up"
-                    ? `rgba(46,229,157,${0.25 + a * 0.55})`
-                    : t.trend === "down"
-                    ? `rgba(255,107,107,${0.25 + a * 0.55})`
-                    : `rgba(255,255,255,${0.18 + a * 0.25})`;   
-                    
-                const h = getTrendHistory(t.symbol).slice(-24);
-                const sl = slope(h);
-                const mom = momentumLabel(t.score, sl);
-                const mt = momentumTone(mom);
+    const bg =
+      t.trend === "up"
+        ? `rgba(46,229,157,${0.04 + a * 0.12})`
+        : t.trend === "down"
+        ? `rgba(255,107,107,${0.04 + a * 0.12})`
+        : `rgba(255,255,255,${0.02 + a * 0.06})`;
 
-                return (
-                  <tr
-                    key={t.symbol}
-                    onMouseEnter={() => setHover(t.symbol)}
-                    onMouseLeave={() => setHover(null)}
-                    style={{
-                      borderBottom: `1px solid ${UI.borderSoft}`,
-                      background: isHover ? "rgba(255,159,67,0.06)" : bg,
-                      transition: "background 120ms ease",
-                    }}
-                  >
-                    {/* # */}
-                    <td style={{ padding: "12px 8px", position: "relative" }}>
-                      <span
-                        style={{
-                          display: "inline-grid",
-                          placeItems: "center",
-                          width: 28,
-                          height: 22,
-                          borderRadius: 999,
-                          fontWeight: 950,
-                          fontSize: 12,
-                          ...rankStyle,
-                        }}
-                        title={isTop ? "Top mover" : "Rank"}
-                      >
-                        {rank}
-                      </span>
-                    </td>
+    const h = getTrendHistory(t.symbol).slice(-24);
+    const sl = slope(h);
+    const mom = momentumLabel(t.score, sl);
+    const mt = momentumTone(mom);
 
-                    <td style={{ padding: "12px 8px", fontWeight: 950 }}>
-                      <button
-                        onClick={async () => {
-                          try {
-                            await navigator.clipboard.writeText(t.symbol);
-                            setToast({ msg: `Copiado: ${t.symbol}`, tone: "ok" });
-                          } catch {
-                            setToast({ msg: "No pude copiar (permiso del navegador).", tone: "err" });
-                          }
-                        }}
-                        style={{
-                          all: "unset",
-                          cursor: "pointer",
-                          display: "inline-flex",
-                          alignItems: "center",
-                          gap: 8,
-                          color: "#e6edf3",
-                        }}
-                          title="Copiar símbolo"
-                      >
-                        <span
-                          style={{
-                            textShadow: isHover ? "0 0 10px rgba(255,159,67,0.18)" : "none",
-                          }}
-                        >
-                          <SymbolCell symbol={t.symbol} />
-                        </span>
-                        <div className="flex flex-col min-w-0">
-                          {fullName ? (
-                            <div className="hidden sm:block text-[13px] text-white/45 truncate">
-                              {fullName}
-                          </div>
-                          ) : null}
-                        </div>
-                        <span style={{ color: UI.orangeSoft }}>
-                          <CopyIcon show={isHover} />
-                        </span>
-                      </button>
-                    </td>
+    return (
+      <tr
+        key={t.symbol}
+        onMouseEnter={() => setHover(t.symbol)}
+        onMouseLeave={() => setHover(null)}
+        style={{
+          borderBottom: `1px solid ${UI.borderSoft}`,
+          background: isHover ? "rgba(255,159,67,0.06)" : bg,
+          transition: "background 120ms ease",
+        }}
+      >
+        {/* Rank */}
+        <td style={{ padding: "12px 8px" }}>
+          <span
+            style={{
+              display: "inline-grid",
+              placeItems: "center",
+              width: 28,
+              height: 22,
+              borderRadius: 999,
+              fontWeight: 950,
+              fontSize: 12,
+              ...rankStyle,
+            }}
+            title={isTop ? "Top mover" : "Rank"}
+          >
+            {rank}
+          </span>
+        </td>
 
-                      {/* Trend (Badge + sparkline ) */}
-                      <td style={{ padding: "12px 8px" }}>
-                        <div style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
-                          <Chip>24h {formatPct(t.change24h)}</Chip>
-                          {/* aquí deja tu sparkline si ya está integrado */}
-                        </div>
-                      </td>
+        {/* Symbol */}
+        <td style={{ padding: "12px 8px", fontWeight: 950 }}>
+          <button
+            onClick={async () => {
+              try {
+                await navigator.clipboard.writeText(t.symbol);
+                setToast({ msg: `Copiado: ${t.symbol}`, tone: "ok" });
+              } catch {
+                setToast({
+                  msg: "No pude copiar (permiso del navegador).",
+                  tone: "err",
+                });
+              }
+            }}
+            style={{
+              all: "unset",
+              cursor: "pointer",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              color: "#e6edf3",
+            }}
+            title="Copiar símbolo"
+          >
+            <span
+              style={{
+                textShadow: isHover ? "0 0 10px rgba(255,159,67,0.18)" : "none",
+              }}
+            >
+              <SymbolCell symbol={t.symbol} />
+            </span>
 
-                      <td style={{ marginLeft: 4 }}>
-                        <Sparkline
-                          values={h}
-                          w={82}
-                          h={20}
-                          stroke={c}
-                          fill={
-                            t.trend === "up"
-                              ? "rgba(46,229,157,0.10)"
-                              : t.trend === "down"
-                              ? "rgba(255,107,107,0.10)"
-                              : "rgba(255,255,255,0.06)"
-                            }
-                          />
-                        {typeof t.score === "number" ? t.score.toFixed(2) : "—"}
-                      </td>
-                      {/* ✅ Reason con ellipsis */}
-                      <td style={{ padding: "12px 8px", fontSize: 12, opacity: 0.85, maxWidth: 260 }}>
-                         <Chip>MCap {formatCompactNumber(t.marketCap)}</Chip>
-                      </td>
-                      <td style={{ padding: "12px 8px" }}>
-                        <Chip>Vol {formatCompactNumber(t.volume24h)}</Chip>
-                      </td>
-                    </tr>
-                  );
-              })}
-              {items.length === 0 && !error && (
-                <tr>
-                  <td colSpan={4} style={{ padding: "12px 8px", opacity: 0.75 }}>
-                    Sin datos todavía…
-                  </td>
-                </tr>
-              )}
-            </tbody>
+            <div className="flex flex-col min-w-0">
+              {fullName ? (
+                <div className="hidden sm:block truncate text-[13px] text-white/45">
+                  {fullName}
+                </div>
+              ) : null}
+            </div>
+
+            <span style={{ color: UI.orangeSoft }}>
+              <CopyIcon show={isHover} />
+            </span>
+          </button>
+        </td>
+
+        {/* Trend + Momentum */}
+        <td style={{ padding: "12px 8px" }}>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+            <TrendBadge trend={t.trend} />
+            <span
+              style={{
+                padding: "2px 10px",
+                borderRadius: 999,
+                border: `1px solid ${mt.b}`,
+                background: mt.bg,
+                color: mt.c,
+                fontSize: 12,
+                fontWeight: 900,
+                letterSpacing: 0.2,
+                whiteSpace: "nowrap",
+              }}
+            >
+              {mom}
+            </span>
+          </div>
+        </td>
+
+        {/* Market metrics */}
+        <td style={{ padding: "12px 8px" }}>
+          <Chip>24h {formatPct(t.change24h)}</Chip>
+        </td>
+
+        <td style={{ padding: "12px 8px" }}>
+          <Chip>MCap {formatCompactNumber(t.marketCap)}</Chip>
+        </td>
+
+        <td style={{ padding: "12px 8px" }}>
+          <Chip>Vol {formatCompactNumber(t.volume24h)}</Chip>
+        </td>
+
+        {/* Sparkline + score */}
+        <td style={{ padding: "12px 8px" }}>
+          <div style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
+            <Sparkline
+              values={h}
+              w={82}
+              h={20}
+              stroke={c}
+              fill={
+                t.trend === "up"
+                  ? "rgba(46,229,157,0.10)"
+                  : t.trend === "down"
+                  ? "rgba(255,107,107,0.10)"
+                  : "rgba(255,255,255,0.06)"
+              }
+            />
+            <span
+              style={{
+                fontSize: 12,
+                fontWeight: 900,
+                color: "rgba(255,255,255,0.78)",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {typeof t.score === "number" ? t.score.toFixed(2) : "—"}
+            </span>
+          </div>
+        </td>
+
+        {/* Reason */}
+        <td
+          style={{
+            padding: "12px 8px",
+            fontSize: 12,
+            opacity: 0.72,
+            maxWidth: 260,
+          }}
+          title={t.reason}
+        >
+          <div
+            style={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+            }}
+          >
+            {t.reason || "—"}
+          </div>
+        </td>
+      </tr>
+    );
+  })}
+
+  {items.length === 0 && !error && (
+    <tr>
+      <td colSpan={8} style={{ padding: "12px 8px", opacity: 0.75 }}>
+        Sin datos todavía…
+      </td>
+    </tr>
+  )}
+</tbody>
           </table>
         </div>
       )}
