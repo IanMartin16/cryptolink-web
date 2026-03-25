@@ -6,6 +6,21 @@ export type SocialAttentionItem = {
   tags?: string[];
 };
 
+export type BasicSignalsResponse = {
+  attentionLeaders: SocialAttentionItem[];
+  attentionLosers: SocialAttentionItem[];
+  tags: string[];
+  coverage: "low" | "moderate" | "high";
+  market: {
+    topAssets: string[];
+    attentionLeaders: SocialAttentionItem[];
+    attentionLosers: SocialAttentionItem[];
+    tags: string[];
+    coverage: "low" | "moderate" | "broad";
+  };
+  backdrop?: MarketBackdrop;
+};
+
 export type MarketBackdrop = {
   fearGreedValue?: number;
   fearGreedLabel?: string;

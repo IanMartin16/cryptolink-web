@@ -6,7 +6,8 @@ import { fetchSocialPulse } from "@/lib/cryptoLink";
 import { useMarketSignalsStore } from "@/lib/stores/marketSignalsStore";
 import { buildLiveNarrative } from "@/lib/social/liveNarrative";
 import { fetchBasicSignals } from "@/lib/social/fetchBasicSignals"
-import { MarketBackdrop, SocialLinkBasicSignalsResponse } from  "@/lib/social/basicSignalsMock"
+import type { BasicSignalsResponse } from "@/lib/social/fetchBasicSignals";
+
 
 type SocialPulseResponse = {
   ok: boolean;
@@ -72,27 +73,29 @@ export default function SocialPulseBoard() {
   const [status, setStatus] = useState<"live" | "restored" | "refreshing">(
     socialPulseUpdatedAt ? "restored" : "refreshing"
   );
-  const [basicSignals, setBasicSignals] = useState<any>(null);
+  const [basicSignals, setBasicSignals] = useState<BasicSignalsResponse | null>(null);
 
-  useEffect(() => {
-    let cancelled = false;
+useEffect(() => {
+  let cancelled = false;
 
-    async function load() {
-      try {
-        setError("");
-        setStatus((prev) => (data ? "refreshing" : prev));
+  async function load() {
+    try {
+      setError("");
+      setStatus((prev) => (prev === "live" ? "refreshing" : prev));
 
-    const pulseRes = await fetchSocialPulse(["BTC", "ETH", "SOL"]);
+      const pulseRes = await fetchSocialPulse(["BTC", "ETH", "SOL"]);
 
-      let basicResData = null;
+       let basicResData: BasicSignalsResponse | null = null;
+
       try {
         const basicRes = await fetchBasicSignals({
           window: "1h",
           assets: ["BTC", "ETH", "SOL"],
           limit: 3,
         });
+
         basicResData = basicRes;
-      } catch (error){
+      } catch (error) {
         console.error("basicSignals fetch failed", error);
         basicResData = null;
       }
@@ -108,27 +111,15 @@ export default function SocialPulseBoard() {
     }
   }
 
-    load();
-    const id = setInterval(load, 10000);
+  load();
+  const id = setInterval(load, 10000);
 
-    return () => {
-      cancelled = true;
-      clearInterval(id);
-    };
-  }, []);
-  useEffect(() => {
-  if (!basicSignals) {
-    console.log("BASIC SIGNALS: not loaded");
-    return;
-  }
-
-  console.log("BASIC SIGNALS READY", {
-    source: basicSignals.source,
-    ts: basicSignals.ts,
-    window: basicSignals.window,
-    market: basicSignals.market,
-  });
-}, [basicSignals]);
+  return () => {
+    cancelled = true;
+    clearInterval(id);
+  };
+}, []);
+  
 
   const pulse = data?.socialPulse;
   const tone = pulseTone(pulse?.state || "neutral");

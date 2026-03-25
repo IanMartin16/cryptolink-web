@@ -1,4 +1,5 @@
-import type { SocialLinkBasicSignalsResponse } from "@/lib/social/basicSignalsMock";
+import type { MarketBackdrop } from "@/lib/social/basicSignalsMock";
+
 
 function buildQuery(args?: {
   window?: "15m" | "30m" | "1h" | "4h";
@@ -15,12 +16,35 @@ function buildQuery(args?: {
   return qs ? `?${qs}` : "";
 }
 
-export async function fetchBasicSignals(args?: {
+export type SocialAttentionItem = {
+  asset: string;
+  attentionScore: number;
+  attentionDeltaPct: number;
+  direction: "up" | "down";
+  tags: string[];
+};
+
+export type BasicSignalsResponse = {
+  attentionLeaders: SocialAttentionItem[];
+  attentionLosers: SocialAttentionItem[];
+  tags: string[];
+  coverage: "low" | "moderate" | "high";
+  market: {
+    topAssets: string[];
+    attentionLeaders: SocialAttentionItem[];
+    attentionLosers: SocialAttentionItem[];
+    tags: string[];
+    coverage: "low" | "moderate" | "broad";
+  };
+  backdrop?: MarketBackdrop;
+};
+
+export async function fetchBasicSignals(params: {
   window?: "15m" | "30m" | "1h" | "4h";
   assets?: string[];
   limit?: number;
-}): Promise<SocialLinkBasicSignalsResponse> {
-  const qs = buildQuery(args);
+}): Promise<BasicSignalsResponse> {
+  const qs = buildQuery(params);
 
   const remoteBase = process.env.NEXT_PUBLIC_SOCIAL_LINK_BASE_URL;
   const remoteUrl = remoteBase
@@ -39,13 +63,15 @@ export async function fetchBasicSignals(args?: {
         },
         cache: "no-store",
       });
-      
 
       if (!remoteRes.ok) {
         throw new Error(`remote basic-signals HTTP ${remoteRes.status}`);
       }
-      return remoteRes.json();
+
+      const remoteData: BasicSignalsResponse = await remoteRes.json();
+      return remoteData;
     } catch (error) {
+      console.error("basic-signals remote fetch failed", error);
       console.log("🚀 Data desde Railway:", remoteUrl);
     }
   }
@@ -62,7 +88,7 @@ export async function fetchBasicSignals(args?: {
   if (!localRes.ok) {
     throw new Error(`local basic-signals HTTP ${localRes.status}`);
   }
-console.warn("fetchBasicSignals -> fallback local");
-  return localRes.json();
-  
+
+  const localData: BasicSignalsResponse = await localRes.json();
+  return localData;
 }
