@@ -18,6 +18,7 @@ export function getMarketPulsePrefs(): MarketPulsePrefs {
     if (!raw) return DEFAULT_PREFS;
 
     const parsed = JSON.parse(raw) as Partial<MarketPulsePrefs>;
+
     return {
       max:
         typeof parsed.max === "number" && parsed.max > 0
@@ -35,5 +36,9 @@ export function getMarketPulsePrefs(): MarketPulsePrefs {
 
 export function setMarketPulsePrefs(next: MarketPulsePrefs) {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(KEY, JSON.stringify(next));
+
+  const payload = JSON.stringify(next);
+  window.localStorage.setItem(KEY, payload);
+
+  console.log("saved marketPulse prefs", payload);
 }

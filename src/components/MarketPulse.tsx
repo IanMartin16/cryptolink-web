@@ -31,12 +31,12 @@ export default function MarketPulse({
 
   useEffect(() => {
     const prefs = getMarketPulsePrefs();
-    setPanelMax(prefs.max || max);
-    setCompact(
-      typeof prefs.compact === "boolean" ? prefs.compact : true
-    );
+    console.log("loaded marketPulse prefs", prefs);
+
+    setPanelMax(prefs.max);
+    setCompact(prefs.compact);
     setReady(true);
-  }, [max]);
+  }, []);
 
   const items = useMemo(
     () =>
