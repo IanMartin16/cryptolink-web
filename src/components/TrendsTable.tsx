@@ -8,7 +8,7 @@ import Sparkline from "@/components/Sparkline";
 import SymbolCell from "@/components/SymbolCell";
 import { getSymbolName } from "@/lib/symbolMeta";
 import { useTrendsFeed } from "@/lib/trends/useTrendsFeed";
-import { getTrendHistory } from "@/lib/useTrendHistory";
+import { getTrendHistory } from "@/lib/useTrendHistory"
 
 export type TrendItem = {
   symbol: string;

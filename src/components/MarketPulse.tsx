@@ -27,18 +27,15 @@ export default function MarketPulse({
 }) {
   const [panelMax, setPanelMax] = useState<number>(max);
   const [compact, setCompact] = useState<boolean>(true);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const sync = () => {
-      const prefs = getMarketPulsePrefs();
-      setPanelMax(prefs.max || max);
-      setCompact(prefs.compact);
-    };
-
-    sync();
-    window.addEventListener("cryptolink:marketpulse:prefs", sync);
-    return () =>
-      window.removeEventListener("cryptolink:marketpulse:prefs", sync);
+    const prefs = getMarketPulsePrefs();
+    setPanelMax(prefs.max || max);
+    setCompact(
+      typeof prefs.compact === "boolean" ? prefs.compact : true
+    );
+    setReady(true);
   }, [max]);
 
   const items = useMemo(
@@ -50,9 +47,9 @@ export default function MarketPulse({
   );
 
   const toggleCompact = () => {
-    const next = { max: panelMax, compact: !compact };
-    setCompact(next.compact);
-    setMarketPulsePrefs(next);
+    const nextCompact = !compact;
+    setCompact(nextCompact);
+    setMarketPulsePrefs({ max: panelMax, compact: nextCompact });
   };
 
   const cycleMax = () => {
@@ -60,6 +57,8 @@ export default function MarketPulse({
     setPanelMax(nextMax);
     setMarketPulsePrefs({ max: nextMax, compact });
   };
+
+  if (!ready) return null;
 
   return (
     <div className="rounded-2xl border border-white/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(255,255,255,0.02))] p-3 shadow-[0_12px_32px_rgba(0,0,0,0.14)]">
@@ -103,9 +102,7 @@ export default function MarketPulse({
         {items.map((r) => (
           <div
             key={r.symbol}
-            title={`${r.symbol}${
-              typeof r.pct === "number" ? ` • ${r.pct.toFixed(2)}%` : ""
-            }`}
+            title={`${r.symbol}${typeof r.pct === "number" ? ` • ${r.pct.toFixed(2)}%` : ""}`}
             className={[
               "rounded-xl border border-white/10 font-semibold text-white/82",
               compact ? "px-2.5 py-2 text-[11px]" : "px-3 py-3 text-xs",

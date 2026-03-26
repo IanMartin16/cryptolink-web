@@ -36,5 +36,4 @@ export function getMarketPulsePrefs(): MarketPulsePrefs {
 export function setMarketPulsePrefs(next: MarketPulsePrefs) {
   if (typeof window === "undefined") return;
   window.localStorage.setItem(KEY, JSON.stringify(next));
-  window.dispatchEvent(new Event("cryptolink:marketpulse:prefs"));
 }
