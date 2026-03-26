@@ -393,10 +393,10 @@ export default function RegimePanel() {
 
         <div
           style={{
-            display: "flex",
-            gap: 18,
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+            gap: 14,
             alignItems: "center",
-            flexWrap: "wrap",
           }}
         >
           <div
@@ -420,35 +420,35 @@ export default function RegimePanel() {
               }}
             />
 
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                borderRadius: "50%",
+                position: "relative",
+                background: `
+                  radial-gradient(circle at 35% 35%, rgba(255,255,255,0.28), transparent 28%),
+                  radial-gradient(circle, ${orb.core} 0%, ${orb.glow} 42%, rgba(0,0,0,0) 72%)
+                `,
+                boxShadow: `
+                  0 0 28px ${orb.glow},
+                  0 0 54px ${orb.glow},
+                  inset 0 0 18px rgba(255,255,255,0.08)
+                `,
+                border: `1px solid ${orb.ring}`,
+                animation: "orbBreath 4.2s ease-in-out infinite, orbCoreDrift 6s ease-in-out infinite",
+              }}
+            >
               <div
                 style={{
-                  width: "100%",
-                  height: "100%",
+                  position: "absolute",
+                  inset: 10,
                   borderRadius: "50%",
-                  position: "relative",
-                  background: `
-                    radial-gradient(circle at 35% 35%, rgba(255,255,255,0.28), transparent 28%),
-                    radial-gradient(circle, ${orb.core} 0%, ${orb.glow} 42%, rgba(0,0,0,0) 72%)
-                  `,
-                  boxShadow: `
-                    0 0 28px ${orb.glow},
-                    0 0 54px ${orb.glow},
-                    inset 0 0 18px rgba(255,255,255,0.08)
-                  `,
                   border: `1px solid ${orb.ring}`,
-                  animation: "orbBreath 4.2s ease-in-out infinite, orbCoreDrift 6s ease-in-out infinite",
+                  opacity: 0.9,
                 }}
-              >
-                <div
-                  style={{
-                    position: "absolute",
-                    inset: 10,
-                    borderRadius: "50%",
-                    border: `1px solid ${orb.ring}`,
-                    opacity: 0.9,
-                  }}
-                />
-                <div
+              />
+              <div
                   style={{
                     position: "absolute",
                     inset: 22,
@@ -460,7 +460,7 @@ export default function RegimePanel() {
               </div>
             </div>
 
-            <div style={{ display: "grid", gap: 8, minWidth: 180, flex: 1 }}>
+            <div style={{ display: "grid", gap: 8 }}>
               <div
                 style={{
                   fontSize: "clamp(26px, 5vw, 32px)",
@@ -485,7 +485,7 @@ export default function RegimePanel() {
                   fontSize: "clamp(13px, 3.2vw, 14px)",
                   opacity: 0.84,
                   lineHeight: 1.4,
-                  maxWidth: 520,
+                  maxWidth:520,
                 }}
               >
                 {regime.summary}
@@ -509,7 +509,9 @@ export default function RegimePanel() {
         >
         <div style={{ fontSize: 13, opacity: 0.72 }}>Signals</div>
 
-        <div
+        
+
+<div
           style={{
             display: "flex",
             gap: 14,
@@ -596,7 +598,7 @@ export default function RegimePanel() {
         >
           Source: {data.source}
           </div>
-        </div>
+        </div> 
       </div>
       <style jsx>{`
         @keyframes orbBreath {
