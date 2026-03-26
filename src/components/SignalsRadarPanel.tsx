@@ -87,10 +87,11 @@ export default function SignalsRadarPanel() {
       try {
         setError("");
         const res = await fetchSignals(["BTC", "ETH", "SOL"]);
-        if (!cancelled) 
+        if (!cancelled) {
             setData(res);
             setSignalsStore(res);
             setStatus("live");
+        }
       } catch (e: any) {
         if (!cancelled) setError(e?.message ?? "unknown");
       }
@@ -308,21 +309,21 @@ export default function SignalsRadarPanel() {
             <div
               key={s.label}
               style={{
-                padding: "12px 14px",
-                borderRadius: 18,
+                padding: "10px 12px",
+                borderRadius: 16,
                 border: `1px solid ${tone.border}`,
                 background: tone.bg,
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
                 gap: 12,
-                minHeight: 60,
+                minHeight: 52,
                 boxShadow: "inset 0 0 10px rgba(255,255,255,0.015)",
               }}
             >
               <div
                 style={{
-                  fontSize: 14,
+                  fontSize: 13,
                   opacity: 0.72,
                   fontWeight: 700,
                   letterSpacing: 0.2,
@@ -341,7 +342,7 @@ export default function SignalsRadarPanel() {
               >
                 <span
                   style={{
-                    fontSize: 26,
+                    fontSize: 22,
                     fontWeight: 950,
                     color: tone.value,
                     lineHeight: 1,
