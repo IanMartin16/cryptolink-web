@@ -392,6 +392,124 @@ export default function RegimePanel() {
         <div style={{ fontSize: 13, opacity: 0.72 }}>Current State</div>
 
         <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+            gap: 14,
+            alignItems: "center",
+          }}
+        >
+          <div
+            style={{
+              width: "min(110px, 28vw)",
+              height: "min(110px, 28vw)",
+              borderRadius: "50%",
+              position: "relative",
+              margin: "0 auto",
+              transition: "box-shadow 300ms ease, border-color 300ms ease, background 300ms ease",
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                borderRadius: "50%",
+                background: orb.glow,
+                filter: "blur(16px)",
+                animation: "orbHalo 4.2s ease-in-out infinite",
+              }}
+            />
+
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                borderRadius: "50%",
+                position: "relative",
+                background: `
+                  radial-gradient(circle at 35% 35%, rgba(255,255,255,0.28), transparent 28%),
+                  radial-gradient(circle, ${orb.core} 0%, ${orb.glow} 42%, rgba(0,0,0,0) 72%)
+                `,
+                boxShadow: `
+                  0 0 28px ${orb.glow},
+                  0 0 54px ${orb.glow},
+                  inset 0 0 18px rgba(255,255,255,0.08)
+                `,
+                border: `1px solid ${orb.ring}`,
+                animation: "orbBreath 4.2s ease-in-out infinite, orbCoreDrift 6s ease-in-out infinite",
+              }}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 10,
+                  borderRadius: "50%",
+                  border: `1px solid ${orb.ring}`,
+                  opacity: 0.9,
+                }}
+              />
+              <div
+                  style={{
+                    position: "absolute",
+                    inset: 22,
+                    borderRadius: "50%",
+                    border: `1px solid rgba(255,255,255,0.10)`,
+                    opacity: 0.9,
+                  }}
+                />
+              </div>
+            </div>
+
+            <div style={{ display: "grid", gap: 8 }}>
+              <div
+                style={{
+                  fontSize: "clamp(26px, 5vw, 32px)",
+                  fontWeight: 900,
+                  color: tone,
+                  lineHeight: 1,
+                }}
+              >
+                {esState(regime.state)}
+              </div>
+
+              <div style={{ fontSize: 14, opacity: 0.8 }}>
+                Confidence: <b>{confidencePct}%</b>
+              </div>
+
+              <div style={{ fontSize: 14, opacity: 0.8 }}>
+                Composite Score: <b>{Number(regime.score ?? 0).toFixed(2)}</b>
+              </div>
+
+              <div
+                style={{
+                  fontSize: "clamp(13px, 3.2vw, 14px)",
+                  opacity: 0.84,
+                  lineHeight: 1.4,
+                  maxWidth:520,
+                }}
+              >
+                {regime.summary}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Card left */ }
+        <div
+          style={{
+            padding: 14,
+            borderRadius: 16,
+            border: `1px solid ${UI.border}`,
+            background: "rgba(255,255,255,0.045)",
+            display: "grid",
+            gap: 10,
+            alignContent: "start",
+            height: "100%",
+          }}
+        >
+        <div style={{ fontSize: 13, opacity: 0.72 }}>Signals</div>
+
+        <div
   style={{
     display: "flex",
     gap: 18,
@@ -494,110 +612,6 @@ export default function RegimePanel() {
     </div>
   </div>
 </div>
-        </div>
-
-        {/* Card left */ }
-        <div
-          style={{
-            padding: 14,
-            borderRadius: 16,
-            border: `1px solid ${UI.border}`,
-            background: "rgba(255,255,255,0.045)",
-            display: "grid",
-            gap: 10,
-            alignContent: "start",
-            height: "100%",
-          }}
-        >
-        <div style={{ fontSize: 13, opacity: 0.72 }}>Signals</div>
-
-        <div
-          style={{
-            display: "flex",
-            gap: 14,
-            flexWrap: "wrap",
-            alignItems: "center",
-            fontSize: 14,
-            opacity: 0.82,
-          }}
-        >
-        <div>
-          Confidence: <b>{confidencePct}%</b>
-        </div>
-        <div>
-          Score: <b>{Number(regime.score ?? 0).toFixed(2)}</b>
-        </div>
-      </div>
-
-        {mh?.marketHealth ? (
-          <div
-            style={{
-              marginTop: 4,
-              padding: 12,
-              borderRadius: 14,
-              border: `1px solid ${UI.border}`,
-              background: "rgba(255,255,255,0.04)",
-              display: "grid",
-              gap: 6,
-            }}
-          >
-            <div style={{ fontSize: 12, opacity: 0.72 }}>Market Health</div>
-
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: 12,
-              flexWrap: "wrap",
-            }}
-          >
-            <div
-              style={{
-                fontSize: 18,
-                fontWeight: 900,
-                color: healthTone(mh.marketHealth.state),
-                lineHeight: 1.1,
-              }}
-            >
-              {healthLabel(mh.marketHealth.state)}
-            </div>
-
-          <div
-            style={{
-              fontSize: 13,
-              opacity: 0.82,
-              color: healthTone(mh.marketHealth.state),
-              fontWeight: 700,
-            }}
-          >
-             {mh.marketHealth.score}/100
-          </div>
-        </div>
-
-        <div
-          style={{
-            fontSize: 13,
-            opacity: 0.78,
-            lineHeight: 1.4,
-          }}
-        >
-          {mh.marketHealth.summary}
-        </div>
-      </div>
-    ) : null}
-
-        <div
-          style={{
-            marginTop: 4,
-            paddingTop: 8,
-            borderTop: `1px solid rgba(255,255,255,0.08)`,
-            fontSize: 12,
-            opacity: 0.72,
-          }}
-        >
-          Source: {data.source}
-          </div>
         </div>
       </div>
       <style jsx>{`
