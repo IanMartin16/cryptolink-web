@@ -392,108 +392,106 @@ export default function RegimePanel() {
         <div style={{ fontSize: 13, opacity: 0.72 }}>Current State</div>
 
         <div
-  style={{
-    display: "flex",
-    gap: 18,
-    alignItems: "center",
-    flexWrap: "wrap",
-  }}
->
-  <div
-    style={{
-      width: "min(110px, 28vw)",
-      height: "min(110px, 28vw)",
-      borderRadius: "50%",
-      position: "relative",
-      margin: "0 auto",
-      transition: "box-shadow 300ms ease, border-color 300ms ease, background 300ms ease",
-    }}
-  >
-    <div
-      style={{
-        position: "absolute",
-        inset: 0,
-        borderRadius: "50%",
-        background: orb.glow,
-        filter: "blur(16px)",
-        animation: "orbHalo 4.2s ease-in-out infinite",
-      }}
-    />
+          style={{
+            display: "flex",
+            gap: 18,
+            alignItems: "center",
+            flexWrap: "wrap",
+          }}
+        >
+          <div
+            style={{
+              width: "min(110px, 28vw)",
+              height: "min(110px, 28vw)",
+              borderRadius: "50%",
+              position: "relative",
+              margin: "0 auto",
+              transition: "box-shadow 300ms ease, border-color 300ms ease, background 300ms ease",
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                borderRadius: "50%",
+                background: orb.glow,
+                filter: "blur(16px)",
+                animation: "orbHalo 4.2s ease-in-out infinite",
+              }}
+            />
 
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        borderRadius: "50%",
-        position: "relative",
-        background: `
-          radial-gradient(circle at 35% 35%, rgba(255,255,255,0.28), transparent 28%),
-          radial-gradient(circle, ${orb.core} 0%, ${orb.glow} 42%, rgba(0,0,0,0) 72%)
-        `,
-        boxShadow: `
-          0 0 28px ${orb.glow},
-          0 0 54px ${orb.glow},
-          inset 0 0 18px rgba(255,255,255,0.08)
-        `,
-        border: `1px solid ${orb.ring}`,
-        animation: "orbBreath 4.2s ease-in-out infinite, orbCoreDrift 6s ease-in-out infinite",
-      }}
-    >
-      <div
-        style={{
-          position: "absolute",
-          inset: 10,
-          borderRadius: "50%",
-          border: `1px solid ${orb.ring}`,
-          opacity: 0.9,
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          inset: 22,
-          borderRadius: "50%",
-          border: `1px solid rgba(255,255,255,0.10)`,
-          opacity: 0.9,
-        }}
-      />
-    </div>
-  </div>
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: "50%",
+                  position: "relative",
+                  background: `
+                    radial-gradient(circle at 35% 35%, rgba(255,255,255,0.28), transparent 28%),
+                    radial-gradient(circle, ${orb.core} 0%, ${orb.glow} 42%, rgba(0,0,0,0) 72%)
+                  `,
+                  boxShadow: `
+                    0 0 28px ${orb.glow},
+                    0 0 54px ${orb.glow},
+                    inset 0 0 18px rgba(255,255,255,0.08)
+                  `,
+                  border: `1px solid ${orb.ring}`,
+                  animation: "orbBreath 4.2s ease-in-out infinite, orbCoreDrift 6s ease-in-out infinite",
+                }}
+              >
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 10,
+                    borderRadius: "50%",
+                    border: `1px solid ${orb.ring}`,
+                    opacity: 0.9,
+                  }}
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 22,
+                    borderRadius: "50%",
+                    border: `1px solid rgba(255,255,255,0.10)`,
+                    opacity: 0.9,
+                  }}
+                />
+              </div>
+            </div>
 
-  <ConfidenceGauge value={confidencePct} color={tone} />
+            <div style={{ display: "grid", gap: 8, minWidth: 180, flex: 1 }}>
+              <div
+                style={{
+                  fontSize: "clamp(26px, 5vw, 32px)",
+                  fontWeight: 900,
+                  color: tone,
+                  lineHeight: 1,
+                }}
+              >
+                {esState(regime.state)}
+              </div>
 
-  <div style={{ display: "grid", gap: 8, minWidth: 180, flex: 1 }}>
-    <div
-      style={{
-        fontSize: "clamp(26px, 5vw, 32px)",
-        fontWeight: 900,
-        color: tone,
-        lineHeight: 1,
-      }}
-    >
-      {esState(regime.state)}
-    </div>
+              <div style={{ fontSize: 14, opacity: 0.8 }}>
+                Confidence: <b>{confidencePct}%</b>
+              </div>
 
-    <div style={{ fontSize: 14, opacity: 0.8 }}>
-      Confidence: <b>{confidencePct}%</b>
-    </div>
+              <div style={{ fontSize: 14, opacity: 0.8 }}>
+                Composite Score: <b>{Number(regime.score ?? 0).toFixed(2)}</b>
+              </div>
 
-    <div style={{ fontSize: 14, opacity: 0.8 }}>
-      Composite Score: <b>{Number(regime.score ?? 0).toFixed(2)}</b>
-    </div>
-
-    <div
-      style={{
-        fontSize: "clamp(13px, 3.2vw, 14px)",
-        opacity: 0.84,
-        lineHeight: 1.4,
-        maxWidth: 520,
-      }}
-    >
-      {regime.summary}
-    </div>
-  </div>
-</div>
+              <div
+                style={{
+                  fontSize: "clamp(13px, 3.2vw, 14px)",
+                  opacity: 0.84,
+                  lineHeight: 1.4,
+                  maxWidth: 520,
+                }}
+              >
+                {regime.summary}
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Card left */ }
@@ -522,7 +520,7 @@ export default function RegimePanel() {
           }}
         >
         <div>
-          Confidence: <b>{confidencePct}%</b>
+          <ConfidenceGauge value={confidencePct} color={tone} />
         </div>
         <div>
           Score: <b>{Number(regime.score ?? 0).toFixed(2)}</b>
