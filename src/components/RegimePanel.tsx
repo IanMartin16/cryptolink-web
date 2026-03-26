@@ -111,7 +111,7 @@ function ConfidenceGauge({
   value: number;
   color: string;
 }) {
-  const size = 150;
+  const size = 180;
   const cx = size / 2;
   const cy = size / 2;
   const r = 42;
