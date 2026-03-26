@@ -509,9 +509,7 @@ export default function RegimePanel() {
         >
         <div style={{ fontSize: 13, opacity: 0.72 }}>Signals</div>
 
-        
-
-<div
+        <div
           style={{
             display: "flex",
             gap: 14,
@@ -524,63 +522,7 @@ export default function RegimePanel() {
           <ConfidenceGauge value={confidencePct} color={tone} />
       </div>
 
-        {mh?.marketHealth ? (
-          <div
-            style={{
-              marginTop: 4,
-              padding: 12,
-              borderRadius: 14,
-              border: `1px solid ${UI.border}`,
-              background: "rgba(255,255,255,0.04)",
-              display: "grid",
-              gap: 6,
-            }}
-          >
-            <div style={{ fontSize: 12, opacity: 0.72 }}>Market Health</div>
-
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: 12,
-              flexWrap: "wrap",
-            }}
-          >
-            <div
-              style={{
-                fontSize: 18,
-                fontWeight: 900,
-                color: healthTone(mh.marketHealth.state),
-                lineHeight: 1.1,
-              }}
-            >
-              {healthLabel(mh.marketHealth.state)}
-            </div>
-
-          <div
-            style={{
-              fontSize: 13,
-              opacity: 0.82,
-              color: healthTone(mh.marketHealth.state),
-              fontWeight: 700,
-            }}
-          >
-             {mh.marketHealth.score}/100
-          </div>
-        </div>
-
-        <div
-          style={{
-            fontSize: 13,
-            opacity: 0.78,
-            lineHeight: 1.4,
-          }}
-        >
-          {mh.marketHealth.summary}
-        </div>
-      </div>
-    ) : null}
+        
 
         <div
           style={{
