@@ -6,6 +6,7 @@ import {
   getMarketPulsePrefs,
   setMarketPulsePrefs,
 } from "@/lib/marketPulseStore";
+import { getMarketPulseRows } from "@/lib/marketPulseHistory";
 
 function tone(pct?: number) {
   if (typeof pct !== "number") return "rgba(255,255,255,0.08)";
@@ -31,16 +32,16 @@ export default function MarketPulse({
 
   useEffect(() => {
     const prefs = getMarketPulsePrefs();
-    console.log("loaded marketPulse prefs", prefs);
-
     setPanelMax(prefs.max);
     setCompact(prefs.compact);
     setReady(true);
   }, []);
 
+  const effectiveRows = rows.length ? rows : getMarketPulseRows();
+
   const items = useMemo(
     () =>
-      [...(rows || [])]
+      effectiveRows
         .filter((r) => r && r.symbol)
         .slice(0, panelMax),
     [rows, panelMax]
