@@ -82,6 +82,111 @@ function healthLabel(state: string) {
   return "Stable";
 }
 
+function polarPoint(cx: number, cy: number, r: number, angleDeg: number) {
+  const a = (angleDeg * Math.PI) / 180;
+  return {
+    x: cx + r * Math.cos(a),
+    y: cy + r * Math.sin(a),
+  };
+}
+
+function arcPath(
+  cx: number,
+  cy: number,
+  r: number,
+  startDeg: number,
+  endDeg: number
+) {
+  const start = polarPoint(cx, cy, r, startDeg);
+  const end = polarPoint(cx, cy, r, endDeg);
+  const largeArc = Math.abs(endDeg - startDeg) > 180 ? 1 : 0;
+
+  return `M ${start.x} ${start.y} A ${r} ${r} 0 ${largeArc} 1 ${end.x} ${end.y}`;
+}
+
+function ConfidenceGauge({
+  value,
+  color,
+}: {
+  value: number;
+  color: string;
+}) {
+  const size = 130;
+  const cx = size / 2;
+  const cy = size / 2;
+  const r = 42;
+
+  const clamped = Math.max(0, Math.min(100, value));
+  const startDeg = 140;
+  const endDeg = 400;
+  const sweep = endDeg - startDeg;
+  const activeEnd = startDeg + (clamped / 100) * sweep;
+
+  const bgPath = arcPath(cx, cy, r, startDeg, endDeg);
+  const fgPath = arcPath(cx, cy, r, startDeg, activeEnd);
+
+  return (
+    <div
+      style={{
+        width: size,
+        minWidth: size,
+        display: "grid",
+        placeItems: "center",
+      }}
+    >
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        <path
+          d={bgPath}
+          fill="none"
+          stroke="rgba(255,255,255,0.10)"
+          strokeWidth="10"
+          strokeLinecap="round"
+        />
+        <path
+          d={fgPath}
+          fill="none"
+          stroke={color}
+          strokeWidth="10"
+          strokeLinecap="round"
+          style={{
+            filter: `drop-shadow(0 0 8px ${color}66)`,
+          }}
+        />
+
+        <circle
+          cx={cx}
+          cy={cy}
+          r="28"
+          fill="rgba(255,255,255,0.03)"
+          stroke="rgba(255,255,255,0.08)"
+        />
+
+        <text
+          x={cx}
+          y={cy - 2}
+          textAnchor="middle"
+          fill="rgba(255,255,255,0.96)"
+          fontSize="22"
+          fontWeight="900"
+        >
+          {clamped}%
+        </text>
+        <text
+          x={cx}
+          y={cy + 18}
+          textAnchor="middle"
+          fill="rgba(255,255,255,0.50)"
+          fontSize="10"
+          fontWeight="700"
+          letterSpacing="0.08em"
+        >
+          CONF
+        </text>
+      </svg>
+    </div>
+  );
+}
+
 export default function RegimePanel() {
   const storedRegime = useMarketSignalsStore((s) => s.regime);
   const setRegimeStore = useMarketSignalsStore((s) => s.setRegime);
@@ -172,11 +277,6 @@ export default function RegimePanel() {
   const tone = toneForState(regime.state);
   const confidencePct = Math.round((regime.confidence ?? 0) * 100);
   const orb = orbGlow(regime.state, regime.confidence ?? 0);
-
-
-  function clamp(n: number, min: number, max: number) {
-    return Math.max(min, Math.min(max, n));
-    }
 
   function orbGlow(state: string, confidence: number) {
     const c = clamp(confidence ?? 0, 0, 1);
@@ -292,106 +392,108 @@ export default function RegimePanel() {
         <div style={{ fontSize: 13, opacity: 0.72 }}>Current State</div>
 
         <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
-            gap: 14,
-            alignItems: "center",
-          }}
-        >
-          <div
-            style={{
-              width: "min(110px, 28vw)",
-              height: "min(110px, 28vw)",
-              borderRadius: "50%",
-              position: "relative",
-              margin: "0 auto",
-              transition: "box-shadow 300ms ease, border-color 300ms ease, background 300ms ease",
-            }}
-          >
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                borderRadius: "50%",
-                background: orb.glow,
-                filter: "blur(16px)",
-                animation: "orbHalo 4.2s ease-in-out infinite",
-              }}
-            />
+  style={{
+    display: "flex",
+    gap: 18,
+    alignItems: "center",
+    flexWrap: "wrap",
+  }}
+>
+  <div
+    style={{
+      width: "min(110px, 28vw)",
+      height: "min(110px, 28vw)",
+      borderRadius: "50%",
+      position: "relative",
+      margin: "0 auto",
+      transition: "box-shadow 300ms ease, border-color 300ms ease, background 300ms ease",
+    }}
+  >
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        borderRadius: "50%",
+        background: orb.glow,
+        filter: "blur(16px)",
+        animation: "orbHalo 4.2s ease-in-out infinite",
+      }}
+    />
 
-            <div
-              style={{
-                width: "100%",
-                height: "100%",
-                borderRadius: "50%",
-                position: "relative",
-                background: `
-                  radial-gradient(circle at 35% 35%, rgba(255,255,255,0.28), transparent 28%),
-                  radial-gradient(circle, ${orb.core} 0%, ${orb.glow} 42%, rgba(0,0,0,0) 72%)
-                `,
-                boxShadow: `
-                  0 0 28px ${orb.glow},
-                  0 0 54px ${orb.glow},
-                  inset 0 0 18px rgba(255,255,255,0.08)
-                `,
-                border: `1px solid ${orb.ring}`,
-                animation: "orbBreath 4.2s ease-in-out infinite, orbCoreDrift 6s ease-in-out infinite",
-              }}
-            >
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 10,
-                  borderRadius: "50%",
-                  border: `1px solid ${orb.ring}`,
-                  opacity: 0.9,
-                }}
-              />
-              <div
-                  style={{
-                    position: "absolute",
-                    inset: 22,
-                    borderRadius: "50%",
-                    border: `1px solid rgba(255,255,255,0.10)`,
-                    opacity: 0.9,
-                  }}
-                />
-              </div>
-            </div>
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        borderRadius: "50%",
+        position: "relative",
+        background: `
+          radial-gradient(circle at 35% 35%, rgba(255,255,255,0.28), transparent 28%),
+          radial-gradient(circle, ${orb.core} 0%, ${orb.glow} 42%, rgba(0,0,0,0) 72%)
+        `,
+        boxShadow: `
+          0 0 28px ${orb.glow},
+          0 0 54px ${orb.glow},
+          inset 0 0 18px rgba(255,255,255,0.08)
+        `,
+        border: `1px solid ${orb.ring}`,
+        animation: "orbBreath 4.2s ease-in-out infinite, orbCoreDrift 6s ease-in-out infinite",
+      }}
+    >
+      <div
+        style={{
+          position: "absolute",
+          inset: 10,
+          borderRadius: "50%",
+          border: `1px solid ${orb.ring}`,
+          opacity: 0.9,
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          inset: 22,
+          borderRadius: "50%",
+          border: `1px solid rgba(255,255,255,0.10)`,
+          opacity: 0.9,
+        }}
+      />
+    </div>
+  </div>
 
-            <div style={{ display: "grid", gap: 8 }}>
-              <div
-                style={{
-                  fontSize: "clamp(26px, 5vw, 32px)",
-                  fontWeight: 900,
-                  color: tone,
-                  lineHeight: 1,
-                }}
-              >
-                {esState(regime.state)}
-              </div>
+  <ConfidenceGauge value={confidencePct} color={tone} />
 
-              <div style={{ fontSize: 14, opacity: 0.8 }}>
-                Confidence: <b>{confidencePct}%</b>
-              </div>
+  <div style={{ display: "grid", gap: 8, minWidth: 180, flex: 1 }}>
+    <div
+      style={{
+        fontSize: "clamp(26px, 5vw, 32px)",
+        fontWeight: 900,
+        color: tone,
+        lineHeight: 1,
+      }}
+    >
+      {esState(regime.state)}
+    </div>
 
-              <div style={{ fontSize: 14, opacity: 0.8 }}>
-                Composite Score: <b>{Number(regime.score ?? 0).toFixed(2)}</b>
-              </div>
+    <div style={{ fontSize: 14, opacity: 0.8 }}>
+      Confidence: <b>{confidencePct}%</b>
+    </div>
 
-              <div
-                style={{
-                  fontSize: "clamp(13px, 3.2vw, 14px)",
-                  opacity: 0.84,
-                  lineHeight: 1.4,
-                  maxWidth:520,
-                }}
-              >
-                {regime.summary}
-              </div>
-            </div>
-          </div>
+    <div style={{ fontSize: 14, opacity: 0.8 }}>
+      Composite Score: <b>{Number(regime.score ?? 0).toFixed(2)}</b>
+    </div>
+
+    <div
+      style={{
+        fontSize: "clamp(13px, 3.2vw, 14px)",
+        opacity: 0.84,
+        lineHeight: 1.4,
+        maxWidth: 520,
+      }}
+    >
+      {regime.summary}
+    </div>
+  </div>
+</div>
         </div>
 
         {/* Card left */ }

@@ -80,10 +80,10 @@ export async function GET(req: NextRequest) {
       ts: new Date().toISOString(),
       fiat,
       signals: [
-        { label: "Trend", value: trendScore },
-        { label: "Mom", value: momentumScore },
-        { label: "Move", value: moversScore },
-        { label: "Reg", value: regimeScore },
+        { label: "Trends", value: trendScore },
+        { label: "Momentum", value: momentumScore },
+        { label: "Movers", value: moversScore },
+        { label: "Regime", value: regimeScore },
     ],
     raw: {
       trends,
