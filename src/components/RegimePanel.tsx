@@ -111,7 +111,7 @@ function ConfidenceGauge({
   value: number;
   color: string;
 }) {
-  const size = 130;
+  const size = 150;
   const cx = size / 2;
   const cy = size / 2;
   const r = 42;
@@ -521,9 +521,6 @@ export default function RegimePanel() {
         >
           <ConfidenceGauge value={confidencePct} color={tone} />
       </div>
-
-        
-
         <div
           style={{
             marginTop: 4,
