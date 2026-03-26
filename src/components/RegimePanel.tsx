@@ -519,9 +519,9 @@ export default function RegimePanel() {
             opacity: 0.82,
           }}
         >
-        <div>
+        
           <ConfidenceGauge value={confidencePct} color={tone} />
-        </div>
+        
         <div>
           Score: <b>{Number(regime.score ?? 0).toFixed(2)}</b>
         </div>
