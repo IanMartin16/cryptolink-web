@@ -416,7 +416,7 @@ export default function RegimePanel() {
                 borderRadius: "50%",
                 background: `radial-gradient(circle, ${orb.glow} 0%, rgba(255,255,255,0.08) 28%, rgba(0,0,0,0) 72%)`,
                 filter: "blur(20px)",
-                animation: "orbHalo 4.2s ease-in-out infinite",
+                animation: "orbHalo 3.6s ease-in-out infinite",
               }}
             />
 
@@ -438,7 +438,7 @@ export default function RegimePanel() {
                   inset 0 0 24px rgba(255,255,255,0.14)
                 `,
                 border: `1px solid ${orb.ring}`,
-                animation: "orbBreath 4.2s ease-in-out infinite, orbCoreDrift 6s ease-in-out infinite",
+                animation: "orbBreath 3.8s ease-in-out infinite, orbCoreDrift 6s ease-in-out infinite",
               }}
             >
               <div
@@ -499,137 +499,143 @@ export default function RegimePanel() {
 
         {/* Card left */ }
         <div
-  style={{
-    padding: 14,
-    borderRadius: 16,
-    border: `1px solid ${UI.border}`,
-    background: "rgba(255,255,255,0.045)",
-    display: "grid",
-    gridTemplateRows: "auto 1fr auto",
-    gap: 12,
-    minHeight: 320,
-    height: "100%",
-  }}
->
-  <div style={{ fontSize: 13, opacity: 0.72 }}>Signals</div>
-
-  <div
-    style={{
-      display: "grid",
-      placeItems: "center",
-      alignSelf: "center",
-      minHeight: 170,
-    }}
-  >
-    <div
-      style={{
-        transform: "scale(1.28)",
-        transformOrigin: "center",
-      }}
-    >
-      <ConfidenceGauge value={confidencePct} color={tone} />
-    </div>
-  </div>
-
-  {mh?.marketHealth ? (
-    <div
-      style={{
-        padding: 12,
-        borderRadius: 14,
-        border: `1px solid ${UI.border}`,
-        background: "rgba(255,255,255,0.04)",
-        display: "grid",
-        gap: 6,
-        alignSelf: "end",
-      }}
-    >
-      <div style={{ fontSize: 12, opacity: 0.72 }}>Market Health</div>
-
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: 12,
-          flexWrap: "wrap",
-        }}
-      >
-        <div
           style={{
-            fontSize: 18,
-            fontWeight: 900,
-            color: healthTone(mh.marketHealth.state),
-            lineHeight: 1.1,
+            padding: 14,
+            borderRadius: 16,
+            border: `1px solid ${UI.border}`,
+            background: "rgba(255,255,255,0.045)",
+            display: "grid",
+            gridTemplateRows: "auto 1fr auto",
+            gap: 12,
+            minHeight: 320,
+            height: "100%",
           }}
         >
-          {healthLabel(mh.marketHealth.state)}
-        </div>
+          <div style={{ fontSize: 13, opacity: 0.72 }}>Signals</div>
 
-        <div
-          style={{
-            fontSize: 13,
-            opacity: 0.82,
-            color: healthTone(mh.marketHealth.state),
-            fontWeight: 700,
-          }}
-        >
-          {mh.marketHealth.score}/100
-        </div>
-      </div>
+          <div
+            style={{
+              display: "grid",
+              placeItems: "center",
+              alignSelf: "center",
+              minHeight: 170,
+            }}
+          >
+            <div
+              style={{
+                transform: "scale(1.28)",
+                transformOrigin: "center",
+              }}
+            >
+              <ConfidenceGauge value={confidencePct} color={tone} />
+            </div>
+          </div>
 
-      <div
-        style={{
-          fontSize: 13,
-          opacity: 0.78,
-          lineHeight: 1.4,
-        }}
-      >
-        {mh.marketHealth.summary}
+            {mh?.marketHealth ? (
+          <div
+            style={{
+              padding: 12,
+              borderRadius: 14,
+              border: `1px solid ${UI.border}`,
+              background: "rgba(255,255,255,0.04)",
+              display: "grid",
+              gap: 6,
+              alignSelf: "end",
+            }}
+          >
+            <div style={{ fontSize: 12, opacity: 0.72 }}>Market Health</div>
+
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: 12,
+              flexWrap: "wrap",
+            }}
+          >
+            <div
+              style={{
+                fontSize: 18,
+                fontWeight: 900,
+                color: healthTone(mh.marketHealth.state),
+                lineHeight: 1.1,
+              }}
+            >
+              {healthLabel(mh.marketHealth.state)}
+            </div>
+
+            <div
+              style={{
+                fontSize: 13,
+                opacity: 0.82,
+                color: healthTone(mh.marketHealth.state),
+                fontWeight: 700,
+              }}
+            >
+             {mh.marketHealth.score}/100
+            </div>
+          </div>
+
+          <div
+            style={{
+              fontSize: 13,
+              opacity: 0.78,
+              lineHeight: 1.4,
+            }}
+          >
+            {mh.marketHealth.summary}
+          </div>
+        </div>
+        ) : null}
       </div>
-    </div>
-  ) : null}
-</div>
       </div>
       <style jsx>{`
         @keyframes orbBreath {
           0% {
-          transform: scale(1);
-          filter: brightness(1);
+          transform: scale(0.985);
+          filter: brightness(0.96);
         }
           50% {
-          transform: scale(1.035);
+          transform: scale(1.04);
           filter: brightness(1.08);
         }
           100% {
-          transform: scale(1);
-          filter: brightness(1);
+          transform: scale(0.985);
+          filter: brightness(0.96);
           }
         }
 
         @keyframes orbHalo {
           0% {
-            opacity: 0.55;
-            transform: scale(1);
+            opacity: 0.58;
+            transform: scale(0.96);
           }
           50% {
-            opacity: 0.9;
-            transform: scale(1.06);
+            opacity: 0.98;
+            transform: scale(1.08);
           }
           100% {
-            opacity: 0.55;
-            transform: scale(1);
+            opacity: 0.58;
+            transform: scale(0.96);
           }
         }
 
         @keyframes orbCoreDrift {
           0% {
-            transform: translateY(0px);
+            transform: translate3d(0px, 0px, 0);
           }
+          25% {
+            transform: translate3d(1px, -1px, 0);
+          }  
           50% {
-            transform: translateY(-2px);
+            transform: translate3d(0px, 1px, 0);
+          }
+          75% {
+            transform: translate3d(-1px, 0px, 0);
           }
           100% {
-            transform: translateY(0px);
+            transform: translate3d(0px, 0px, 0);
           }
         }
       `}</style>
