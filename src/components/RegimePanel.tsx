@@ -578,17 +578,7 @@ export default function RegimePanel() {
     </div>
   </div>
 ) : null}
-        <div
-          style={{
-            marginTop: 4,
-            paddingTop: 8,
-            borderTop: `1px solid rgba(255,255,255,0.08)`,
-            fontSize: 12,
-            opacity: 0.72,
-          }}
-        >
-          Source: {data.source}
-          </div>
+        
         </div> 
       </div>
       <style jsx>{`
