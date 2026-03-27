@@ -401,8 +401,8 @@ export default function RegimePanel() {
         >
           <div
             style={{
-              width: "min(110px, 28vw)",
-              height: "min(110px, 28vw)",
+              width: "min(128px, 30vw)",
+              height: "min(128px, 30vw)",
               borderRadius: "50%",
               position: "relative",
               margin: "0 auto",
@@ -412,10 +412,10 @@ export default function RegimePanel() {
             <div
               style={{
                 position: "absolute",
-                inset: 0,
+                inset: -8,
                 borderRadius: "50%",
-                background: orb.glow,
-                filter: "blur(16px)",
+                background: `radial-gradient(circle, ${orb.glow} 0%, rgba(255,255,255,0.08) 28%, rgba(0,0,0,0) 72%)`,
+                filter: "blur(20px)",
                 animation: "orbHalo 4.2s ease-in-out infinite",
               }}
             />
@@ -427,13 +427,15 @@ export default function RegimePanel() {
                 borderRadius: "50%",
                 position: "relative",
                 background: `
-                  radial-gradient(circle at 35% 35%, rgba(255,255,255,0.28), transparent 28%),
-                  radial-gradient(circle, ${orb.core} 0%, ${orb.glow} 42%, rgba(0,0,0,0) 72%)
+                  radial-gradient(circle at 35% 35%, rgba(255,255,255,0.42), transparent 26%),
+                  radial-gradient(circle at 50% 50%, rgba(255,255,255,0.18), transparent 42%),
+                  radial-gradient(circle, ${orb.core} 0%, ${orb.glow} 44%, rgba(0,0,0,0) 76%)
                 `,
                 boxShadow: `
-                  0 0 28px ${orb.glow},
-                  0 0 54px ${orb.glow},
-                  inset 0 0 18px rgba(255,255,255,0.08)
+                  0 0 34px ${orb.glow},
+                  0 0 72px ${orb.glow},
+                  0 0 110px rgba(255,255,255,0.10),
+                  inset 0 0 24px rgba(255,255,255,0.14)
                 `,
                 border: `1px solid ${orb.ring}`,
                 animation: "orbBreath 4.2s ease-in-out infinite, orbCoreDrift 6s ease-in-out infinite",
@@ -463,7 +465,8 @@ export default function RegimePanel() {
             <div style={{ display: "grid", gap: 8 }}>
               <div
                 style={{
-                  fontSize: "clamp(26px, 5vw, 32px)",
+                  fontSize: "clamp(28px, 5.4vw, 36px)",
+                  letterSpacing: -0.6,
                   fontWeight: 900,
                   color: tone,
                   lineHeight: 1,
@@ -496,95 +499,96 @@ export default function RegimePanel() {
 
         {/* Card left */ }
         <div
+  style={{
+    padding: 14,
+    borderRadius: 16,
+    border: `1px solid ${UI.border}`,
+    background: "rgba(255,255,255,0.045)",
+    display: "grid",
+    gridTemplateRows: "auto 1fr auto",
+    gap: 12,
+    minHeight: 320,
+    height: "100%",
+  }}
+>
+  <div style={{ fontSize: 13, opacity: 0.72 }}>Signals</div>
+
+  <div
+    style={{
+      display: "grid",
+      placeItems: "center",
+      alignSelf: "center",
+      minHeight: 170,
+    }}
+  >
+    <div
+      style={{
+        transform: "scale(1.28)",
+        transformOrigin: "center",
+      }}
+    >
+      <ConfidenceGauge value={confidencePct} color={tone} />
+    </div>
+  </div>
+
+  {mh?.marketHealth ? (
+    <div
+      style={{
+        padding: 12,
+        borderRadius: 14,
+        border: `1px solid ${UI.border}`,
+        background: "rgba(255,255,255,0.04)",
+        display: "grid",
+        gap: 6,
+        alignSelf: "end",
+      }}
+    >
+      <div style={{ fontSize: 12, opacity: 0.72 }}>Market Health</div>
+
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: 12,
+          flexWrap: "wrap",
+        }}
+      >
+        <div
           style={{
-            padding: 14,
-            borderRadius: 16,
-            border: `1px solid ${UI.border}`,
-            background: "rgba(255,255,255,0.045)",
-            display: "grid",
-            gridTemplateRows: "auto 1fr auto",
-            gap: 12,
-            minHeight: 320,
-            height: "100%",
+            fontSize: 18,
+            fontWeight: 900,
+            color: healthTone(mh.marketHealth.state),
+            lineHeight: 1.1,
           }}
         >
-        <div style={{ fontSize: 13, opacity: 0.72 }}>Signals</div>
+          {healthLabel(mh.marketHealth.state)}
+        </div>
 
         <div
           style={{
-            display: "grid",
-            placeItems: "center",
-            alignSelf: "center",
-            minHeight: 170,
+            fontSize: 13,
+            opacity: 0.82,
+            color: healthTone(mh.marketHealth.state),
+            fontWeight: 700,
           }}
         >
-          <div
-            style={{
-              transform: "scale(1.28)",
-              transformOrigin: "center",
-            }}
-          >
-            <ConfidenceGauge value={confidencePct} color={tone} />
-          </div>
+          {mh.marketHealth.score}/100
         </div>
-          {mh?.marketHealth ? (
-        <div
-          style={{
-            padding: 12,
-            borderRadius: 14,
-            border: `1px solid ${UI.border}`,
-            background: "rgba(255,255,255,0.04)",
-            display: "grid",
-            gap: 6,
-            alignSelf: "end",
-          }}
-        >
-          <div style={{ fontSize: 12, opacity: 0.72 }}>Market Health</div>
+      </div>
 
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: 12,
-              flexWrap: "wrap",
-            }}
-          >
-            <div
-              style={{
-                fontSize: 18,
-                fontWeight: 900,
-                color: healthTone(mh.marketHealth.state),
-                lineHeight: 1.1,
-              }}
-            >
-              {healthLabel(mh.marketHealth.state)}
-            </div>
-
-            <div
-              style={{
-                fontSize: 13,
-                opacity: 0.82,
-                color: healthTone(mh.marketHealth.state),
-                fontWeight: 700,
-              }}
-            >
-              {mh.marketHealth.score}/100
-            </div>
-          </div>
-
-          <div
-            style={{
-              fontSize: 13,
-              opacity: 0.78,
-              lineHeight: 1.4,
-            }}
-          >
-            {mh.marketHealth.summary}
-          </div>
-        </div>
-        ) : null}
-        </div> 
+      <div
+        style={{
+          fontSize: 13,
+          opacity: 0.78,
+          lineHeight: 1.4,
+        }}
+      >
+        {mh.marketHealth.summary}
+      </div>
+    </div>
+  ) : null}
+</div>
       </div>
       <style jsx>{`
         @keyframes orbBreath {
