@@ -502,8 +502,9 @@ export default function RegimePanel() {
             border: `1px solid ${UI.border}`,
             background: "rgba(255,255,255,0.045)",
             display: "grid",
-            gap: 10,
-            alignContent: "start",
+            gridTemplateRows: "auto 1fr auto",
+            gap: 12,
+            minHeight: 320,
             height: "100%",
           }}
         >
@@ -511,74 +512,78 @@ export default function RegimePanel() {
 
         <div
           style={{
-            display: "flex",
-            gap: 14,
-            flexWrap: "wrap",
-            alignItems: "center",
-            fontSize: 14,
-            opacity: 0.82,
+            display: "grid",
+            placeItems: "center",
+            alignSelf: "center",
+            minHeight: 170,
           }}
         >
-          <ConfidenceGauge value={confidencePct} color={tone} />
-      </div>
-        {mh?.marketHealth ? (
-  <div
-    style={{
-      marginTop: 4,
-      padding: 12,
-      borderRadius: 14,
-      border: `1px solid ${UI.border}`,
-      background: "rgba(255,255,255,0.04)",
-      display: "grid",
-      gap: 6,
-    }}
-  >
-    <div style={{ fontSize: 12, opacity: 0.72 }}>Market Health</div>
+          <div
+            style={{
+              transform: "scale(1.28)",
+              transformOrigin: "center",
+            }}
+          >
+            <ConfidenceGauge value={confidencePct} color={tone} />
+          </div>
+        </div>
+          {mh?.marketHealth ? (
+        <div
+          style={{
+            padding: 12,
+            borderRadius: 14,
+            border: `1px solid ${UI.border}`,
+            background: "rgba(255,255,255,0.04)",
+            display: "grid",
+            gap: 6,
+            alignSelf: "end",
+          }}
+        >
+          <div style={{ fontSize: 12, opacity: 0.72 }}>Market Health</div>
 
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        gap: 12,
-        flexWrap: "wrap",
-      }}
-    >
-      <div
-        style={{
-          fontSize: 18,
-          fontWeight: 900,
-          color: healthTone(mh.marketHealth.state),
-          lineHeight: 1.1,
-        }}
-      >
-        {healthLabel(mh.marketHealth.state)}
-      </div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              gap: 12,
+              flexWrap: "wrap",
+            }}
+          >
+            <div
+              style={{
+                fontSize: 18,
+                fontWeight: 900,
+                color: healthTone(mh.marketHealth.state),
+                lineHeight: 1.1,
+              }}
+            >
+              {healthLabel(mh.marketHealth.state)}
+            </div>
 
-      <div
-        style={{
-          fontSize: 13,
-          opacity: 0.82,
-          color: healthTone(mh.marketHealth.state),
-          fontWeight: 700,
-        }}
-      >
-        {mh.marketHealth.score}/100
-      </div>
-    </div>
+            <div
+              style={{
+                fontSize: 13,
+                opacity: 0.82,
+                color: healthTone(mh.marketHealth.state),
+                fontWeight: 700,
+              }}
+            >
+              {mh.marketHealth.score}/100
+            </div>
+          </div>
 
-    <div
-      style={{
-        fontSize: 13,
-        opacity: 0.78,
-        lineHeight: 1.4,
-      }}
-    >
-      {mh.marketHealth.summary}
-    </div>
-  </div>
-) : null}
-        
+          <div
+            style={{
+              fontSize: 13,
+              opacity: 0.78,
+              lineHeight: 1.4,
+            }}
+          >
+            {mh.marketHealth.summary}
+          </div>
+        </div>
+        ) : null}
         </div> 
       </div>
       <style jsx>{`
