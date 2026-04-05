@@ -80,7 +80,7 @@ export const cryptolinkDocs = {
       id: "signals",
       title: "Signals",
       body: [
-        "CryptoLink v2.5 includes direct data, derived signals, and interpretive layers.",
+        "CryptoLink v3.0 includes direct data, derived signals, and interpretive layers.",
         "Available signal families include Trends, Movers, Momentum, Regime, Risk Flags, Anomalies, and Market Health.",
       ],
     },

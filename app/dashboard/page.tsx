@@ -113,7 +113,7 @@ useEffect(() => {
     <TopHeader
       title={
         <>
-          CryptoLink <span style={{ color: UI.orange }}>V2.5</span>
+          CryptoLink <span style={{ color: UI.orange }}>V3.0</span>
         </>
       }
       subtitle={"Dashboard · batch pricing · social movers · SSE"}

@@ -39,6 +39,16 @@ export const SYMBOL_META: Record<string, { name: string }> = {
   HBAR: { name: "Hedera" },
   MNT: { name: "Mantle" },
   PAXG: { name: "Pax Gold" },
+  PEPE: { name: "Pepe" },
+  FLOKI: { name: "Floki" },
+  AAVE: { name: "Aave" },
+  MKR: { name: "Maker" },
+  CRO: { name: "Cronos" },
+  TAO: { name: "Bittensor" },
+  USDG: { name: "Global Dollar" },
+  INJ: { name: "Injective" },
+  SKY: { name: "Sky" },
+  ICP: { name: "Internet Computer" },
 };
 export function getSymbolName(symbol: string) {
   const key = symbol.toUpperCase();

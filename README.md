@@ -4,7 +4,7 @@
 
 CryptoLink is a lightweight crypto market analytics platform that has evolved from a simple pricing API into a broader signal-driven system.
 
-At its current **v2.5** stage, CryptoLink includes:
+At its current **v3.0** stage, CryptoLink includes:
 
 - direct market data
 - derived technical signals
@@ -152,7 +152,7 @@ A language toggle may be added later in Settings.
 
 ## Freeze Notes
 
-The current v2.5 freeze considers the following components stable enough to treat as baseline:
+The current v3.0 freeze considers the following components stable enough to treat as baseline:
 
 - Regime orb hero
 - Market Health integration
@@ -182,7 +182,7 @@ This will likely justify a future front-end reorganization rather than overloadi
 
 For a more complete technical snapshot of the current platform state, see:
 
-- `cryptolink-v2.5-current-state.md`
+- `cryptolink-v3.0-current-state.md`
 
 This README is intended as the short entry point.  
 The full current-state document captures the freeze in more detail.
