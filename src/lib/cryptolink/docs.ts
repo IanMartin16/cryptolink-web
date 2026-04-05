@@ -49,8 +49,8 @@ export const cryptolinkDocs = {
     tagline: "Crypto market data and lightweight analytics signals",
   },
 
-  version: "2.5.0",
-  updatedAt: "2026-03-13",
+  version: "3.0.0",
+  updatedAt: "2026-04-05",
 
   baseUrl:
     process.env.NEXT_PUBLIC_CRYPTOLINK_API_BASE?.replace(/\/+$/, "") ||
@@ -63,7 +63,7 @@ export const cryptolinkDocs = {
 
   limits: {
     maxSymbolsPlan: { FREE: 3, BUSINESS: 15, PRO: 25 },
-    availableSymbolsToday: 30,
+    availableSymbolsToday: 50,
   },
 
   sections: [
