@@ -23,6 +23,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     { href: "/dashboard/prices", label: "Prices" },
     { href: "/dashboard/trends", label: "Trends" },
     { href: "/dashboard/symbols", label: "Symbols" },
+    { href: "/dashboard/billing", label: "Billing"},
     { href: "/dashboard/settings", label: "Settings" },
   ];
 
