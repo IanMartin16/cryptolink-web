@@ -18,7 +18,7 @@ export default function CurrentSubscriptionCard() {
         throw new Error("Enter a valid CryptoLink API key");
       }
 
-      const response = await fetch("/app/api/cryptolink/portal/route.ts", {
+      const response = await fetch("/api/cryptolink/portal", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
