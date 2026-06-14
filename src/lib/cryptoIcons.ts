@@ -49,6 +49,16 @@ const OVERRIDES: Record<string, string> = {
   INJ: "/icons/crypto/inj.png",
   SKY: "/icons/crypto/sky.png",
   ICP: "/icons/crypto/icp.png",
+  APT: "/icons/crypto/apt.png",
+  ALGO: "/icons/crypto/algo.png",
+  XTZ: "/icons/crypto/xtz.png",
+  EGLD: "/icons/crypto/egld.png",
+  FET: "/icons/crypto/fet.png",
+  RENDER: "/icons/crypto/render.png",
+  ETHFI: "/icons/crypto/ethfi.png",
+  GRT: "/icons/crypto/grt.png",
+  JUP: "/icons/crypto/jup.png",
+  PYTH: "/icons/crypto/pyth.png",
 };
 
 export function getCryptoIconUrl(symbol: string): string | undefined {

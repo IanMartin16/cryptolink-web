@@ -49,6 +49,16 @@ export const SYMBOL_META: Record<string, { name: string }> = {
   INJ: { name: "Injective" },
   SKY: { name: "Sky" },
   ICP: { name: "Internet Computer" },
+  APT: { name:  "Aptos" },
+  ALGO: { name: "Algorand" },
+  XTZ: { name: "Tezos" },
+  EGLD: { name: "MultiversX" },
+  FET: { name: "Artificial Superintelligence Alliance" },
+  RENDER: { name: "Render" },
+  ETHFI: { name: "Ether.fi" },
+  GRT: { name: "The Graph" },
+  JUP: { name: "Jupiter" },
+  PYTH: { name: "Pyth Network" },
 };
 export function getSymbolName(symbol: string) {
   const key = symbol.toUpperCase();

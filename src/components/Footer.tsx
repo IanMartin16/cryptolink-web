@@ -15,7 +15,7 @@ export default function Footer() {
         rel="noreferrer"
         className="font-semibold text-white/60 hover:text-white/85 underline underline-offset-4"
         >
-          evi_Link devs
+          evi_link devs
         </a>
       </div>
 
