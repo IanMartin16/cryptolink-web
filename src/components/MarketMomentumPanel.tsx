@@ -150,18 +150,27 @@ function MomentumLeaderChart({ items }: { items: MomentumItem[] }) {
       preserveAspectRatio="none"
       style={{ width: "100%", height: "auto", display: "block" }}
     >
-      {/* no-líderes: tenues, al fondo */}
-      {others.map((s) => (
+      {/* no-líderes: tenues PERO con tono según dirección (verde sube / rojo baja).
+    Siguen de soporte: opacidad baja, sin glow. El líder es el único brillante. */}
+    {others.map((s) => {
+      const tenueStroke =
+        s.direction === "up"
+          ? "rgba(52,211,153,0.34)"   // verde tenue
+          : s.direction === "down"
+          ? "rgba(251,113,133,0.34)"  // rojo tenue
+          : "rgba(255,255,255,0.20)"; // flat: gris tenue
+      return (
         <path
           key={s.symbol}
           d={pathFor(s.values)}
           fill="none"
-          stroke="rgba(255,255,255,0.16)"
-          strokeWidth="1.3"
+          stroke={tenueStroke}
+          strokeWidth="1.4"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
-      ))}
+      );
+    })}
 
       {/* líder: vivo, encima, con etiqueta */}
       {leader
