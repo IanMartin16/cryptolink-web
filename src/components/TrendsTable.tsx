@@ -1,6 +1,6 @@
 "use client";
 
-import {  useState } from "react";
+import { useState } from "react";
 import { UI } from "@/lib/ui";
 import { Skeleton } from "@/components/Skeleton";
 import Toast from "@/components/Toast";
@@ -8,7 +8,7 @@ import Sparkline from "@/components/Sparkline";
 import SymbolCell from "@/components/SymbolCell";
 import { getSymbolName } from "@/lib/symbolMeta";
 import { useTrendsFeed } from "@/lib/trends/useTrendsFeed";
-import { getTrendHistory } from "@/lib/useTrendHistory"
+import { getTrendHistory } from "@/lib/useTrendHistory";
 
 export type TrendItem = {
   symbol: string;
@@ -34,7 +34,7 @@ function TrendBadge({ trend }: { trend: TrendItem["trend"] }) {
       ? "rgba(46,229,157,0.10)"
       : trend === "down"
       ? "rgba(255,107,107,0.10)"
-      : "rgba(255,255,255,0.06)";    
+      : "rgba(255,255,255,0.06)";
 
   return (
     <span
@@ -59,10 +59,9 @@ export default function TrendsTable({
   onHealth,
   onItems,
 }: {
-  onHealth?: (h:{ ok: boolean; lastOkAt?: string; lastErr?: string }) => void;
+  onHealth?: (h: { ok: boolean; lastOkAt?: string; lastErr?: string }) => void;
   onItems?: (items: TrendItem[]) => void;
 }) {
-  
   const [hover, setHover] = useState<string | null>(null);
   const [toast, setToast] = useState<{ msg: string; tone?: "ok" | "warn" | "err" } | null>(null);
 
@@ -76,7 +75,6 @@ export default function TrendsTable({
     setAuto,
     filter,
     setFilter,
-    hist,
     stats,
     viewItems,
   } = useTrendsFeed({ onHealth, onItems });
@@ -282,162 +280,162 @@ export default function TrendsTable({
         }}
       >
         {/* LEFT */}
-          <div style={{ minWidth: 0 }}>
-            <h2 style={{ margin: 0 }}>
-              Trends <span style={{ color: UI.orange }}>(Social_link)</span>
-            </h2>
-            <div
-              style={{
-                marginTop: 10,
-                padding: "8px 12px",
-                borderRadius: 12,
-                fontSize: 12,
-                opacity: 0.85,
-                border: `1px solid ${UI.border}`,
-                background: "rgba(255,255,255,0.02)",
-              }}
-            >
-              {stats.mood === "BULLISH" && (
-                <>📈 Social sentiment aligned to upside momentum.</>
-              )}
+        <div style={{ minWidth: 0 }}>
+          <h2 style={{ margin: 0 }}>
+            Trends <span style={{ color: UI.orange }}>(Social_link)</span>
+          </h2>
+          <div
+            style={{
+              marginTop: 10,
+              padding: "8px 12px",
+              borderRadius: 12,
+              fontSize: 12,
+              opacity: 0.85,
+              border: `1px solid ${UI.border}`,
+              background: "rgba(255,255,255,0.02)",
+            }}
+          >
+            {stats.mood === "BULLISH" && (
+              <>📈 Social sentiment aligned to upside momentum.</>
+            )}
 
-              {stats.mood === "BEARISH" && (
-                <>📉 Social sentiment showing downside pressure.</>
-              )}
+            {stats.mood === "BEARISH" && (
+              <>📉 Social sentiment showing downside pressure.</>
+            )}
 
-              {stats.mood === "NEUTRAL" && (
-                <>⚖️ Market sentiment balanced. No clear dominance.</>
-              )}
-            </div>
-
-            <div style={{ marginTop: 6, fontSize: 12, opacity: 0.78 }}>
-              Movers · refresh: <span style={{ color: UI.orangeSoft, fontWeight: 900 }}>10s</span>{" "}
-              · filter: <span style={{ color: UI.orangeSoft, fontWeight: 900 }}>{filter.toUpperCase()}</span>
-            </div>
+            {stats.mood === "NEUTRAL" && (
+              <>⚖️ Market sentiment balanced. No clear dominance.</>
+            )}
           </div>
 
-          {/* RIGHT: Snapshot */}
-            <div style={{ minWidth: 0, display: "grid", gap: 8, justifyItems: "end" }}>
-              {/* Snapshot card */}
-              <div
-                style={{
-                  border: `1px solid ${UI.border}`,
-                  background: "rgba(255,255,255,0.03)",
-                  borderRadius: 14,
-                  padding: "10px 12px",
-                  boxShadow: "0 10px 30px rgba(0,0,0,0.25)",
-                  maxWidth: 520,
-                }}
-              >
-                <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center", justifyContent: "flex-end" }}>
-                  {/* Mood */}
-                  <span style={{ fontSize: 12, opacity: 0.75 }}>Mood:</span>
-                  <span
-                    style={{
-                      padding: "3px 10px",
-                      borderRadius: 999,
-                      fontSize: 12,
-                      fontWeight: 950,
-                      border: `1px solid ${stats.mood === "BULLISH" ? UI.green : stats.mood === "BEARISH" ? UI.red : UI.border}`,
-                      background:
-                        stats.mood === "BULLISH"
-                          ? "rgba(46,229,157,0.10)"
-                          : stats.mood === "BEARISH"
-                          ? "rgba(255,107,107,0.10)"
-                          : "rgba(255,255,255,0.06)",
-                      color: stats.mood === "BULLISH" ? UI.green : stats.mood === "BEARISH" ? UI.red : UI.orangeSoft,
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {stats.mood}
-                  </span>
-
-                  {/* Up/Down */}
-                  <span style={{ fontSize: 12, opacity: 0.75 }}>Up/Down:</span>
-                  <div
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 8,
-                      whiteSpace: "nowrap",
-                      fontSize: 12,
-                      fontWeight: 950,
-                    }}
-                  >
-                    <span style={{ color: UI.green }}>↑ {stats.breadthUpPct}%</span>
-                    <span style={{ opacity: 0.35 }}>/</span>
-                    <span style={{ color: UI.red }}>↓ {stats.breadthDownPct}%</span>
-                  </div>
-
-                  {/* Confidence */}
-                  <span style={{ fontSize: 12, opacity: 0.75 }}>Confidence:</span>
-                  <span style={{ fontSize: 12, fontWeight: 950, color: UI.orangeSoft }}>
-                    {stats.confidence}%
-                  </span>
-
-                  {/* Vol */}
-                  <span style={{ fontSize: 12, opacity: 0.75 }}>Vol:</span>
-                  <span style={{ fontSize: 12, fontWeight: 950, color: UI.orangeSoft }}>
-                    {stats.volatility}
-                  </span>
-                </div>
-              </div>
-
-              {/* Controls row */}
-              <div
-                style={{
-                  display: "flex",
-                  gap: 8,
-                  flexWrap: "wrap",
-                  justifyContent: "flex-end",
-                  alignItems: "center",
-                  maxWidth: 520,
-                }}
-              >
-                {/* Auto */}
-                <Chip>
-                  Auto:{" "}
-                  <button
-                    onClick={() => setAuto((v) => !v)}
-                    style={{
-                      all: "unset",
-                      cursor: "pointer",
-                      fontWeight: 950,
-                      color: auto ? UI.green : UI.red,
-                      marginLeft: 6,
-                    }}
-                  >
-                    {auto ? "ON" : "OFF"}
-                  </button>
-                </Chip>
-
-                {/* Updated + ts */}
-                <Chip>
-                  Updated: <span style={{ color: UI.orangeSoft }}>{shortTime(ts)}</span>
-                </Chip>
-                <Chip>
-                  ts: <span style={{ color: UI.orangeSoft }}>{tsShort}</span>
-                </Chip>
-
-                {/* Filter buttons */}
-                <Chip>
-                <ChipBtn active={filter === "all"} tone="neutral" onClick={() => setFilter("all")} title="Solo ALL">
-                  ALL
-                </ChipBtn>
-                </Chip>
-                <Chip>
-                <ChipBtn active={filter === "up"} tone="up" onClick={() => setFilter("up")} title="Solo UP">
-                  UP
-                </ChipBtn>
-              </Chip>
-              <Chip>
-                <ChipBtn active={filter === "down"} tone="down" onClick={() => setFilter("down")} title="Solo DOWN">
-                  DOWN
-                </ChipBtn>
-              </Chip>
-            </div>
+          <div style={{ marginTop: 6, fontSize: 12, opacity: 0.78 }}>
+            Movers · refresh: <span style={{ color: UI.orangeSoft, fontWeight: 900 }}>10s</span>{" "}
+            · filter: <span style={{ color: UI.orangeSoft, fontWeight: 900 }}>{filter.toUpperCase()}</span>
           </div>
         </div>
+
+        {/* RIGHT: Snapshot */}
+        <div style={{ minWidth: 0, display: "grid", gap: 8, justifyItems: "end" }}>
+          {/* Snapshot card */}
+          <div
+            style={{
+              border: `1px solid ${UI.border}`,
+              background: "rgba(255,255,255,0.03)",
+              borderRadius: 14,
+              padding: "10px 12px",
+              boxShadow: "0 10px 30px rgba(0,0,0,0.25)",
+              maxWidth: 520,
+            }}
+          >
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center", justifyContent: "flex-end" }}>
+              {/* Mood */}
+              <span style={{ fontSize: 12, opacity: 0.75 }}>Mood:</span>
+              <span
+                style={{
+                  padding: "3px 10px",
+                  borderRadius: 999,
+                  fontSize: 12,
+                  fontWeight: 950,
+                  border: `1px solid ${stats.mood === "BULLISH" ? UI.green : stats.mood === "BEARISH" ? UI.red : UI.border}`,
+                  background:
+                    stats.mood === "BULLISH"
+                      ? "rgba(46,229,157,0.10)"
+                      : stats.mood === "BEARISH"
+                      ? "rgba(255,107,107,0.10)"
+                      : "rgba(255,255,255,0.06)",
+                  color: stats.mood === "BULLISH" ? UI.green : stats.mood === "BEARISH" ? UI.red : UI.orangeSoft,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {stats.mood}
+              </span>
+
+              {/* Up/Down */}
+              <span style={{ fontSize: 12, opacity: 0.75 }}>Up/Down:</span>
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  whiteSpace: "nowrap",
+                  fontSize: 12,
+                  fontWeight: 950,
+                }}
+              >
+                <span style={{ color: UI.green }}>↑ {stats.breadthUpPct}%</span>
+                <span style={{ opacity: 0.35 }}>/</span>
+                <span style={{ color: UI.red }}>↓ {stats.breadthDownPct}%</span>
+              </div>
+
+              {/* Confidence */}
+              <span style={{ fontSize: 12, opacity: 0.75 }}>Confidence:</span>
+              <span style={{ fontSize: 12, fontWeight: 950, color: UI.orangeSoft }}>
+                {stats.confidence}%
+              </span>
+
+              {/* Vol */}
+              <span style={{ fontSize: 12, opacity: 0.75 }}>Vol:</span>
+              <span style={{ fontSize: 12, fontWeight: 950, color: UI.orangeSoft }}>
+                {stats.volatility}
+              </span>
+            </div>
+          </div>
+
+          {/* Controls row */}
+          <div
+            style={{
+              display: "flex",
+              gap: 8,
+              flexWrap: "wrap",
+              justifyContent: "flex-end",
+              alignItems: "center",
+              maxWidth: 520,
+            }}
+          >
+            {/* Auto */}
+            <Chip>
+              Auto:{" "}
+              <button
+                onClick={() => setAuto((v) => !v)}
+                style={{
+                  all: "unset",
+                  cursor: "pointer",
+                  fontWeight: 950,
+                  color: auto ? UI.green : UI.red,
+                  marginLeft: 6,
+                }}
+              >
+                {auto ? "ON" : "OFF"}
+              </button>
+            </Chip>
+
+            {/* Updated + ts */}
+            <Chip>
+              Updated: <span style={{ color: UI.orangeSoft }}>{shortTime(ts)}</span>
+            </Chip>
+            <Chip>
+              ts: <span style={{ color: UI.orangeSoft }}>{tsShort}</span>
+            </Chip>
+
+            {/* Filter buttons */}
+            <Chip>
+              <ChipBtn active={filter === "all"} tone="neutral" onClick={() => setFilter("all")} title="Solo ALL">
+                ALL
+              </ChipBtn>
+            </Chip>
+            <Chip>
+              <ChipBtn active={filter === "up"} tone="up" onClick={() => setFilter("up")} title="Solo UP">
+                UP
+              </ChipBtn>
+            </Chip>
+            <Chip>
+              <ChipBtn active={filter === "down"} tone="down" onClick={() => setFilter("down")} title="Solo DOWN">
+                DOWN
+              </ChipBtn>
+            </Chip>
+          </div>
+        </div>
+      </div>
 
       {error && (
         <div style={{ marginTop: 10, color: UI.red, fontSize: 12 }}>
@@ -454,7 +452,6 @@ export default function TrendsTable({
                 <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Symbol</th>
                 <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Trend</th>
                 <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Score</th>
-                <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Reason</th>
                 <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Momentum</th>
               </tr>
             </thead>
@@ -467,11 +464,14 @@ export default function TrendsTable({
                   <td style={{ padding: "12px 8px" }}>
                     <Skeleton w={80} h={12} r={999} />
                   </td>
-                  <td style={{ padding: "12px 8px", textAlign: "right" }}>
-                    <Skeleton w={50} h={12} />
+                  <td style={{ padding: "12px 8px" }}>
+                    <Skeleton w={60} h={12} r={999} />
                   </td>
                   <td style={{ padding: "12px 8px" }}>
-                    <Skeleton w={160} h={12} />
+                    <Skeleton w={120} h={12} />
+                  </td>
+                  <td style={{ padding: "12px 8px" }}>
+                    <Skeleton w={90} h={12} r={999} />
                   </td>
                 </tr>
               ))}
@@ -479,15 +479,23 @@ export default function TrendsTable({
           </table>
         </div>
       ) : (
-        <div style={{ marginTop: 12, overflowX: "auto", maxHeight: 420}}>
+        <div style={{ marginTop: 12, overflowX: "auto", maxHeight: 420 }}>
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
-              <tr style={{ textAlign: "left", borderBottom: `1px solid ${UI.border}`, position: "sticky", top: 0, background: UI.panel, zIndex: 1, }}>
+              <tr
+                style={{
+                  textAlign: "left",
+                  borderBottom: `1px solid ${UI.border}`,
+                  position: "sticky",
+                  top: 0,
+                  background: UI.panel,
+                  zIndex: 1,
+                }}
+              >
                 <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>#</th>
                 <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Symbol</th>
                 <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Trend</th>
                 <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Score</th>
-                <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Reason</th>
                 <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>Momentum</th>
               </tr>
             </thead>
@@ -512,7 +520,7 @@ export default function TrendsTable({
                       border: `1px solid ${UI.border}`,
                       color: "rgba(255,255,255,0.70)",
                     };
-                
+
                 const bg =
                   t.trend === "up"
                     ? `rgba(46,229,157,${0.04 + a * 0.12})`
@@ -520,14 +528,6 @@ export default function TrendsTable({
                     ? `rgba(255,107,107,${0.04 + a * 0.12})`
                     : `rgba(255,255,255,${0.02 + a * 0.06})`;
 
-                     // bar lateral (heat bar)
-                const bar =
-                  t.trend === "up"
-                    ? `rgba(46,229,157,${0.25 + a * 0.55})`
-                    : t.trend === "down"
-                    ? `rgba(255,107,107,${0.25 + a * 0.55})`
-                    : `rgba(255,255,255,${0.18 + a * 0.25})`;   
-                    
                 const h = getTrendHistory(t.symbol).slice(-24);
                 const sl = slope(h);
                 const mom = momentumLabel(t.score, sl);
@@ -563,6 +563,7 @@ export default function TrendsTable({
                       </span>
                     </td>
 
+                    {/* Symbol */}
                     <td style={{ padding: "12px 8px", fontWeight: 950 }}>
                       <button
                         onClick={async () => {
@@ -581,7 +582,7 @@ export default function TrendsTable({
                           gap: 8,
                           color: "#e6edf3",
                         }}
-                          title="Copiar símbolo"
+                        title="Copiar símbolo"
                       >
                         <span
                           style={{
@@ -594,7 +595,7 @@ export default function TrendsTable({
                           {fullName ? (
                             <div className="hidden sm:block text-[13px] text-white/45 truncate">
                               {fullName}
-                          </div>
+                            </div>
                           ) : null}
                         </div>
                         <span style={{ color: UI.orangeSoft }}>
@@ -603,15 +604,16 @@ export default function TrendsTable({
                       </button>
                     </td>
 
-                      {/* Trend (Badge + sparkline ) */}
-                      <td style={{ padding: "12px 8px" }}>
-                        <div style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
-                          <TrendBadge trend={t.trend} />
-                          {/* aquí deja tu sparkline si ya está integrado */}
-                        </div>
-                      </td>
+                    {/* Trend (badge) */}
+                    <td style={{ padding: "12px 8px" }}>
+                      <div style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
+                        <TrendBadge trend={t.trend} />
+                      </div>
+                    </td>
 
-                      <td style={{ marginLeft: 4 }}>
+                    {/* Score (sparkline único + valor) */}
+                    <td style={{ padding: "12px 8px" }}>
+                      <div style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
                         <Sparkline
                           values={h}
                           w={82}
@@ -623,66 +625,50 @@ export default function TrendsTable({
                               : t.trend === "down"
                               ? "rgba(255,107,107,0.10)"
                               : "rgba(255,255,255,0.06)"
-                            }
-                          />
-                        {typeof t.score === "number" ? t.score.toFixed(2) : "—"}
-                      </td>
-                      {/* ✅ Reason con ellipsis */}
-                      <td style={{ padding: "12px 8px", fontSize: 12, opacity: 0.85, maxWidth: 260 }}>
-                        <span
-                        style={{
-                          display: "block",
-                          color: c,
-                          overflow: "hidden",
-                          whiteSpace: "nowrap",
-                          textOverflow: "ellipsis",
-                        }}
-                        title={t.reason || ""}
-                      >
-                        {t.reason }
-                        <Sparkline
-                          values={h}
-                          w={88}
-                          h={22}
-                          stroke={c}
-                          fill={t.trend === "up"
-                            ? "rgba(46,229,157,0.10)"
-                            : t.trend === "down"
-                            ? "rgba(255,107,107,0.10)"
-                            : "rgba(255,255,255,0.08)"
                           }
                         />
-                      </span>
-                      </td>
-                      <td style={{ padding: "12px 8px" }}>
                         <span
                           style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: 8,
-                            padding: "3px 10px",
-                            borderRadius: 999,
-                            border: `1px solid ${mt.b}`,
-                            background: mt.bg,
-                            color: mt.c,
-                            fontSize: 12,
-                            fontWeight: 950,
-                            whiteSpace: "nowrap",
+                            fontWeight: 800,
+                            fontVariantNumeric: "tabular-nums",
+                            minWidth: 44,
                           }}
-                          title={`slope ${(sl*100).toFixed(2)}%`}
                         >
-                          {mom}
-                          <span style={{ opacity: 0.75, fontWeight: 900, color: mt.c }}>
-                            {sl === 0 ? "·" : sl > 0 ? "↗" : "↘"}
-                          </span>
+                          {typeof t.score === "number" ? t.score.toFixed(2) : "—"}
                         </span>
-                      </td>
-                    </tr>
-                  );
+                      </div>
+                    </td>
+
+                    {/* Momentum (derivado de score + slope, 5 estados) */}
+                    <td style={{ padding: "12px 8px" }}>
+                      <span
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 8,
+                          padding: "3px 10px",
+                          borderRadius: 999,
+                          border: `1px solid ${mt.b}`,
+                          background: mt.bg,
+                          color: mt.c,
+                          fontSize: 12,
+                          fontWeight: 950,
+                          whiteSpace: "nowrap",
+                        }}
+                        title={`slope ${(sl * 100).toFixed(2)}%`}
+                      >
+                        {mom}
+                        <span style={{ opacity: 0.75, fontWeight: 900, color: mt.c }}>
+                          {sl === 0 ? "·" : sl > 0 ? "↗" : "↘"}
+                        </span>
+                      </span>
+                    </td>
+                  </tr>
+                );
               })}
               {items.length === 0 && !error && (
                 <tr>
-                  <td colSpan={4} style={{ padding: "12px 8px", opacity: 0.75 }}>
+                  <td colSpan={5} style={{ padding: "12px 8px", opacity: 0.75 }}>
                     Sin datos todavía…
                   </td>
                 </tr>

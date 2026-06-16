@@ -4,14 +4,14 @@ import { useEffect, useMemo, useRef } from "react";
 import { useMarketSignalsStore } from "@/lib/stores/marketSignalsStore";
 import {
   createChart,
-  LineSeries,
+  AreaSeries,
   type IChartApi,
   type ISeriesApi,
   type UTCTimestamp,
 } from "lightweight-charts";
 import type { TrendItem } from "@/lib/types";
 
-type Point = { time: UTCTimestamp; value: number};
+type Point = { time: UTCTimestamp; value: number };
 
 export default function TrendChartPanel({
   items,
@@ -22,7 +22,7 @@ export default function TrendChartPanel({
 }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const chartRef = useRef<IChartApi | null>(null);
-  const seriesRef = useRef<ISeriesApi<"Line"> | null>(null);
+  const seriesRef = useRef<ISeriesApi<"Area"> | null>(null);
 
   // histórico del composite
   const trendPulseHistory = useMarketSignalsStore((s) => s.trendPulseHistory);
@@ -52,6 +52,28 @@ export default function TrendChartPanel({
       ? "#fb7185"
       : "#f59e0b";
 
+  // degradado del área bajo la línea (premium): mismo tono, desvaneciendo
+  const areaTop =
+    tone === "BULLISH"
+      ? "rgba(52,211,153,0.28)"
+      : tone === "BEARISH"
+      ? "rgba(251,113,133,0.28)"
+      : "rgba(245,158,11,0.24)";
+  const areaBottom =
+    tone === "BULLISH"
+      ? "rgba(52,211,153,0.02)"
+      : tone === "BEARISH"
+      ? "rgba(251,113,133,0.02)"
+      : "rgba(245,158,11,0.02)";
+
+  // glow del contenedor según tono (aura premium sin tocar el canvas)
+  const panelGlow =
+    tone === "BULLISH"
+      ? "inset 0 0 44px rgba(52,211,153,0.10), 0 8px 30px rgba(0,0,0,0.25)"
+      : tone === "BEARISH"
+      ? "inset 0 0 44px rgba(251,113,133,0.10), 0 8px 30px rgba(0,0,0,0.25)"
+      : "inset 0 0 44px rgba(245,158,11,0.08), 0 8px 30px rgba(0,0,0,0.25)";
+
   const toneCls =
     tone === "BULLISH"
       ? "border-emerald-400/30 bg-emerald-400/10 text-emerald-200"
@@ -59,7 +81,7 @@ export default function TrendChartPanel({
       ? "border-rose-400/30 bg-rose-400/10 text-rose-200"
       : "border-white/15 bg-white/5 text-white/70";
 
-  // 1) init chart
+  // 1) init chart (AreaSeries para el look premium con degradado)
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -73,12 +95,8 @@ export default function TrendChartPanel({
         vertLines: { visible: false },
         horzLines: { color: "rgba(255,255,255,0.06)" },
       },
-      rightPriceScale: {
-        borderVisible: false,
-      },
-      leftPriceScale: {
-        visible: false,
-      },
+      rightPriceScale: { borderVisible: false },
+      leftPriceScale: { visible: false },
       timeScale: {
         borderVisible: false,
         secondsVisible: true,
@@ -92,9 +110,11 @@ export default function TrendChartPanel({
       handleScale: true,
     });
 
-    const series = chart.addSeries(LineSeries, {
+    const series = chart.addSeries(AreaSeries, {
       lineWidth: 2,
-      color: lineColor,
+      lineColor,
+      topColor: areaTop,
+      bottomColor: areaBottom,
       priceLineVisible: true,
       lastValueVisible: true,
       crosshairMarkerVisible: true,
@@ -107,9 +127,7 @@ export default function TrendChartPanel({
 
     const onResize = () => {
       if (!containerRef.current || !chartRef.current) return;
-      chartRef.current.applyOptions({
-        width: containerRef.current.clientWidth,
-      });
+      chartRef.current.applyOptions({ width: containerRef.current.clientWidth });
     };
 
     window.addEventListener("resize", onResize);
@@ -122,50 +140,65 @@ export default function TrendChartPanel({
     };
   }, []);
 
-  // 2) actualizar color del composite
+  // 2) actualizar colores del área/linea cuando cambia el tono
   useEffect(() => {
     if (!seriesRef.current) return;
-    seriesRef.current.applyOptions({ color: lineColor });
-  }, [lineColor]);
+    seriesRef.current.applyOptions({
+      lineColor,
+      topColor: areaTop,
+      bottomColor: areaBottom,
+    });
+  }, [lineColor, areaTop, areaBottom]);
 
-  // 3) agregar punto nuevo del composite
+  // 3) MUESTREO UNIFORME: un punto cada N segundos EXACTOS,
+  //    desacoplado de cuándo llegan los datos (arregla el eje irregular).
+  const compositeRef = useRef(compositeScore);
   useEffect(() => {
-    if (!seriesRef.current) return;
+    compositeRef.current = compositeScore;
+  }, [compositeScore]);
+
+  useEffect(() => {
     if (!items?.length) return;
 
-    const nowSec = Math.floor(Date.now() / 1000) as UTCTimestamp;
+    const SAMPLE_MS = 10_000; // intervalo fijo de muestreo
 
-    if (nowSec === lastTimeRef.current) return;
-    lastTimeRef.current = nowSec;
-
-    const next: Point = {
-      time: nowSec,
-      value: compositeScore,
+    const sample = () => {
+      const nowSec = Math.floor(Date.now() / 1000) as UTCTimestamp;
+      if (nowSec === lastTimeRef.current) return;
+      lastTimeRef.current = nowSec;
+      appendTrendPulsePoint({ time: nowSec, value: compositeRef.current }, maxPoints);
     };
 
-    appendTrendPulsePoint(next, maxPoints);
+    sample(); // primer punto inmediato al montar / al haber datos
+    const id = setInterval(sample, SAMPLE_MS);
 
-    
-  }, [items, compositeScore, maxPoints]);  
+    return () => clearInterval(id);
+    // depende de items?.length (no del objeto items) para no recrear el intervalo
+    // en cada refresh; el valor más reciente se lee de compositeRef.
+  }, [items?.length, maxPoints, appendTrendPulsePoint]);
 
+  // 4) render de la serie desde el histórico del store
   useEffect(() => {
-  if (!seriesRef.current) return;
-  if (!trendPulseHistory?.length) {
-    seriesRef.current.setData([]);
-    return;
-  }
+    if (!seriesRef.current) return;
+    if (!trendPulseHistory?.length) {
+      seriesRef.current.setData([]);
+      return;
+    }
 
-  const data = trendPulseHistory.map((p) => ({
-    time: p.time as UTCTimestamp,
-    value: p.value,
-  }));
+    const data = trendPulseHistory.map((p) => ({
+      time: p.time as UTCTimestamp,
+      value: p.value,
+    }));
 
-  seriesRef.current.setData(data);
-  chartRef.current?.timeScale().fitContent();
-}, [trendPulseHistory]);
+    seriesRef.current.setData(data);
+    chartRef.current?.timeScale().fitContent();
+  }, [trendPulseHistory]);
 
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3">
+    <div
+      className="rounded-xl border border-white/10 bg-white/[0.03] p-3"
+      style={{ boxShadow: panelGlow, transition: "box-shadow 400ms ease" }}
+    >
       <div className="mb-2 flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="flex items-center gap-2 text-xs font-semibold tracking-wide text-white/70">

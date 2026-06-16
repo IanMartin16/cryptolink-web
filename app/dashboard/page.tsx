@@ -140,10 +140,10 @@ const trendsFeed = useTrendsFeed({
         note={insight.note}
         moodScore={mood.score}
       />
-      <SocialPulseBoard trends={trendsSummary}/>
       <div className="mt-1">
         <StatCards rows={rows} />
       </div>
+      <SocialPulseBoard trends={trendsSummary}/>
 
       <MarketSparkStrip rows={rows} max={12} />
 

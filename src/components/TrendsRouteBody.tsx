@@ -6,8 +6,7 @@ import StatusBar from "@/components/StatusBar";
 import TrendChartPanel from "@/components/TrendChartPanel";
 import type { TrendItem } from "@/lib/types";
 import type { Health } from "@/lib/health";
-import MomentumPanel from "@/components/MomentumPanel";
-import TrendsPanel from "@/components/TrendsPanel";
+import MarketMomentumPanel from "./MarketMomentumPanel";
 import RegimePanel from "@/components/RegimePanel";
 
 
@@ -58,9 +57,8 @@ export default function TrendsRouteBody() {
             alignItems: "start",
           }}
         >
-        <MomentumPanel />
+        <MarketMomentumPanel topN={5} />
         <TrendsWarmup />
-        <TrendsPanel />
       </div>
     </div>
       <div style={{ marginTop: 12 }}>
