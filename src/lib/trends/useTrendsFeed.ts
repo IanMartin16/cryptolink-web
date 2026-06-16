@@ -176,20 +176,25 @@ export function useTrendsFeed({
       const resolvedTs = r.updatedAt ?? r.ts ?? new Date().toISOString();
       const raw: RawTrendApiItem[] = r.items ?? r.data ?? [];
       const fiat = String(getFiat() || "USD").toLowerCase();
-      console.log("raw trend sample", raw[0]);
+      console.table(
+        raw.map((t) => ({
+          symbol: t.symbol ?? (t as any).item?.symbol,
+          hasMomentum: (t as any).momentum !== undefined,
+          hasChangePct: (t as any).changePct !== undefined,
+          hasReason: t.reason !== undefined && t.reason !== "",
+          hasItemData: (t as any).item?.data !== undefined,
+        }))
+      );
 
       const nextItems = raw
         .map((t): TrendItem | null => {
           const score = typeof t.score === "number" ? t.score : 0;
 
+          const rawTrend = String(t.trend ?? "").toLowerCase();
           const trend: TrendItem["trend"] =
-            t.trend === "up" || t.trend === "down" || t.trend === "flat"
-              ? t.trend
-              : score > 0.15
-              ? "up"
-              : score < -0.15
-              ? "down"
-              : "flat";
+            rawTrend === "up" || rawTrend === "down" || rawTrend === "flat"
+              ? (rawTrend as TrendItem["trend"])
+              : score > 0.15 ? "up" : score < -0.15 ? "down" : "flat";
 
           const symbol =
             t.symbol?.toUpperCase() ??

@@ -10,16 +10,32 @@ export default function HeroPriceCard({
   fiat,
   price,
   cache,
+  change24h,                    // ← nueva prop
 }: {
   symbol: string;
   fiat: string;
   price?: number;
   cache?: string;
+  change24h?: number;           // ← opcional: si falta, mostramos "—"
 }) {
   const priceNode = useMemo(() => {
     if (typeof price !== "number") return "—";
     return formatMoney(price, fiat);
   }, [price, fiat]);
+
+  // 24h change: derivado del dato real del backend, NO del sparkline de sesión
+  const has24h = typeof change24h === "number" && Number.isFinite(change24h);
+  const dir24h = has24h ? (change24h! > 0 ? "up" : change24h! < 0 ? "down" : "flat") : "none";
+  const change24hColor =
+    dir24h === "up"
+      ? "rgba(46,229,157,0.95)"
+      : dir24h === "down"
+      ? "rgba(255,107,107,0.95)"
+      : "rgba(255,255,255,0.55)";
+  const change24hArrow = dir24h === "up" ? "▲" : dir24h === "down" ? "▼" : "";
+  const change24hText = has24h
+    ? `${change24hArrow} ${change24h! > 0 ? "+" : ""}${change24h!.toFixed(2)}%`
+    : "—";
 
   usePriceHistory(symbol, fiat, price, 600);
   const hist = getPriceHistory(symbol, fiat).slice(-30);
@@ -169,15 +185,43 @@ export default function HeroPriceCard({
               {priceNode}
           </div>
 
+          {/* fiat + cambio 24h en la misma línea, etiquetado claro */}
           <div
             style={{
               marginTop: 8,
-              fontSize: 12,
-              color: "rgba(255,255,255,0.56)",
-              whiteSpace: "nowrap",
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              flexWrap: "wrap",
             }}
           >
-            {fiat}
+            <span
+              style={{
+                fontSize: 12,
+                color: "rgba(255,255,255,0.56)",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {fiat}
+            </span>
+
+            <span
+              style={{
+                fontSize: 13,
+                fontWeight: 800,
+                color: change24hColor,
+                whiteSpace: "nowrap",
+                fontVariantNumeric: "tabular-nums",
+              }}
+              title="Change over the last 24 hours"
+            >
+              {change24hText}
+              {has24h ? (
+                <span style={{ fontSize: 11, fontWeight: 600, opacity: 0.6, marginLeft: 4 }}>
+                  24h
+                </span>
+              ) : null}
+            </span>
           </div>
         </div>
 

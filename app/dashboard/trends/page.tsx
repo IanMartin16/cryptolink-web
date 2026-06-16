@@ -17,8 +17,7 @@ export default function TrendsPage() {
         health={trendsHealth}
         badge="DERIVED"
       />
-      <div style={{ marginTop: 12, display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 12 }}>
-      </div>
+      
       <TrendsRouteBody />
     </div>
   );

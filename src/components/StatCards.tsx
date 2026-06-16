@@ -14,8 +14,20 @@ export default function StatCards({ rows }: { rows: PriceRow[] }) {
 
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-      <HeroPriceCard symbol="BTC" fiat={fiat} price={btc?.price} cache={btc?.cache} />
-      <HeroPriceCard symbol="ETH" fiat={fiat} price={eth?.price} cache={eth?.cache} />
+      <HeroPriceCard
+        symbol="BTC"
+        fiat={fiat}
+        price={btc?.price}
+        cache={btc?.cache}
+        change24h={btc?.change24h}  
+      />
+      <HeroPriceCard
+        symbol="ETH"
+        fiat={fiat}
+        price={eth?.price}
+        cache={eth?.cache}
+        change24h={eth?.change24h}
+      />
     </div>
   );
 }
