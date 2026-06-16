@@ -36,7 +36,7 @@ function effectivePct(r: PriceRow) {
     return ((r.price - r.prevPrice) / r.prevPrice) * 100;
   }
 
-  const hist = getPriceHistory(r.symbol);
+  const hist = getPriceHistory(r.symbol, r.fiat ?? "USD");
   if (hist.length >= 2) {
     const first = hist[0];
     const last = hist[hist.length - 1];
@@ -166,7 +166,7 @@ export default function PricesSplit({
             <tbody>
               {watch.map((r) => {
                 const pct = effectivePct(r);
-                const hist = getPriceHistory(r.symbol).slice(-20);
+                const hist = getPriceHistory(r.symbol, r.fiat ?? "USD").slice(-20);
                 const tone = sparkTone(pct);
 
                 return (
@@ -254,7 +254,7 @@ export default function PricesSplit({
         <div className="max-h-[420px] space-y-2 overflow-auto p-2">
           {movers.map((r) => {
             const pct = effectivePct(r);
-            const hist = getPriceHistory(r.symbol).slice(-20);
+            const hist = getPriceHistory(r.symbol, r.fiat ?? "USD").slice(-20);
             const tone = sparkTone(pct);
 
             return (

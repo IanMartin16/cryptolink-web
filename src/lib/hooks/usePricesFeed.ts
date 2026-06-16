@@ -130,7 +130,7 @@ export function usePricesFeed({
 
           for (const r of nextRows) {
             if (typeof r.price === "number") {
-              pushPriceHistory(r.symbol, r.price, 600);
+              pushPriceHistory(r.symbol, r.fiat ?? "USD", r.price, 600);
             } 
           }
 

@@ -127,7 +127,7 @@ export default function PriceComparePanel({
 
   const maxPoints = pointsByRange[range];
 
-  const mainPrices = usePriceHistory(symbol, currentPrice, 600);
+  const mainPrices = usePriceHistory(symbol, fiat, currentPrice, 600);
 
   const mainValues = useMemo(() => {
     const sliced = mainPrices.slice(-maxPoints);
@@ -142,13 +142,13 @@ export default function PriceComparePanel({
 
   const overlay1Values = useMemo(() => {
     if (!compare1) return [];
-    const raw = getPriceHistory(compare1).slice(-maxPoints);
+    const raw = getPriceHistory(compare1, fiat).slice(-maxPoints);
     return normalize ? normalizeTo100(raw) : raw;
   }, [compare1, maxPoints, normalize, rows]);
 
   const overlay2Values = useMemo(() => {
     if (!compare2) return [];
-    const raw = getPriceHistory(compare2).slice(-maxPoints);
+    const raw = getPriceHistory(compare2, fiat).slice(-maxPoints);
     return normalize ? normalizeTo100(raw) : raw;
   }, [compare2, maxPoints, normalize, rows]);
 

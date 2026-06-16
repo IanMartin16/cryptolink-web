@@ -7,7 +7,7 @@ import { useMarketSignalsStore } from "@/lib/stores/marketSignalsStore";
 import { buildLiveNarrative } from "@/lib/social/liveNarrative";
 import { fetchBasicSignals } from "@/lib/social/fetchBasicSignals"
 import type { BasicSignalsResponse } from "@/lib/social/fetchBasicSignals";
-
+import type { TrendsSummary } from "@/lib/types";
 
 type SocialPulseResponse = {
   ok: boolean;
@@ -63,7 +63,7 @@ function formatTs(ts: string) {
   }
 }
 
-export default function SocialPulseBoard() {
+export default function SocialPulseBoard({ trends }: { trends?: TrendsSummary }) {
   const storedSocialPulse = useMarketSignalsStore((s: any) => s.socialPulse);
   const socialPulseUpdatedAt = useMarketSignalsStore((s: any) => s.socialPulseUpdatedAt);
   const setSocialPulseStore = useMarketSignalsStore((s: any) => s.setSocialPulse);
@@ -119,7 +119,6 @@ useEffect(() => {
     clearInterval(id);
   };
 }, []);
-  
 
   const pulse = data?.socialPulse;
   const tone = pulseTone(pulse?.state ?? "neutral");
@@ -509,7 +508,7 @@ useEffect(() => {
                       background: barFill,
                       opacity: 0.82 - i * 0.12,
                       boxShadow: `0 0 12px ${glow}`,
-                      animation: `pulseBars ${3.8 + i * 0.12} s ease-in-out infinite`,
+                      animation: `pulseBars ${(3.8 + i * 0.12).toFixed(2)}s ease-in-out infinite`,
                       transformOrigin: "bottom center",
                       willChange: "transform, opacity",
                     }}

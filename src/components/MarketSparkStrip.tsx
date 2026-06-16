@@ -60,7 +60,9 @@ export default function MarketSparkStrip({
   const items = (rows || [])
     .map((r) => ({
       row: r,
-      hist: getPriceHistory(r.symbol),
+      // 🔑 ÚNICO CAMBIO: la historia ahora se pide por symbol + fiat,
+      // así nunca se mezcla la serie MXN vieja con la USD nueva.
+      hist: getPriceHistory(r.symbol, r.fiat ?? "USD"),
     }))
     .sort((a, b) => (b.hist?.length ?? 0) - (a.hist?.length ?? 0))
     .slice(0, max);

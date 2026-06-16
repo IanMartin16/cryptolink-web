@@ -7,7 +7,6 @@ import { UI } from "@/lib/ui";
 import type { Health } from "@/lib/health";
 import { HEALTH_OK } from "@/lib/health";
 import TopHeader, { Chip } from "@/components/TopHeader";
-import { buildMarketInsight } from "@/lib/insights";
 import { computeMood } from "@/lib/moodEngine";
 import { normalizeTrends } from "@/lib/trendEngine";
 import type { PriceRow, TrendItem } from "@/lib/types";
@@ -37,16 +36,21 @@ export default function DashboardPage() {
   // ✅ 2) Mood UNA vez (source of truth)
   const mood = useMemo(() => computeMood(rows, normalizedTrends), [rows, normalizedTrends]);
 
-  // ✅ 3) Insight “market sentiment”
-  const moodInsight = useMemo(
-    () =>
-      buildMarketInsight({
-        rows,
-        moodScore: mood.score,
-        trends: normalizedTrends,
-      }),
-    [rows, mood.score, normalizedTrends]
-  );
+  const trendsSummary = useMemo(() => {
+      const up = normalizedTrends.filter(t => t.trend === "up").length;
+      const down = normalizedTrends.filter(t => t.trend === "down").length;
+      const flat = normalizedTrends.filter(t => t.trend === "flat").length;
+      const avgScore = normalizedTrends.length
+        ? normalizedTrends.reduce((a, t) => a + (t.score ?? 0), 0) / normalizedTrends.length
+        : 0;
+      return {
+        up,
+        down,
+        flat,
+        avgScore,
+        topSymbols: normalizedTrends.slice(0, 3).map(t => t.symbol),
+      };
+    }, [normalizedTrends]);
 
   useEffect(() => {
   const sample = rows.slice(0, 6).map(r => ({
@@ -79,12 +83,10 @@ export default function DashboardPage() {
   }, [mood.score, mood.confidence, normalizedTrends.length]);
 
 
-const insight = buildInsightV2({
-  mood,
-  snapshot,
-  rows,
-  trends: normalizedTrends, 
-});
+  const insight = useMemo(
+       () => buildInsightV2({ mood, snapshot, rows, trends: normalizedTrends }),
+       [mood, snapshot, rows, normalizedTrends]
+    );
 
 const pricesFeed = usePricesFeed({
   onRows: setRows,
@@ -96,17 +98,17 @@ const trendsFeed = useTrendsFeed({
   onHealth: setTrendsHealth,
 });
 
-useEffect(() => {
-  if (pricesFeed.rows.length) {
-    setRows(pricesFeed.rows);
-  }
-}, [pricesFeed.rows]);
+  useEffect(() => {
+    if (pricesFeed.rows.length) {
+      setRows(pricesFeed.rows);
+    }
+  }, [pricesFeed.rows]);
 
-useEffect(() => {
+ useEffect(() => {
   if (trendsFeed.items.length) {
     setTrendItems(trendsFeed.items);
   }
-}, [trendsFeed.items]);
+ }, [trendsFeed.items]);
 
   return (
   <div>
@@ -138,7 +140,7 @@ useEffect(() => {
         note={insight.note}
         moodScore={mood.score}
       />
-      <SocialPulseBoard />
+      <SocialPulseBoard trends={trendsSummary}/>
       <div className="mt-1">
         <StatCards rows={rows} />
       </div>

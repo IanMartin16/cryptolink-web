@@ -21,8 +21,8 @@ export default function HeroPriceCard({
     return formatMoney(price, fiat);
   }, [price, fiat]);
 
-  usePriceHistory(symbol, price, 600);
-  const hist = getPriceHistory(symbol).slice(-30);
+  usePriceHistory(symbol, fiat, price, 600);
+  const hist = getPriceHistory(symbol, fiat).slice(-30);
   const firstVisible = hist.length >= 2 ? hist[0] : undefined;
   const lastVisible = hist.length >= 2 ? hist[hist.length - 1] : undefined;
 

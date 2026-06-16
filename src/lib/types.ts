@@ -53,3 +53,12 @@ export type SnapshotKPIs = {
   updatedAt: number;    // Date.now()
   items: SnapshotKPI[]; // los 4 KPIs en orden
 };
+
+// en lib/types.ts
+export type TrendsSummary = {
+  up: number;
+  down: number;
+  flat: number;
+  avgScore: number;
+  topSymbols: string[];
+};
