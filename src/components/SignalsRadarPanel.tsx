@@ -21,17 +21,14 @@ type SignalsResponse = {
 function formatTs(ts: string) {
   try {
     const d = new Date(ts);
-    return (
-      new Intl.DateTimeFormat("es-MX", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-        timeZone: "America/Mexico_City",
-      }).format(d) + " Mexico City"
-    );
+    return new Intl.DateTimeFormat("en-US", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }).format(d);
   } catch {
     return ts;
   }
@@ -44,27 +41,43 @@ function polarToCartesian(cx: number, cy: number, r: number, angleDeg: number) {
     y: cy + r * Math.sin(a),
   };
 }
+
 function signalTone(value: number) {
-    if (value >= 70) {
-      return {
-        border: "rgba(46,229,157,0.18)",
-        bg: "rgba(46,229,157,0.06)",
-        value: "#8af0b8",
-      };
-    }
-    if (value >= 35) {
-      return {
-        border: "rgba(255,159,67,0.16)",
-        bg: "rgba(255,159,67,0.05)",
-        value: "#ffd08a",
-      };
-    }
+  if (value >= 70) {
     return {
-      border: "rgba(255,255,255,0.10)",
-      bg: "rgba(255,255,255,0.03)",
-      value: "rgba(255,255,255,0.92)",
+      border: "rgba(46,229,157,0.18)",
+      bg: "rgba(46,229,157,0.06)",
+      value: "#8af0b8",
     };
   }
+  if (value >= 35) {
+    return {
+      border: "rgba(255,159,67,0.16)",
+      bg: "rgba(255,159,67,0.05)",
+      value: "#ffd08a",
+    };
+  }
+  return {
+    border: "rgba(255,255,255,0.10)",
+    bg: "rgba(255,255,255,0.03)",
+    value: "rgba(255,255,255,0.92)",
+  };
+}
+
+/**
+ * Tono del polígono según el promedio de los ejes — coherente con signalTone
+ * de las tarjetas. Antes el polígono era SIEMPRE verde, lo que mandaba señal
+ * falsa de "todo bien" aunque hubiera ejes bajos. Ahora refleja la salud real.
+ */
+function polygonTone(avg: number) {
+  if (avg >= 70) {
+    return { fill: "rgba(46,229,157,0.18)", stroke: "#2BFF88", dot: "#2BFF88" };
+  }
+  if (avg >= 35) {
+    return { fill: "rgba(255,159,67,0.16)", stroke: "#FFB347", dot: "#FFB347" };
+  }
+  return { fill: "rgba(255,255,255,0.10)", stroke: "rgba(255,255,255,0.78)", dot: "rgba(255,255,255,0.85)" };
+}
 
 function polygonPath(points: { x: number; y: number }[]) {
   return points.map((p) => `${p.x},${p.y}`).join(" ");
@@ -88,9 +101,9 @@ export default function SignalsRadarPanel() {
         setError("");
         const res = await fetchSignals(["BTC", "ETH", "SOL"]);
         if (!cancelled) {
-            setData(res);
-            setSignalsStore(res);
-            setStatus("live");
+          setData(res);
+          setSignalsStore(res);
+          setStatus("live");
         }
       } catch (e: any) {
         if (!cancelled) setError(e?.message ?? "unknown");
@@ -129,8 +142,14 @@ export default function SignalsRadarPanel() {
       polarToCartesian(cx, cy, maxR * (Math.max(0, Math.min(100, a.value)) / 100), a.angle)
     );
 
+    // promedio de los ejes → tono del polígono coherente con las tarjetas
+    const avg =
+      signals.length > 0
+        ? signals.reduce((acc, s) => acc + (Number.isFinite(s.value) ? s.value : 0), 0) /
+          signals.length
+        : 0;
 
-    return { rings, axes, points };
+    return { rings, axes, points, poly: polygonTone(avg) };
   }, [data]);
 
   if (error) {
@@ -209,20 +228,20 @@ export default function SignalsRadarPanel() {
         >
           <DataStatusBadge status={status} />
 
-        <div
-          style={{
-            padding: "6px 10px",
-            borderRadius: 999,
-            border: `1px solid ${UI.border}`,
-            background: "rgba(255,255,255,0.05)",
-            fontSize: 12,
-            opacity: 0.82,
-            whiteSpace: "nowrap",
-          }}
-        >
-          Updated · <code>{formatTs(data.ts)}</code>
+          <div
+            style={{
+              padding: "6px 10px",
+              borderRadius: 999,
+              border: `1px solid ${UI.border}`,
+              background: "rgba(255,255,255,0.05)",
+              fontSize: 12,
+              opacity: 0.82,
+              whiteSpace: "nowrap",
+            }}
+          >
+            Updated · <code>{formatTs(data.ts)}</code>
+          </div>
         </div>
-       </div>
       </div>
 
       <div
@@ -276,11 +295,11 @@ export default function SignalsRadarPanel() {
 
             <polygon
               points={polygonPath(chart.points)}
-              fill="rgba(43,255,136,0.18)"
-              stroke="#2BFF88"
+              fill={chart.poly.fill}
+              stroke={chart.poly.stroke}
               strokeWidth="2"
+              style={{ transition: "fill 300ms ease, stroke 300ms ease" }}
             />
-            
 
             {chart.points.map((p, idx) => (
               <circle
@@ -288,86 +307,85 @@ export default function SignalsRadarPanel() {
                 cx={p.x}
                 cy={p.y}
                 r="4"
-                fill="#2BFF88"
+                fill={chart.poly.dot}
                 stroke="rgba(0,0,0,0.18)"
               />
             ))}
           </svg>
         </div>
-        
+
         <div
           style={{
             display: "grid",
             gap: 10,
           }}
         >
-  
           {data.signals.map((s) => {
-          const tone = signalTone(s.value);
+            const tone = signalTone(s.value);
 
-          return (
-            <div
-              key={s.label}
-              style={{
-                padding: "10px 12px",
-                borderRadius: 16,
-                border: `1px solid ${tone.border}`,
-                background: tone.bg,
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                gap: 12,
-                minHeight: 52,
-                boxShadow: "inset 0 0 10px rgba(255,255,255,0.015)",
-              }}
-            >
+            return (
               <div
+                key={s.label}
                 style={{
-                  fontSize: 13,
-                  opacity: 0.72,
-                  fontWeight: 700,
-                  letterSpacing: 0.2,
-                  color: "rgba(255,255,255,0.82)",
-                }}
-              >
-                {s.label}
-              </div>
-
-              <div
-                style={{
+                  padding: "10px 12px",
+                  borderRadius: 16,
+                  border: `1px solid ${tone.border}`,
+                  background: tone.bg,
                   display: "flex",
-                  alignItems: "baseline",
-                  gap: 6,
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: 12,
+                  minHeight: 52,
+                  boxShadow: "inset 0 0 10px rgba(255,255,255,0.015)",
                 }}
               >
-                <span
+                <div
                   style={{
-                    fontSize: 22,
-                    fontWeight: 950,
-                    color: tone.value,
-                    lineHeight: 1,
-                    textShadow: "0 0 10px rgba(0,0,0,0.18)",
-                    fontVariantNumeric: "tabular-nums",
+                    fontSize: 13,
+                    opacity: 0.72,
+                    fontWeight: 700,
+                    letterSpacing: 0.2,
+                    color: "rgba(255,255,255,0.82)",
                   }}
                 >
-                  {s.value}
-                </span>
+                  {s.label}
+                </div>
 
-                <span
+                <div
                   style={{
-                    fontSize: 11,
-                    color: "rgba(255,255,255,0.38)",
-                    fontWeight: 800,
-                    letterSpacing: "0.08em",
+                    display: "flex",
+                    alignItems: "baseline",
+                    gap: 6,
                   }}
                 >
-                  /100
-                </span>
+                  <span
+                    style={{
+                      fontSize: 22,
+                      fontWeight: 950,
+                      color: tone.value,
+                      lineHeight: 1,
+                      textShadow: "0 0 10px rgba(0,0,0,0.18)",
+                      fontVariantNumeric: "tabular-nums",
+                    }}
+                  >
+                    {s.value}
+                  </span>
+
+                  <span
+                    style={{
+                      fontSize: 11,
+                      color: "rgba(255,255,255,0.38)",
+                      fontWeight: 800,
+                      letterSpacing: "0.08em",
+                    }}
+                  >
+                    /100
+                  </span>
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
       </div>
     </section>
   );
