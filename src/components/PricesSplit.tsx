@@ -25,6 +25,14 @@ function PctCell({ pct }: { pct?: number | null }) {
   );
 }
 
+/**
+ * effectivePct: el backend NO puebla r.pct hoy, así que en la práctica esto
+ * siempre cae al cálculo (price - prevPrice)/prevPrice o al historial =
+ * cambio de SESIÓN (últimos ticks), NO 24h. Por eso la columna se etiqueta
+ * "Δ% session" y no "Δ% 24h" — honestidad de ventana.
+ * El día que el backend mande r.pct (24h real), el primer fallback lo toma
+ * solo y se reetiqueta la columna.
+ */
 function effectivePct(r: PriceRow) {
   if (typeof r.pct === "number") return r.pct;
 
@@ -86,40 +94,68 @@ function sortTopMovers(rows: PriceRow[], filter: "all" | "gainers" | "losers") {
 
 function sparkTone(pct?: number | null) {
   if (typeof pct !== "number") {
-    return {
-      stroke: "rgba(255,255,255,0.50)",
-      fill: "rgba(255,255,255,0.06)",
-    };
+    return { stroke: "rgba(255,255,255,0.50)", fill: "rgba(255,255,255,0.06)" };
   }
-
   if (pct > 0) {
-    return {
-      stroke: "rgba(46,229,157,0.85)",
-      fill: "rgba(46,229,157,0.10)",
-    };
+    return { stroke: "rgba(46,229,157,0.85)", fill: "rgba(46,229,157,0.10)" };
   }
-
   if (pct < 0) {
-    return {
-      stroke: "rgba(255,107,107,0.85)",
-      fill: "rgba(255,107,107,0.10)",
-    };
+    return { stroke: "rgba(255,107,107,0.85)", fill: "rgba(255,107,107,0.10)" };
   }
+  return { stroke: "rgba(255,255,255,0.55)", fill: "rgba(255,255,255,0.06)" };
+}
 
-  return {
-    stroke: "rgba(255,255,255,0.55)",
-    fill: "rgba(255,255,255,0.06)",
-  };
+/** "hace Ns" legible a partir del timestamp del último update */
+function freshness(lastUpdated?: string | number) {
+  if (!lastUpdated) return null;
+  const t = new Date(lastUpdated).getTime();
+  if (Number.isNaN(t)) return null;
+  const secs = Math.max(0, Math.round((Date.now() - t) / 1000));
+  if (secs < 60) return `${secs}s ago`;
+  const mins = Math.round(secs / 60);
+  return `${mins}m ago`;
+}
+
+/** Indicador de frescura legible — reemplaza la jerga MISS/stale-cache */
+function FreshnessTag({
+  live,
+  lastUpdated,
+}: {
+  live?: boolean;
+  lastUpdated?: string | number;
+}) {
+  const ago = freshness(lastUpdated);
+  const dot = live ? "rgba(46,229,157,0.95)" : "rgba(255,255,255,0.30)";
+  return (
+    <span className="inline-flex items-center gap-1.5 text-[11px] text-white/45">
+      <span
+        style={{
+          width: 7,
+          height: 7,
+          borderRadius: 999,
+          background: dot,
+          boxShadow: live ? `0 0 8px ${dot}` : "none",
+          display: "inline-block",
+        }}
+      />
+      {live ? "live" : "idle"}
+      {ago ? <span className="text-white/30">· {ago}</span> : null}
+    </span>
+  );
 }
 
 export default function PricesSplit({
   rows,
   titleLeft = "WATCHLIST",
   titleRight = "TOP MOVERS",
+  lastUpdated,
+  live,
 }: {
   rows: PriceRow[];
   titleLeft?: string;
   titleRight?: string;
+  lastUpdated?: string | number;
+  live?: boolean;
 }) {
   const [moversFilter, setMoversFilter] = useState<"all" | "gainers" | "losers">("all");
 
@@ -130,27 +166,19 @@ export default function PricesSplit({
 
   const watch = useMemo(() => sortForWatchlist(rows || []), [rows]);
 
-  function fmtTick(rows: PriceRow[]) {
-    const t = rows.find((r) => r.updatedAt)?.updatedAt;
-    if (!t) return "—";
-    return new Date(t).toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    });
-  }
-
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
       {/* LEFT: WATCHLIST */}
       <div className="lg:col-span-2 rounded-xl border border-white/10 bg-white/[0.03]">
         <div className="flex items-center justify-between border-b border-white/10 px-3 py-2">
-          <div className="text-xs font-semibold tracking-wide text-white/70">
-            {titleLeft}
+          <div className="flex items-center gap-3">
+            <div className="text-xs font-semibold tracking-wide text-white/70">
+              {titleLeft}
+            </div>
+            {/* indicador de frescura legible (reemplaza MISS/stale-cache) */}
+            <FreshnessTag live={live} lastUpdated={lastUpdated} />
           </div>
-          <div className="text-[11px] text-white/45">
-            {watch.length} assets
-          </div>
+          <div className="text-[11px] text-white/45">{watch.length} assets</div>
         </div>
 
         <div className="max-h-[420px] overflow-auto">
@@ -159,7 +187,8 @@ export default function PricesSplit({
               <tr className="text-[11px] text-white/55">
                 <th className="px-3 py-2 text-left font-medium">Asset</th>
                 <th className="px-3 py-2 text-right font-medium">Price</th>
-                <th className="px-3 py-2 text-right font-medium">Δ%</th>
+                {/* etiqueta honesta: cambio de sesión, no 24h */}
+                <th className="px-3 py-2 text-right font-medium">Δ% session</th>
                 <th className="px-3 py-2 text-right font-medium">Trend</th>
               </tr>
             </thead>
@@ -247,7 +276,7 @@ export default function PricesSplit({
           </div>
 
           <div className="text-[11px] text-white/45">
-            {movers.length ? fmtTick(rows) : "—"}
+            {movers.length ? freshness(lastUpdated) ?? "—" : "—"}
           </div>
         </div>
 
