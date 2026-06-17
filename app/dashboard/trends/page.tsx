@@ -15,7 +15,7 @@ export default function TrendsPage() {
         title="Trends"
         subtitle="Social_link · 10s refresh"
         health={trendsHealth}
-        badge="DERIVED"
+        badge="LIVE"
       />
       
       <TrendsRouteBody />

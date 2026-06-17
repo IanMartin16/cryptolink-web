@@ -49,26 +49,59 @@ function formatTs(ts: string) {
   try {
     const d = new Date(ts);
     return (
-      new Intl.DateTimeFormat("es-MX", {
+      new Intl.DateTimeFormat("en-US", {
         day: "2-digit",
         month: "short",
         year: "numeric",
         hour: "2-digit",
         minute: "2-digit",
         hour12: false,
-        timeZone: "America/Mexico_City",
-      }).format(d) + " Mexico City"
+      }).format(d)
     );
   } catch {
     return ts;
   }
 }
 
-  function clamp(n: number, min: number, max: number) {
-    return Math.max(min, Math.min(max, n));
+function clamp(n: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, n));
+}
+
+function orbGlow(state: string, confidence: number) {
+  const c = clamp(confidence ?? 0, 0, 1);
+
+  if (state === "bullish") {
+    return {
+      core: "#2BFF88",
+      glow: `rgba(43,255,136,${0.18 + c * 0.35})`,
+      ring: `rgba(43,255,136,${0.22 + c * 0.28})`,
+    };
   }
 
-  function healthTone(state: string) {
+  if (state === "bearish") {
+    return {
+      core: "#FF6B6B",
+      glow: `rgba(255,107,107,${0.18 + c * 0.35})`,
+      ring: `rgba(255,107,107,${0.22 + c * 0.28})`,
+    };
+  }
+
+  if (state === "mixed") {
+    return {
+      core: "#F7C65F",
+      glow: `rgba(247,198,95,${0.18 + c * 0.30})`,
+      ring: `rgba(247,198,95,${0.22 + c * 0.24})`,
+    };
+  }
+
+  return {
+    core: "rgba(255,255,255,0.88)",
+    glow: `rgba(255,255,255,${0.10 + c * 0.18})`,
+    ring: `rgba(255,255,255,${0.12 + c * 0.16})`,
+  };
+}
+
+function healthTone(state: string) {
   if (state === "healthy") return "#2BFF88";
   if (state === "under_pressure") return "#FF6B6B";
   if (state === "fragile") return "#F7C65F";
@@ -198,8 +231,8 @@ export default function RegimePanel() {
 
   const [mh, setMh] = useState<MarketHealthResponse | null>(storedMarketHealth ?? null);
   const [status, setStatus] = useState<"live" | "restored" | "refreshing">(
-  storedRegime ? "restored" : "refreshing"
-);
+    storedRegime ? "restored" : "refreshing"
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -278,40 +311,6 @@ export default function RegimePanel() {
   const confidencePct = Math.round((regime.confidence ?? 0) * 100);
   const orb = orbGlow(regime.state, regime.confidence ?? 0);
 
-  function orbGlow(state: string, confidence: number) {
-    const c = clamp(confidence ?? 0, 0, 1);
-
-    if (state === "bullish") {
-      return {
-        core: "#2BFF88",
-        glow: `rgba(43,255,136,${0.18 + c * 0.35})`,
-        ring: `rgba(43,255,136,${0.22 + c * 0.28})`,
-      };
-    }
-
-    if (state === "bearish") {
-      return {
-        core: "#FF6B6B",
-        glow: `rgba(255,107,107,${0.18 + c * 0.35})`,
-        ring: `rgba(255,107,107,${0.22 + c * 0.28})`,
-      };
-    }
-
-    if (state === "mixed") {
-      return {
-        core: "#F7C65F",
-        glow: `rgba(247,198,95,${0.18 + c * 0.30})`,
-        ring: `rgba(247,198,95,${0.22 + c * 0.24})`,
-      };
-    }
-
-    return {
-      core: "rgba(255,255,255,0.88)",
-      glow: `rgba(255,255,255,${0.10 + c * 0.18})`,
-      ring: `rgba(255,255,255,${0.12 + c * 0.16})`,
-    };
-  }
-
   return (
     <section
       style={{
@@ -377,80 +376,81 @@ export default function RegimePanel() {
           alignItems: "center",
         }}
       >
-        {/* Card right */ }
+        {/* Card right */}
         <div
           style={{
-          padding: 14,
-          borderRadius: 16,
-          border: `1px solid ${UI.border}`,
-          background: "rgba(255,255,255,0.045)",
-          display: "grid",
-          gap: 10,
-          height: "100%",
-        }}
-      >
-        <div style={{ fontSize: 13, opacity: 0.72 }}>Current State</div>
-
-        <div
-          style={{
+            padding: 14,
+            borderRadius: 16,
+            border: `1px solid ${UI.border}`,
+            background: "rgba(255,255,255,0.045)",
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
-            gap: 14,
-            alignItems: "center",
+            gap: 10,
+            height: "100%",
           }}
         >
+          <div style={{ fontSize: 13, opacity: 0.72 }}>Current State</div>
+
           <div
             style={{
-              width: "min(128px, 30vw)",
-              height: "min(128px, 30vw)",
-              borderRadius: "50%",
-              position: "relative",
-              margin: "0 auto",
-              transition: "box-shadow 300ms ease, border-color 300ms ease, background 300ms ease",
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
+              gap: 14,
+              alignItems: "center",
             }}
           >
             <div
               style={{
-                position: "absolute",
-                inset: -8,
-                borderRadius: "50%",
-                background: `radial-gradient(circle, ${orb.glow} 0%, rgba(255,255,255,0.08) 28%, rgba(0,0,0,0) 72%)`,
-                filter: "blur(20px)",
-                animation: "orbHalo 3.6s ease-in-out infinite",
-              }}
-            />
-
-            <div
-              style={{
-                width: "100%",
-                height: "100%",
+                width: "min(128px, 30vw)",
+                height: "min(128px, 30vw)",
                 borderRadius: "50%",
                 position: "relative",
-                background: `
-                  radial-gradient(circle at 35% 35%, rgba(255,255,255,0.42), transparent 26%),
-                  radial-gradient(circle at 50% 50%, rgba(255,255,255,0.18), transparent 42%),
-                  radial-gradient(circle, ${orb.core} 0%, ${orb.glow} 44%, rgba(0,0,0,0) 76%)
-                `,
-                boxShadow: `
-                  0 0 34px ${orb.glow},
-                  0 0 72px ${orb.glow},
-                  0 0 110px rgba(255,255,255,0.10),
-                  inset 0 0 24px rgba(255,255,255,0.14)
-                `,
-                border: `1px solid ${orb.ring}`,
-                animation: "orbBreath 3.8s ease-in-out infinite, orbCoreDrift 6s ease-in-out infinite",
+                margin: "0 auto",
+                transition: "box-shadow 300ms ease, border-color 300ms ease, background 300ms ease",
               }}
             >
+              {/* halo estático (sin animación orbHalo) */}
               <div
                 style={{
                   position: "absolute",
-                  inset: 10,
+                  inset: -8,
                   borderRadius: "50%",
-                  border: `1px solid ${orb.ring}`,
-                  opacity: 0.9,
+                  background: `radial-gradient(circle, ${orb.glow} 0%, rgba(255,255,255,0.08) 28%, rgba(0,0,0,0) 72%)`,
+                  filter: "blur(20px)",
                 }}
               />
+
               <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: "50%",
+                  position: "relative",
+                  background: `
+                    radial-gradient(circle at 35% 35%, rgba(255,255,255,0.42), transparent 26%),
+                    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.18), transparent 42%),
+                    radial-gradient(circle, ${orb.core} 0%, ${orb.glow} 44%, rgba(0,0,0,0) 76%)
+                  `,
+                  boxShadow: `
+                    0 0 34px ${orb.glow},
+                    0 0 72px ${orb.glow},
+                    0 0 110px rgba(255,255,255,0.10),
+                    inset 0 0 24px rgba(255,255,255,0.14)
+                  `,
+                  border: `1px solid ${orb.ring}`,
+                  /* única animación conservada: el "respirar" */
+                  animation: "orbBreath 3.8s ease-in-out infinite",
+                }}
+              >
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 10,
+                    borderRadius: "50%",
+                    border: `1px solid ${orb.ring}`,
+                    opacity: 0.9,
+                  }}
+                />
+                <div
                   style={{
                     position: "absolute",
                     inset: 22,
@@ -488,7 +488,7 @@ export default function RegimePanel() {
                   fontSize: "clamp(13px, 3.2vw, 14px)",
                   opacity: 0.84,
                   lineHeight: 1.4,
-                  maxWidth:520,
+                  maxWidth: 520,
                 }}
               >
                 {regime.summary}
@@ -497,7 +497,7 @@ export default function RegimePanel() {
           </div>
         </div>
 
-        {/* Card left */ }
+        {/* Card left */}
         <div
           style={{
             padding: 14,
@@ -521,124 +521,86 @@ export default function RegimePanel() {
               minHeight: 170,
             }}
           >
-            <div
-              style={{
-                transform: "scale(1.28)",
-                transformOrigin: "center",
-              }}
-            >
-              <ConfidenceGauge value={confidencePct} color={tone} />
-            </div>
+            {/* gauge a tamaño natural (sin scale 1.28) para no competir con el orb */}
+            <ConfidenceGauge value={confidencePct} color={tone} />
           </div>
 
-            {mh?.marketHealth ? (
-          <div
-            style={{
-              padding: 12,
-              borderRadius: 14,
-              border: `1px solid ${UI.border}`,
-              background: "rgba(255,255,255,0.04)",
-              display: "grid",
-              gap: 6,
-              alignSelf: "end",
-            }}
-          >
-            <div style={{ fontSize: 12, opacity: 0.72 }}>Market Health</div>
-
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              gap: 12,
-              flexWrap: "wrap",
-            }}
-          >
+          {mh?.marketHealth ? (
             <div
               style={{
-                fontSize: 18,
-                fontWeight: 900,
-                color: healthTone(mh.marketHealth.state),
-                lineHeight: 1.1,
+                padding: 12,
+                borderRadius: 14,
+                border: `1px solid ${UI.border}`,
+                background: "rgba(255,255,255,0.04)",
+                display: "grid",
+                gap: 6,
+                alignSelf: "end",
               }}
             >
-              {healthLabel(mh.marketHealth.state)}
-            </div>
+              <div style={{ fontSize: 12, opacity: 0.72 }}>Market Health</div>
 
-            <div
-              style={{
-                fontSize: 13,
-                opacity: 0.82,
-                color: healthTone(mh.marketHealth.state),
-                fontWeight: 700,
-              }}
-            >
-             {mh.marketHealth.score}/100
-            </div>
-          </div>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  gap: 12,
+                  flexWrap: "wrap",
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: 18,
+                    fontWeight: 900,
+                    color: healthTone(mh.marketHealth.state),
+                    lineHeight: 1.1,
+                  }}
+                >
+                  {healthLabel(mh.marketHealth.state)}
+                </div>
 
-          <div
-            style={{
-              fontSize: 13,
-              opacity: 0.78,
-              lineHeight: 1.4,
-            }}
-          >
-            {mh.marketHealth.summary}
-          </div>
+                <div
+                  style={{
+                    fontSize: 13,
+                    opacity: 0.82,
+                    color: healthTone(mh.marketHealth.state),
+                    fontWeight: 700,
+                  }}
+                >
+                  {mh.marketHealth.score}/100
+                </div>
+              </div>
+
+              <div
+                style={{
+                  fontSize: 13,
+                  opacity: 0.78,
+                  lineHeight: 1.4,
+                }}
+              >
+                {mh.marketHealth.summary}
+              </div>
+            </div>
+          ) : null}
         </div>
-        ) : null}
       </div>
-      </div>
+
       <style jsx>{`
         @keyframes orbBreath {
           0% {
-          transform: scale(0.985);
-          filter: brightness(0.96);
-        }
-          50% {
-          transform: scale(1.04);
-          filter: brightness(1.08);
-        }
-          100% {
-          transform: scale(0.985);
-          filter: brightness(0.96);
-          }
-        }
-
-        @keyframes orbHalo {
-          0% {
-            opacity: 0.58;
-            transform: scale(0.96);
+            transform: scale(0.985);
+            filter: brightness(0.96);
           }
           50% {
-            opacity: 0.98;
-            transform: scale(1.08);
+            transform: scale(1.04);
+            filter: brightness(1.08);
           }
           100% {
-            opacity: 0.58;
-            transform: scale(0.96);
-          }
-        }
-
-        @keyframes orbCoreDrift {
-          0% {
-            transform: translate3d(0px, 0px, 0);
-          }
-          25% {
-            transform: translate3d(1px, -1px, 0);
-          }  
-          50% {
-            transform: translate3d(0px, 1px, 0);
-          }
-          75% {
-            transform: translate3d(-1px, 0px, 0);
-          }
-          100% {
-            transform: translate3d(0px, 0px, 0);
+            transform: scale(0.985);
+            filter: brightness(0.96);
           }
         }
       `}</style>
-    </section>  
+    </section>
   );
 }
