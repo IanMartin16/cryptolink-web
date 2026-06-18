@@ -152,8 +152,8 @@ const warming = valid < 3;
       label: "Divergence",
       value: divMeta.label,
       sub: valid
-        ? `breadth ${Math.round(breadth)} vs mood ${Math.round(moodScore)}`
-        : `mood ${Math.round(moodScore)}`,
+        ? `breadth ${Math.round(breadth)}`
+        : "establishing baseline",
       tone: valid ? divMeta.tone : "neutral",
       raw: divergence,
     },

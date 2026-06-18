@@ -48,24 +48,28 @@ function formatAgeMs(updatedAt: number) {
   return `${hrs}h ago`;
 }
 
-export default function MarketSnapshotBar({
-  snapshot,
-  status = "live",
-}: Props) {
+/**
+ * "Calibrating" coherente: si CUALQUIER KPI viene en estado de arranque
+ * (warming — Up/Down esperando el segundo ciclo de precios), toda la barra
+ * se muestra calibrando, en vez de mezclar dos KPIs firmes con dos "warming".
+ * Detectamos warming por el value que el engine pone ("warming…").
+ */
+function isWarming(items: SnapshotKPI[]) {
+  return items.some((k) => typeof k.value === "string" && k.value.toLowerCase().includes("warming"));
+}
+
+export default function MarketSnapshotBar({ snapshot, status = "live" }: Props) {
   const items = snapshot?.items ?? [];
   const [ageLabel, setAgeLabel] = useState(() => formatAgeMs(snapshot.updatedAt));
 
   useEffect(() => {
     setAgeLabel(formatAgeMs(snapshot.updatedAt));
-
-    const id = setInterval(() => {
-      setAgeLabel(formatAgeMs(snapshot.updatedAt));
-    }, 1000);
-
+    const id = setInterval(() => setAgeLabel(formatAgeMs(snapshot.updatedAt)), 1000);
     return () => clearInterval(id);
   }, [snapshot.updatedAt]);
 
-  const hasItems = useMemo(() => items.length > 0, [items]);
+  const hasItems = items.length > 0;
+  const warming = useMemo(() => isWarming(items), [items]);
 
   return (
     <section
@@ -81,13 +85,8 @@ export default function MarketSnapshotBar({
         overflow: "hidden",
       }}
     >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 10,
-        }}
-      >
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        {/* HEADER */}
         <div
           style={{
             display: "flex",
@@ -106,30 +105,15 @@ export default function MarketSnapshotBar({
                 color: "rgba(255,255,255,0.66)",
               }}
             >
-            <span style={{ color: UI.orange }}>MARKET SNAPSHOT</span>
+              <span style={{ color: UI.orange }}>MARKET SNAPSHOT</span>
             </div>
-
-            <div
-              style={{
-                marginTop: 4,
-                fontSize: 13,
-                color: "rgba(255,255,255,0.55)",
-              }}
-            >
+            <div style={{ marginTop: 4, fontSize: 13, color: "rgba(255,255,255,0.55)" }}>
               Fast read of key market conditions
             </div>
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 8,
-              flexWrap: "wrap",
-            }}
-          >
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
             <DataStatusBadge status={status} />
-
             <div
               style={{
                 padding: "6px 10px",
@@ -146,31 +130,113 @@ export default function MarketSnapshotBar({
           </div>
         </div>
 
-        {hasItems ? (
+        {/* CUERPO */}
+        {!hasItems ? (
+          <div style={{ fontSize: 13, color: "rgba(255,255,255,0.55)", padding: "4px 0" }}>
+            No snapshot items available.
+          </div>
+        ) : warming ? (
+          // Estado de arranque uniforme (≈1 ciclo de precios). Coherente: toda
+          // la barra calibra, en vez de mezclar números firmes con "warming".
           <div
             style={{
-              display: "flex",
-              gap: 8,
-              overflowX: "auto",
-              paddingBottom: 2,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 10,
+              padding: "10px 12px",
+              borderRadius: 14,
+              border: "1px solid rgba(255,255,255,0.10)",
+              background: "rgba(255,255,255,0.035)",
+              fontSize: 13,
+              color: "rgba(255,255,255,0.7)",
+              width: "fit-content",
             }}
           >
-            {items.map((kpi) => (
-              <KPIChip key={kpi.key} kpi={kpi} />
-            ))}
+            <span
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: 999,
+                background: UI.orange,
+                boxShadow: `0 0 10px ${UI.orange}`,
+                animation: "clPulse 900ms ease-in-out infinite",
+              }}
+            />
+            Calibrating market read…
           </div>
         ) : (
-          <div
-            style={{
-              fontSize: 13,
-              color: "rgba(255,255,255,0.55)",
-              padding: "4px 0",
-            }}
-          >
-            No snapshot items available.
+          // TICKER estilo BMV: loop horizontal lento, pausa al hover,
+          // respeta prefers-reduced-motion (cae a fila estática con scroll).
+          <div className="cl-ticker-mask">
+            <div className="cl-ticker-track">
+              {/* dos copias seguidas → loop continuo sin salto */}
+              {[0, 1].map((copy) => (
+                <div className="cl-ticker-group" key={copy} aria-hidden={copy === 1}>
+                  {items.map((kpi) => (
+                    <KPIChip key={`${copy}-${kpi.key}`} kpi={kpi} />
+                  ))}
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
+
+      <style jsx>{`
+        .cl-ticker-mask {
+          overflow: hidden;
+          width: 100%;
+          /* difumina los bordes para que los chips "entren y salgan" suave */
+          -webkit-mask-image: linear-gradient(
+            90deg,
+            transparent 0,
+            #000 6%,
+            #000 94%,
+            transparent 100%
+          );
+          mask-image: linear-gradient(
+            90deg,
+            transparent 0,
+            #000 6%,
+            #000 94%,
+            transparent 100%
+          );
+        }
+        .cl-ticker-track {
+          display: flex;
+          width: max-content;
+          animation: clTickerScroll 38s linear infinite; /* lento, no estresa */
+        }
+        .cl-ticker-track:hover {
+          animation-play-state: paused; /* pausa al hover para poder leer */
+        }
+        .cl-ticker-group {
+          display: flex;
+          gap: 8px;
+          padding-right: 8px;
+          flex-shrink: 0;
+        }
+        @keyframes clTickerScroll {
+          from {
+            transform: translateX(0);
+          }
+          to {
+            transform: translateX(-50%); /* avanza exactamente una copia */
+          }
+        }
+        /* Accesibilidad: si el usuario pide menos movimiento, no corre.
+           Cae a fila estática con scroll horizontal manual. */
+        @media (prefers-reduced-motion: reduce) {
+          .cl-ticker-track {
+            animation: none;
+            width: 100%;
+            overflow-x: auto;
+          }
+          .cl-ticker-group:nth-child(2) {
+            display: none; /* sin loop, una sola copia */
+          }
+        }
+      `}</style>
     </section>
   );
 }
@@ -217,13 +283,7 @@ function KPIChip({ kpi }: { kpi: SnapshotKPI }) {
       </div>
 
       {kpi.sub ? (
-        <div
-          style={{
-            fontSize: 11,
-            opacity: 0.68,
-            whiteSpace: "nowrap",
-          }}
-        >
+        <div style={{ fontSize: 11, opacity: 0.68, whiteSpace: "nowrap" }}>
           {kpi.sub}
         </div>
       ) : null}
