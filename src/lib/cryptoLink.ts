@@ -163,3 +163,93 @@ export async function fetchSocialPulse(symbols: string[]): Promise<SocialPulseRe
   if (!res.ok) throw new Error(`Social Pulse HTTP ${res.status}`);
   return (await res.json()) as SocialPulseResponse;
 }
+
+// ---------- ANOMALIES ----------
+export type AnomalyItem = {
+  symbol: string;
+  type: string;        // ej. "momentum_spike"
+  severity: "low" | "medium" | "high" | string;
+  score: number;
+  detail: string;
+};
+
+export type AnomaliesResponse = {
+  ok: boolean;
+  fiat: string;
+  ts: string;
+  source: string;
+  summary: string;
+  anomalies: AnomalyItem[];
+};
+
+export async function fetchAnomalies(
+  symbols: string[],
+  fiat: string = "USD"
+): Promise<AnomaliesResponse> {
+  const qs = encodeURIComponent(symbols.join(","));
+  const res = await fetch(
+    `/api/social/anomalies?symbols=${qs}&fiat=${encodeURIComponent(fiat)}`,
+    { cache: "no-store" }
+  );
+  if (!res.ok) throw new Error(`Anomalies HTTP ${res.status}`);
+  return (await res.json()) as AnomaliesResponse;
+}
+
+// ---------- RISK FLAGS ----------
+export type RiskFlag = {
+  code: string;         // ej. "weak_momentum"
+  severity: "low" | "medium" | "high" | string;
+  title: string;
+  detail: string;
+};
+
+export type RiskFlagsResponse = {
+  ok: boolean;
+  fiat: string;
+  ts: string;
+  source: string;
+  summary: string;
+  flags: RiskFlag[];
+};
+
+export async function fetchRiskFlags(
+  symbols: string[],
+  fiat: string = "USD"
+): Promise<RiskFlagsResponse> {
+  const qs = encodeURIComponent(symbols.join(","));
+  const res = await fetch(
+    `/api/social/risk-flags?symbols=${qs}&fiat=${encodeURIComponent(fiat)}`,
+    { cache: "no-store" }
+  );
+  if (!res.ok) throw new Error(`Risk flags HTTP ${res.status}`);
+  return (await res.json()) as RiskFlagsResponse;
+}
+
+// ---------- SNAPSHOT (mood + summary del héroe) ----------
+export type SnapshotResponse = {
+  ok: boolean;
+  snapshot: {
+    prices: Record<string, number>;
+    fiat: string;
+    provider: string;
+    marketMood: "bullish" | "bearish" | "neutral" | "mixed" | string;
+    source: string;
+    asOf: string;
+    // Campos opcionales para Fase futura: si el back los puebla,
+    // el panel los puede consumir sin cambios estructurales.
+    summary?: string;
+  };
+};
+
+export async function fetchSnapshot(
+  symbols: string[],
+  fiat: string = "USD"
+): Promise<SnapshotResponse> {
+  const qs = encodeURIComponent(symbols.join(","));
+  const res = await fetch(
+    `/api/social/snapshot?symbols=${qs}&fiat=${encodeURIComponent(fiat)}`,
+    { cache: "no-store" }
+  );
+  if (!res.ok) throw new Error(`Snapshot HTTP ${res.status}`);
+  return (await res.json()) as SnapshotResponse;
+}

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import PriceComparePanel from "@/components/PricesChartPanel";
 import type { Health } from "@/lib/health";
 import { getSymbols, setSymbols } from "@/lib/symbolsStore";
-import PricesPanel from "@/components/PricesPanel";
+import MarketIntelligencePanel from "@/components/MarketIntelligencePanel";
 import MarketMood from "@/components/MarketMood";
 import { normalizeTrends } from "@/lib/trendEngine";
 import { computeSnapshotKPIs } from "@/lib/snapshotEngine";
@@ -173,7 +173,8 @@ useEffect(() => {
       
         {/* 👇 asegura que el chart tenga espacio en iPhone */}
         <div className="min-h-[320px] sm:min-h-[360px]">
-          <PriceComparePanel rows={rows} symbol={main} onSymbolChange={setMain} />
+        {/*  <PriceComparePanel rows={rows} symbol={main} onSymbolChange={setMain} /> */}
+        <MarketIntelligencePanel/>
         </div>
       </div>    
   );
