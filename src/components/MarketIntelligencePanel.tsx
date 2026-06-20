@@ -14,6 +14,20 @@ import {
   type SnapshotResponse,
 } from "@/lib/cryptoLink";
 
+/**
+ * MarketIntelligencePanel — capa INTERPRETIVE (anomalies + risk + snapshot.mood).
+ *
+ * REACTIVIDAD: suscrito a los eventos globales del portal
+ * (cryptolink:fiat y cryptolink:symbols), igual que usePricesFeed.
+ * Así reacciona al instante al cambiar fiat o selección de símbolos.
+ *
+ * Lectura defensiva: las props symbols/fiat son override OPCIONAL. Si no se
+ * pasan (caso normal), usa la fuente global getSymbols()/getFiat(). Esto evita
+ * romper cualquier invocación previa que sí pasara props.
+ *
+ * Mood degradado a chip (hardcodeado "neutral" en el back). Vuelve a héroe
+ * cuando el back calcule mood real. Base condicional para Fase 3.
+ */
 
 const DEFAULT_SYMBOLS = ["BTC", "ETH", "SOL", "ETHFI", "JUP", "LINK"];
 
@@ -51,12 +65,12 @@ function fmtTs(iso?: string) {
 }
 
 export default function MarketIntelligencePanel({
-  symbols = DEFAULT_SYMBOLS,
-  fiat = "USD",
+  symbols: symbolsProp,
+  fiat: fiatProp,
 }: {
   symbols?: string[];
   fiat?: string;
-}) {
+} = {}) {
   const [anomalies, setAnomalies] = useState<AnomaliesResponse | null>(null);
   const [risk, setRisk] = useState<RiskFlagsResponse | null>(null);
   const [snap, setSnap] = useState<SnapshotResponse | null>(null);
@@ -64,47 +78,50 @@ export default function MarketIntelligencePanel({
   const [status, setStatus] = useState<"live" | "restored" | "refreshing">("refreshing");
 
   useEffect(() => {
-  let cancelled = false;
+    let cancelled = false;
 
-  async function load() {
-    try {
-      setError("");
-      const fiat = getFiat();                      // ← fiat actual del portal
-      const list = getSymbols();
-      const syms = list.length ? list : DEFAULT_SYMBOLS;
+    async function load() {
+      try {
+        setError("");
+        // props como override opcional; si no, fuente global del portal
+        const fiat = fiatProp ?? getFiat();
+        const list = symbolsProp ?? getSymbols();
+        const syms = list && list.length ? list : DEFAULT_SYMBOLS;
 
-      const [a, r, s] = await Promise.all([
-        fetchAnomalies(syms, fiat),
-        fetchRiskFlags(syms, fiat),
-        fetchSnapshot(syms, fiat),
-      ]);
+        const [a, r, s] = await Promise.all([
+          fetchAnomalies(syms, fiat),
+          fetchRiskFlags(syms, fiat),
+          fetchSnapshot(syms, fiat),
+        ]);
 
-      if (!cancelled) {
-        setAnomalies(a);
-        setRisk(r);
-        setSnap(s);
-        setStatus("live");
+        if (!cancelled) {
+          setAnomalies(a);
+          setRisk(r);
+          setSnap(s);
+          setStatus("live");
+        }
+      } catch (e: any) {
+        if (!cancelled) setError(e?.message ?? "unknown");
       }
-    } catch (e: any) {
-      if (!cancelled) setError(e?.message ?? "unknown");
     }
-  }
 
-  load();
-  const id = setInterval(load, 10000);
+    load();
+    const id = setInterval(load, 10000);
 
-  const onFiat = () => load();
-  const onSymbols = () => load();
-  window.addEventListener("cryptolink:fiat" as any, onFiat);
-  window.addEventListener("cryptolink:symbols" as any, onSymbols);
+    // reactividad global del portal (mismo patrón que usePricesFeed)
+    const onFiat = () => load();
+    const onSymbols = () => load();
+    window.addEventListener("cryptolink:fiat" as any, onFiat);
+    window.addEventListener("cryptolink:symbols" as any, onSymbols);
 
-  return () => {
-    cancelled = true;
-    clearInterval(id);
-    window.removeEventListener("cryptolink:fiat" as any, onFiat);
-    window.removeEventListener("cryptolink:symbols" as any, onSymbols);
-  };
-}, []);   // ← dependencias vacías; los eventos manejan la reactividad
+    return () => {
+      cancelled = true;
+      clearInterval(id);
+      window.removeEventListener("cryptolink:fiat" as any, onFiat);
+      window.removeEventListener("cryptolink:symbols" as any, onSymbols);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [symbolsProp, fiatProp]);
 
   const mood = snap?.snapshot?.marketMood;
   const tone = moodTone(mood);
@@ -142,7 +159,44 @@ export default function MarketIntelligencePanel({
         overflow: "hidden",
       }}
     >
-      {/* ENCABEZADO: */}
+      {/* HEADER */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          gap: 12,
+          alignItems: "flex-start",
+          flexWrap: "wrap",
+        }}
+      >
+        <div>
+          <h2 style={{ margin: 0, fontSize: 22 }}>
+            Market <span style={{ color: UI.orange }}>Intelligence</span>
+          </h2>
+          <p style={{ marginTop: 8, opacity: 0.78, fontSize: 14 }}>
+            Interpretive layer · anomalies, risk and market mood.
+          </p>
+        </div>
+
+        <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
+          <DataStatusBadge status={status} />
+          <div
+            style={{
+              padding: "6px 10px",
+              borderRadius: 999,
+              border: `1px solid ${UI.border}`,
+              background: "rgba(255,255,255,0.05)",
+              fontSize: 12,
+              opacity: 0.82,
+              whiteSpace: "nowrap",
+            }}
+          >
+            Updated · <code>{fmtTs(snap?.snapshot?.asOf ?? anomalies?.ts)}</code>
+          </div>
+        </div>
+      </div>
+
+      {/* ENCABEZADO: summary real del back como protagonista; mood degradado a chip */}
       <div
         style={{
           marginTop: 14,
@@ -154,7 +208,6 @@ export default function MarketIntelligencePanel({
           gap: 10,
         }}
       >
-        {/* summary del back interpretive — esto SÍ es real */}
         {(anomalies?.summary || risk?.summary || snap?.snapshot?.summary) ? (
           <div
             style={{
@@ -174,7 +227,6 @@ export default function MarketIntelligencePanel({
           </div>
         )}
 
-        {/* mood como chip pequeño de soporte (no héroe) */}
         <div style={{ display: "inline-flex", alignItems: "center", gap: 8, width: "fit-content" }}>
           <span style={{ fontSize: 12, opacity: 0.6 }}>Market mood:</span>
           <span
@@ -205,7 +257,7 @@ export default function MarketIntelligencePanel({
         </div>
       </div>
 
-      {/* CUERPO: anomalies (lo más rico — liga a símbolo) */}
+      {/* CUERPO: anomalies */}
       <div style={{ marginTop: 14 }}>
         <div style={{ fontSize: 13, opacity: 0.72, marginBottom: 8 }}>
           <span style={{ color: UI.orange }}>Anomalies</span>
@@ -288,7 +340,7 @@ export default function MarketIntelligencePanel({
         )}
       </div>
 
-      {/* SOPORTE: risk flags (chips) — solo si hay */}
+      {/* SOPORTE: risk flags */}
       {flagList.length > 0 ? (
         <div style={{ marginTop: 14 }}>
           <div style={{ fontSize: 13, opacity: 0.72, marginBottom: 8 }}>
