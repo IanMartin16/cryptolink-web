@@ -5,18 +5,7 @@ import { UI } from "@/lib/ui";
 import DataStatusBadge from "@/components/DataStatusBadge";
 import { fetchSymbols360, type SymbolMarket, type SymbolsResponse } from "@/lib/cryptoLink";
 import { getSymbols } from "@/lib/symbolsStore";
-
-/**
- * SymbolsPanel — vista 360° por activo con datos ricos de CoinGecko.
- * Fuente: /api/social/symbols (motor Python social_link → CoinGecko /coins/markets).
- *
- * - Opción A: cuadrícula de fichas compactas, una por símbolo SELECCIONADO
- *   (coherente con Prices: solo muestra lo que el usuario eligió).
- * - Base condicional para Fase futura: cada ficha es candidata a "tappable"
- *   hacia un detalle profundo (los ~15 campos completos).
- * - Maneja: precios científicos (SHIB 4.71e-06), null (maxSupply de ETH/SOL),
- *   y missing (símbolo sin datos en CoinGecko → ficha "data unavailable").
- */
+import { getFiat } from "@/lib/fiatStore";
 
 // ---------- formateadores ----------
 
@@ -236,7 +225,8 @@ export default function SymbolsPanel() {
         setError("");
         const list = getSymbols();
         const symbols = list.length ? list : ["BTC", "ETH", "SOL"];
-        const res = await fetchSymbols360(symbols);
+        const fiat = getFiat();
+        const res = await fetchSymbols360(symbols, fiat);
         if (!cancelled) {
           setData(res);
           setStatus("live");
@@ -247,9 +237,7 @@ export default function SymbolsPanel() {
     }
 
     load();
-    // CoinGecko cambia lento + free tier: refresco amplio (90s).
-    // El BFF cachea, así que no golpea CoinGecko en cada visita.
-    const id = setInterval(load, 90000);
+    const id = setInterval(load, 300000);
 
     return () => {
       cancelled = true;

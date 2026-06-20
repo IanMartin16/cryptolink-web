@@ -8,20 +8,7 @@ import SignalsRadarPanel from "@/components/SignalsRadarPanel";
 import { pushPricesToHistory } from "@/lib/priceHistoryStore";
 import { usePricesFeed } from "@/lib/hooks/usePricesFeed";
 
-/**
- * PricesRouteBody
- * El FEED ahora vive aquí (subido desde PricesPanel): el contenedor es la única
- * fuente de `rows`, y los paneles solo lo consumen. Esto desacopla "de dónde vienen
- * los datos" de "cómo se muestran".
- *
- * DESCONECTADOS (no borrados):
- *  - MarketPulse: réplica del de Overview, sin persistencia lograda.
- *  - PricesPanel (Batch): tabla rica, archivada hasta tener datos que la enriquezcan
- *    (MCap, Vol, etc.). Regresa COMPLETA cuando el backend la alimente — no mutilada.
- *
- * NOTA: pushMarketPulseRows se quitó de aquí. Verificar con grep si Overview lo usa;
- * si solo vivía en este contenedor, es código muerto y puede borrarse.
- */
+
 export default function PricesRouteBody() {
   const {
     rows,
