@@ -22,7 +22,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     { href: "/dashboard", label: "Overview" },
     { href: "/dashboard/prices", label: "Prices" },
     { href: "/dashboard/trends", label: "Trends" },
-    { href: "/dashboard/symbols", label: "Symbols" },
+    { href: "/dashboard/symbols", label: "Market 360" },
     { href: "/dashboard/billing", label: "Billing"},
     { href: "/dashboard/settings", label: "Settings" },
   ];

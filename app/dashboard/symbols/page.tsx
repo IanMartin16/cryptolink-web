@@ -24,7 +24,7 @@ export default function SymbolsPage() {
   const storedMainSymbol = useMarketSignalsStore((s: { compareMainSymbol: string | null}) => s.compareMainSymbol);
   const [main, setMain] = useState("BTC");
   const [rows, setRows] = useState<PriceRow[]>([]);  
-  const [health, setHealth] = useState<Health | undefined>(undefined);
+  const [marketHealth, setMarketHealth] = useState<Health>(HEALTH_OK);
   const [trendItems, setTrendItems] = useState<TrendItem[]>([]);
    const [moodUpdatedAt, setMoodUpdatedAt] = useState<string>("—");
     const [trendsHealth, setTrendsHealth] = useState<Health>(HEALTH_OK);
@@ -150,14 +150,15 @@ useEffect(() => {
   return (
   <div>
     <PageHeader
-      title="Symbols"
+      title="Market 360°"
       subtitle="watchlist · Chart overlays · Real-time view"
+      health={marketHealth}
       badge="LIVE"
     />
       <StatusBar
         items={[
           {
-            label: "Symbols",
+            label: "Market 360",
             ok: true,
             lastOkAt: pricesHealth?.lastOkAt,
           },
