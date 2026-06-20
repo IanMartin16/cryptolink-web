@@ -218,32 +218,40 @@ export default function SymbolsPanel() {
   const [status, setStatus] = useState<"live" | "restored" | "refreshing">("refreshing");
 
   useEffect(() => {
-    let cancelled = false;
+  let cancelled = false;
 
-    async function load() {
-      try {
-        setError("");
-        const list = getSymbols();
-        const symbols = list.length ? list : ["BTC", "ETH", "SOL"];
-        const fiat = getFiat();
-        const res = await fetchSymbols360(symbols, fiat);
-        if (!cancelled) {
-          setData(res);
-          setStatus("live");
-        }
-      } catch (e: any) {
-        if (!cancelled) setError(e?.message ?? "unknown");
+  async function load() {
+    try {
+      setError("");
+      const fiat = getFiat();                    // ← lee el fiat actual
+      const list = getSymbols();
+      const symbols = list.length ? list : ["BTC", "ETH", "SOL"];
+      const res = await fetchSymbols360(symbols, fiat);  // ← pasa el fiat
+      if (!cancelled) {
+        setData(res);
+        setStatus("live");
       }
+    } catch (e: any) {
+      if (!cancelled) setError(e?.message ?? "unknown");
     }
+  }
 
-    load();
-    const id = setInterval(load, 300000);
+  load();
+  const id = setInterval(load, 300000);  // 5 min
 
-    return () => {
-      cancelled = true;
-      clearInterval(id);
-    };
-  }, []);
+  // ← suscribirse a los eventos globales del portal (igual que usePricesFeed)
+  const onFiat = () => load();
+  const onSymbols = () => load();
+  window.addEventListener("cryptolink:fiat" as any, onFiat);
+  window.addEventListener("cryptolink:symbols" as any, onSymbols);
+
+  return () => {
+    cancelled = true;
+    clearInterval(id);
+    window.removeEventListener("cryptolink:fiat" as any, onFiat);
+    window.removeEventListener("cryptolink:symbols" as any, onSymbols);
+  };
+}, []);
 
   if (error) {
     return (
