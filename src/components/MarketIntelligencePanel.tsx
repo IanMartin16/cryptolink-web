@@ -14,20 +14,6 @@ import {
   type SnapshotResponse,
 } from "@/lib/cryptoLink";
 
-/**
- * MarketIntelligencePanel — capa INTERPRETIVE (anomalies + risk + snapshot.mood).
- *
- * REACTIVIDAD: suscrito a los eventos globales del portal
- * (cryptolink:fiat y cryptolink:symbols), igual que usePricesFeed.
- * Así reacciona al instante al cambiar fiat o selección de símbolos.
- *
- * Lectura defensiva: las props symbols/fiat son override OPCIONAL. Si no se
- * pasan (caso normal), usa la fuente global getSymbols()/getFiat(). Esto evita
- * romper cualquier invocación previa que sí pasara props.
- *
- * Mood degradado a chip (hardcodeado "neutral" en el back). Vuelve a héroe
- * cuando el back calcule mood real. Base condicional para Fase 3.
- */
 
 const DEFAULT_SYMBOLS = ["BTC", "ETH", "SOL", "ETHFI", "JUP", "LINK"];
 

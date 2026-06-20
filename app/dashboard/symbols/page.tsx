@@ -152,7 +152,7 @@ useEffect(() => {
     <PageHeader
       title="Symbols"
       subtitle="watchlist · Chart overlays · Real-time view"
-      badge="BETA"
+      badge="LIVE"
     />
       <StatusBar
         items={[
