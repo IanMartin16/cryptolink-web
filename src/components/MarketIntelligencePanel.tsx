@@ -141,44 +141,10 @@ export default function MarketIntelligencePanel({
         overflow: "hidden",
       }}
     >
-      {/* HEADER */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          gap: 12,
-          alignItems: "flex-start",
-          flexWrap: "wrap",
-        }}
-      >
-        <div>
-          <h2 style={{ margin: 0, fontSize: 22 }}>
-            Market <span style={{ color: UI.orange }}>Intelligence</span>
-          </h2>
-          <p style={{ marginTop: 8, opacity: 0.78, fontSize: 14 }}>
-            Interpretive layer · anomalies, risk and market mood.
-          </p>
-        </div>
-
-        <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-          <DataStatusBadge status={status} />
-          <div
-            style={{
-              padding: "6px 10px",
-              borderRadius: 999,
-              border: `1px solid ${UI.border}`,
-              background: "rgba(255,255,255,0.05)",
-              fontSize: 12,
-              opacity: 0.82,
-              whiteSpace: "nowrap",
-            }}
-          >
-            Updated · <code>{fmtTs(snap?.snapshot?.asOf ?? anomalies?.ts)}</code>
-          </div>
-        </div>
-      </div>
-
-      {/* HÉROE: mood + summary */}
+      {/* ENCABEZADO: summary real del back como protagonista.
+          Mood DEGRADADO a chip — está hardcodeado en "neutral" en el back,
+          así que no merece ser héroe hasta que se calcule de verdad (Fase 3).
+          Cuando el back mande mood real, se re-promueve a héroe grande. */}
       <div
         style={{
           marginTop: 14,
@@ -187,27 +153,58 @@ export default function MarketIntelligencePanel({
           border: `1px solid ${UI.border}`,
           background: "rgba(255,255,255,0.04)",
           display: "grid",
-          gap: 8,
+          gap: 10,
         }}
       >
-        <div style={{ fontSize: 12, opacity: 0.66 }}>Market Mood</div>
-        <div
-          style={{
-            fontSize: "clamp(26px, 4.5vw, 34px)",
-            fontWeight: 900,
-            color: tone,
-            lineHeight: 1,
-            letterSpacing: -0.5,
-          }}
-        >
-          {moodLabel(mood)}
-        </div>
-        {/* summary: del back interpretive (anomalies/risk) o snapshot si lo puebla */}
+        {/* summary del back interpretive — esto SÍ es real */}
         {(anomalies?.summary || risk?.summary || snap?.snapshot?.summary) ? (
-          <div style={{ fontSize: 14, opacity: 0.82, lineHeight: 1.45, maxWidth: 760 }}>
+          <div
+            style={{
+              fontSize: "clamp(18px, 3vw, 22px)",
+              fontWeight: 800,
+              lineHeight: 1.3,
+              color: "rgba(255,255,255,0.92)",
+              letterSpacing: -0.2,
+              maxWidth: 820,
+            }}
+          >
             {anomalies?.summary || risk?.summary || snap?.snapshot?.summary}
           </div>
-        ) : null}
+        ) : (
+          <div style={{ fontSize: 18, fontWeight: 800, color: "rgba(255,255,255,0.92)" }}>
+            Market intelligence read
+          </div>
+        )}
+
+        {/* mood como chip pequeño de soporte (no héroe) */}
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 8, width: "fit-content" }}>
+          <span style={{ fontSize: 12, opacity: 0.6 }}>Market mood:</span>
+          <span
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "4px 10px",
+              borderRadius: 999,
+              border: `1px solid ${UI.border}`,
+              background: "rgba(255,255,255,0.04)",
+              fontSize: 12,
+              fontWeight: 800,
+              color: tone,
+            }}
+          >
+            <span
+              style={{
+                width: 7,
+                height: 7,
+                borderRadius: 999,
+                background: tone,
+                flexShrink: 0,
+              }}
+            />
+            {moodLabel(mood)}
+          </span>
+        </div>
       </div>
 
       {/* CUERPO: anomalies (lo más rico — liga a símbolo) */}

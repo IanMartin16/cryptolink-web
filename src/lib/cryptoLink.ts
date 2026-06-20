@@ -253,3 +253,44 @@ export async function fetchSnapshot(
   if (!res.ok) throw new Error(`Snapshot HTTP ${res.status}`);
   return (await res.json()) as SnapshotResponse;
 }
+
+export type SymbolMarket = {
+  symbol: string;
+  name?: string | null;
+  image?: string | null;
+  rank?: number | null;
+  price?: number | null;
+  change24h?: number | null;
+  high24h?: number | null;
+  low24h?: number | null;
+  marketCap?: number | null;
+  volume24h?: number | null;
+  circulatingSupply?: number | null;
+  totalSupply?: number | null;
+  maxSupply?: number | null;
+  ath?: number | null;
+  athChangePct?: number | null;
+  athDate?: string | null;
+};
+
+export type SymbolsResponse = {
+  ok: boolean;
+  source: string;
+  ts: string;
+  fiat: string;
+  symbols: SymbolMarket[];
+  missing: string[];
+};
+
+export async function fetchSymbols360(
+  symbols: string[],
+  fiat: string = "USD"
+): Promise<SymbolsResponse> {
+  const qs = encodeURIComponent(symbols.join(","));
+  const res = await fetch(
+    `/api/social/symbols?symbols=${qs}&fiat=${encodeURIComponent(fiat)}`,
+    { cache: "no-store" }
+  );
+  if (!res.ok) throw new Error(`Symbols 360 HTTP ${res.status}`);
+  return (await res.json()) as SymbolsResponse;
+}
