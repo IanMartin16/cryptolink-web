@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { UI } from "@/lib/ui";
 import DataStatusBadge from "@/components/DataStatusBadge";
+import { getFiat } from "@/lib/fiatStore";
+import { getSymbols } from "@/lib/symbolsStore";
 import {
   fetchAnomalies,
   fetchRiskFlags,
@@ -12,18 +14,6 @@ import {
   type SnapshotResponse,
 } from "@/lib/cryptoLink";
 
-/**
- * MarketIntelligencePanel — capa INTERPRETIVE (según README v3.0):
- * sintetiza anomalies + risk-flags + snapshot.mood en una lectura macro.
- * Reemplaza la sección Symbols huérfana.
- *
- * Fuente: motor derivado interno (internal-analysis) + snapshot (coingecko mood).
- * NO se solapa con Signals Radar (ese es la capa DERIVED técnica).
- *
- * BASE CONDICIONAL para Fase 3: cada bloque se renderiza solo si tiene datos.
- * El día que el back enriquezca (más anomalies, flags por símbolo, summary en
- * snapshot, etc.), aparece solo — sin reorganizar el panel.
- */
 
 const DEFAULT_SYMBOLS = ["BTC", "ETH", "SOL", "ETHFI", "JUP", "LINK"];
 
@@ -74,36 +64,47 @@ export default function MarketIntelligencePanel({
   const [status, setStatus] = useState<"live" | "restored" | "refreshing">("refreshing");
 
   useEffect(() => {
-    let cancelled = false;
+  let cancelled = false;
 
-    async function load() {
-      try {
-        setError("");
-        // un solo ciclo, tres fuentes en paralelo → un solo reloj, sin parpadeo
-        const [a, r, s] = await Promise.all([
-          fetchAnomalies(symbols, fiat),
-          fetchRiskFlags(symbols, fiat),
-          fetchSnapshot(symbols, fiat),
-        ]);
+  async function load() {
+    try {
+      setError("");
+      const fiat = getFiat();                      // ← fiat actual del portal
+      const list = getSymbols();
+      const syms = list.length ? list : DEFAULT_SYMBOLS;
 
-        if (!cancelled) {
-          setAnomalies(a);
-          setRisk(r);
-          setSnap(s);
-          setStatus("live");
-        }
-      } catch (e: any) {
-        if (!cancelled) setError(e?.message ?? "unknown");
+      const [a, r, s] = await Promise.all([
+        fetchAnomalies(syms, fiat),
+        fetchRiskFlags(syms, fiat),
+        fetchSnapshot(syms, fiat),
+      ]);
+
+      if (!cancelled) {
+        setAnomalies(a);
+        setRisk(r);
+        setSnap(s);
+        setStatus("live");
       }
+    } catch (e: any) {
+      if (!cancelled) setError(e?.message ?? "unknown");
     }
+  }
 
-    load();
-    const id = setInterval(load, 10000);
-    return () => {
-      cancelled = true;
-      clearInterval(id);
-    };
-  }, [symbols, fiat]);
+  load();
+  const id = setInterval(load, 10000);
+
+  const onFiat = () => load();
+  const onSymbols = () => load();
+  window.addEventListener("cryptolink:fiat" as any, onFiat);
+  window.addEventListener("cryptolink:symbols" as any, onSymbols);
+
+  return () => {
+    cancelled = true;
+    clearInterval(id);
+    window.removeEventListener("cryptolink:fiat" as any, onFiat);
+    window.removeEventListener("cryptolink:symbols" as any, onSymbols);
+  };
+}, []);   // ← dependencias vacías; los eventos manejan la reactividad
 
   const mood = snap?.snapshot?.marketMood;
   const tone = moodTone(mood);
@@ -141,10 +142,7 @@ export default function MarketIntelligencePanel({
         overflow: "hidden",
       }}
     >
-      {/* ENCABEZADO: summary real del back como protagonista.
-          Mood DEGRADADO a chip — está hardcodeado en "neutral" en el back,
-          así que no merece ser héroe hasta que se calcule de verdad (Fase 3).
-          Cuando el back mande mood real, se re-promueve a héroe grande. */}
+      {/* ENCABEZADO: */}
       <div
         style={{
           marginTop: 14,
