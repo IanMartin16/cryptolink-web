@@ -479,7 +479,7 @@ export default function TrendsTable({
           </table>
         </div>
       ) : (
-        <div style={{ marginTop: 12, overflowX: "auto", maxHeight: 420 }}>
+        <div style={{ marginTop: 12, overflowX: "auto", maxHeight: 720 }}>
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr

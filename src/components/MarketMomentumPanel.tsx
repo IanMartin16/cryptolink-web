@@ -7,6 +7,8 @@ import { useMarketSignalsStore } from "@/lib/stores/marketSignalsStore";
 import DataStatusBadge from "./DataStatusBadge";
 import { getTrendHistory } from "@/lib/useTrendHistory";
 import { getSymbols } from "@/lib/symbolsStore";
+import SymbolCell from "@/components/SymbolCell";
+import { getSymbolName } from "@/lib/symbolMeta";
 
 /**
  * MarketMomentumPanel
@@ -364,6 +366,7 @@ export default function MarketMomentumPanel({ topN = 5 }: { topN?: number }) {
       >
         {top.map((m) => {
           const tone = dirTone(m.direction);
+          const fullName = getSymbolName(m.symbol);
           return (
             <div
               key={m.symbol}
@@ -385,9 +388,7 @@ export default function MarketMomentumPanel({ topN = 5 }: { topN?: number }) {
                   gap: 8,
                 }}
               >
-                <div style={{ fontSize: 13, opacity: 0.72, letterSpacing: 0.3, fontWeight: 700 }}>
-                  {m.symbol}
-                </div>
+                <SymbolCell symbol={m.symbol} />
                 <div
                   style={{
                     fontSize: 11,
@@ -403,6 +404,13 @@ export default function MarketMomentumPanel({ topN = 5 }: { topN?: number }) {
                   {dirArrow(m.direction)} {dirLabel(m.direction)}
                 </div>
               </div>
+              <div className="flex flex-col min-w-0">
+                          {fullName ? (
+                            <div className="hidden sm:block text-[13px] text-white/45 truncate">
+                              {fullName}
+                            </div>
+                          ) : null}
+                        </div>
 
               {/* HÉROE: score */}
               <div
