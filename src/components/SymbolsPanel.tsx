@@ -7,6 +7,17 @@ import { getFiat } from "@/lib/fiatStore";
 import { getSymbols } from "@/lib/symbolsStore";
 import { fetchSymbols360, type SymbolMarket, type SymbolsResponse } from "@/lib/cryptoLink";
 
+/**
+ * Market360Panel (antes SymbolsPanel) — sección "Market 360°".
+ * Una sola fuente (fetchSymbols360) alimenta DOS vistas:
+ *   1. MarketBubbles (panorámica) — arriba, el gancho visual.
+ *   2. Fichas (detalle) — abajo.
+ * Ambas visibles siempre (no toggle): los logs muestran que los usuarios se
+ * enganchan con lo visual y no abrirían una vista escondida, perdiéndose los
+ * datos ricos. Por eso el detalle no se esconde.
+ *
+ * Reactivo a cryptolink:fiat y cryptolink:symbols (contrato de panel del portal).
+ */
 
 // ---------- formateadores ----------
 
@@ -177,9 +188,14 @@ function MarketBubbles({ symbols }: { symbols: SymbolMarket[] }) {
           Volume 24h
         </text>
 
-        {/* burbujas */}
-        {layout.bubbles.map((b) => {
+        {/* burbujas — flotación cosmética: el grupo oscila ~2-3px alrededor del
+            centro REAL (cx,cy no cambian). Desfase por índice => orgánico, no robótico.
+            El centro de datos no se mueve: la animación es solo visual. */}
+        {layout.bubbles.map((b, i) => {
           const isHover = hover === b.symbol;
+          // parámetros de flotación, ligeramente distintos por burbuja
+          const dur = (4.2 + (i % 5) * 0.6).toFixed(2);   // 4.2s..6.6s
+          const delay = ((i % 7) * -0.8).toFixed(2);       // desfase negativo
           return (
             <g
               key={b.symbol}
@@ -187,23 +203,36 @@ function MarketBubbles({ symbols }: { symbols: SymbolMarket[] }) {
               onMouseLeave={() => setHover(null)}
               style={{ cursor: "pointer" }}
             >
-              <circle
-                cx={b.cx} cy={b.cy} r={b.r}
-                fill={b.tone}
-                fillOpacity={isHover ? 0.32 : 0.16}
-                stroke={b.tone}
-                strokeWidth={isHover ? 2.5 : 1.5}
-                style={{ transition: "fill-opacity 150ms ease, stroke-width 150ms ease" }}
-              />
-              {(b.r > 22 || isHover) && (
-                <text
-                  x={b.cx} y={b.cy + 4} textAnchor="middle"
-                  fill="#fff" fontSize={b.r > 28 ? 12 : 10} fontWeight="900"
-                  style={{ pointerEvents: "none" }}
-                >
-                  {b.symbol}
-                </text>
-              )}
+              <g
+                className="cl-bubble-float"
+                style={{
+                  // @ts-ignore (CSS custom props)
+                  transformBox: "fill-box",
+                  transformOrigin: "center",
+                  animationDuration: `${dur}s`,
+                  animationDelay: `${delay}s`,
+                  // pausar la flotación de la burbuja con hover (para leerla quieta)
+                  animationPlayState: isHover ? "paused" : "running",
+                }}
+              >
+                <circle
+                  cx={b.cx} cy={b.cy} r={b.r}
+                  fill={b.tone}
+                  fillOpacity={isHover ? 0.32 : 0.16}
+                  stroke={b.tone}
+                  strokeWidth={isHover ? 2.5 : 1.5}
+                  style={{ transition: "fill-opacity 150ms ease, stroke-width 150ms ease" }}
+                />
+                {(b.r > 22 || isHover) && (
+                  <text
+                    x={b.cx} y={b.cy + 4} textAnchor="middle"
+                    fill="#fff" fontSize={b.r > 28 ? 12 : 10} fontWeight="900"
+                    style={{ pointerEvents: "none" }}
+                  >
+                    {b.symbol}
+                  </text>
+                )}
+              </g>
             </g>
           );
         })}
@@ -245,6 +274,26 @@ function MarketBubbles({ symbols }: { symbols: SymbolMarket[] }) {
         <span style={{ color: "#2BFF88" }}>● gaining</span>
         <span style={{ color: "#FF6B6B" }}>● losing</span>
       </div>
+
+      <style jsx>{`
+        .cl-bubble-float {
+          animation-name: clBubbleFloat;
+          animation-timing-function: ease-in-out;
+          animation-iteration-count: infinite;
+          will-change: transform;
+        }
+        @keyframes clBubbleFloat {
+          0%   { transform: translateY(0px); }
+          50%  { transform: translateY(-3px); }
+          100% { transform: translateY(0px); }
+        }
+        /* Accesibilidad: sin movimiento si el usuario lo pide. Quietas, honestas. */
+        @media (prefers-reduced-motion: reduce) {
+          .cl-bubble-float {
+            animation: none;
+          }
+        }
+      `}</style>
     </div>
   );
 }
