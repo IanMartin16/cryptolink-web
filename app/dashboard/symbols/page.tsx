@@ -158,7 +158,7 @@ useEffect(() => {
       <StatusBar
         items={[
           {
-            label: "Market 360",
+            label: "Market 360°",
             ok: true,
             lastOkAt: pricesHealth?.lastOkAt,
           },
