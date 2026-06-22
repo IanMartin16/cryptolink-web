@@ -43,7 +43,7 @@ export default function BillingPage() {
               "Expanded market coverage",
               "Business usage limits",
             ]}
-            purchaseUrl="https://evilink.dev/#cryptolink"
+            purchaseUrl="https://evilink.dev/products/cryptolink"
           />
 
           <PlanCard
@@ -54,7 +54,7 @@ export default function BillingPage() {
               "Advanced derived signals",
               "Priority market coverage",
             ]}
-            purchaseUrl="https://evilink.dev/#cryptolink"
+            purchaseUrl="https://evilink.dev/products/cryptolink"
             highlighted
           />
         </div>

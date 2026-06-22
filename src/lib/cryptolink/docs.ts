@@ -49,8 +49,8 @@ export const cryptolinkDocs = {
     tagline: "Crypto market data and lightweight analytics signals",
   },
 
-  version: "3.0.0",
-  updatedAt: "2026-04-05",
+  version: "2.0.0",
+  updatedAt: "2026-06-21",
 
   baseUrl:
     process.env.NEXT_PUBLIC_CRYPTOLINK_API_BASE?.replace(/\/+$/, "") ||
@@ -63,7 +63,7 @@ export const cryptolinkDocs = {
 
   limits: {
     maxSymbolsPlan: { FREE: 3, BUSINESS: 15, PRO: 25 },
-    availableSymbolsToday: 50,
+    availableSymbolsToday: 60,
   },
 
   sections: [
@@ -74,13 +74,14 @@ export const cryptolinkDocs = {
         "Base URL",
         "Authentication with x-api-key",
         "REST examples for direct market data and derived signals",
+        "Default display currency is USD. Pass fiat to override.",
       ],
     },
     {
       id: "signals",
       title: "Signals",
       body: [
-        "CryptoLink v3.0 includes direct data, derived signals, and interpretive layers.",
+        "CryptoLink includes direct data, derived signals, and interpretive layers.",
         "Available signal families include Trends, Movers, Momentum, Regime, Risk Flags, Anomalies, and Market Health.",
       ],
     },
@@ -120,13 +121,13 @@ export const cryptolinkDocs = {
       auth: "x-api-key",
       query: [
         { name: "symbol", required: true, example: "BTC", notes: "Single asset symbol." },
-        { name: "fiat", required: false, example: "MXN", notes: "Default suggested fiat: MXN." },
+        { name: "fiat", required: false, example: "USD", notes: "Display currency. Default: USD." },
       ],
       examples: [
         {
           title: "curl",
           lang: "curl",
-          code: `curl -s "https://cryptolink-production.up.railway.app/v1/price?symbol=BTC&fiat=MXN" \\
+          code: `curl -s "https://cryptolink-production.up.railway.app/v1/price?symbol=BTC&fiat=USD" \\
   -H "x-api-key: TU_API_KEY"`,
         },
       ],
@@ -134,7 +135,7 @@ export const cryptolinkDocs = {
         {
           status: 200,
           description: "OK",
-          example: `{"ok":true,"symbol":"BTC","fiat":"MXN","price":1234567.89,"ts":"...","source":"..."}`,
+          example: `{"ok":true,"symbol":"BTC","fiat":"USD","price":63315.0,"ts":"...","source":"..."}`,
         },
         { status: 401, description: "Missing or invalid API key" },
         { status: 400, description: "Invalid symbol or request format" },
@@ -150,13 +151,13 @@ export const cryptolinkDocs = {
       auth: "x-api-key",
       query: [
         { name: "symbols", required: true, example: "BTC,ETH", notes: "CSV list, no spaces." },
-        { name: "fiat", required: false, example: "MXN", notes: "Default suggested fiat: MXN." },
+        { name: "fiat", required: false, example: "USD", notes: "Display currency. Default: USD." },
       ],
       examples: [
         {
           title: "curl",
           lang: "curl",
-          code: `curl -s "https://cryptolink-production.up.railway.app/v1/prices?symbols=BTC,ETH&fiat=MXN" \\
+          code: `curl -s "https://cryptolink-production.up.railway.app/v1/prices?symbols=BTC,ETH&fiat=USD" \\
   -H "x-api-key: TU_API_KEY"`,
         },
       ],
@@ -164,7 +165,7 @@ export const cryptolinkDocs = {
         {
           status: 200,
           description: "OK",
-          example: `{"ok":true,"prices":{"BTC":123,"ETH":456},"fiat":"MXN","ts":"...","source":"..."}`,
+          example: `{"ok":true,"prices":{"BTC":63315,"ETH":1724},"fiat":"USD","ts":"...","source":"..."}`,
         },
         { status: 401, description: "Missing or invalid API key" },
         { status: 400, description: "Invalid symbols or plan symbol limit exceeded" },
@@ -180,13 +181,13 @@ export const cryptolinkDocs = {
       auth: "x-api-key",
       query: [
         { name: "symbols", required: false, example: "BTC,ETH,SOL", notes: "Optional symbol set." },
-        { name: "fiat", required: false, example: "MXN", notes: "Fiat display currency." },
+        { name: "fiat", required: false, example: "USD", notes: "Display currency. Default: USD." },
       ],
       examples: [
         {
           title: "curl",
           lang: "curl",
-          code: `curl -s "https://cryptolink-production.up.railway.app/v1/snapshot?symbols=BTC,ETH,SOL&fiat=MXN" \\
+          code: `curl -s "https://cryptolink-production.up.railway.app/v1/snapshot?symbols=BTC,ETH,SOL&fiat=USD" \\
   -H "x-api-key: TU_API_KEY"`,
         },
       ],
@@ -194,7 +195,7 @@ export const cryptolinkDocs = {
         {
           status: 200,
           description: "OK",
-          example: `{"ok":true,"fiat":"MXN","ts":"...","source":"...","snapshot":{"mood":"neutral","summary":"..."}}`,
+          example: `{"ok":true,"fiat":"USD","ts":"...","source":"coingecko","snapshot":{"marketMood":"neutral","summary":"..."}}`,
         },
       ],
     },
@@ -207,13 +208,13 @@ export const cryptolinkDocs = {
       auth: "x-api-key",
       query: [
         { name: "symbols", required: true, example: "BTC,ETH,SOL", notes: "CSV list of assets." },
-        { name: "fiat", required: false, example: "MXN", notes: "Optional fiat currency." },
+        { name: "fiat", required: false, example: "USD", notes: "Display currency. Default: USD." },
       ],
       examples: [
         {
           title: "curl",
           lang: "curl",
-          code: `curl -s "https://cryptolink-production.up.railway.app/v1/trends?symbols=BTC,ETH,SOL&fiat=MXN" \\
+          code: `curl -s "https://cryptolink-production.up.railway.app/v1/trends?symbols=BTC,ETH,SOL&fiat=USD" \\
   -H "x-api-key: TU_API_KEY"`,
         },
       ],
@@ -221,7 +222,7 @@ export const cryptolinkDocs = {
         {
           status: 200,
           description: "Derived trend signals",
-          example: `{"ok":true,"fiat":"MXN","ts":"...","source":"internal-analysis","trends":[{"symbol":"BTC","direction":"flat","changePct":0.18,"score":0.18}]}`,
+          example: `{"ok":true,"fiat":"USD","ts":"...","source":"internal-history","trends":[{"symbol":"BTC","direction":"flat","changePct":0.18,"score":0.18}]}`,
         },
       ],
     },
@@ -234,14 +235,14 @@ export const cryptolinkDocs = {
       auth: "x-api-key",
       query: [
         { name: "symbols", required: true, example: "BTC,ETH,SOL", notes: "CSV list of assets." },
-        { name: "fiat", required: false, example: "MXN", notes: "Optional fiat currency." },
+        { name: "fiat", required: false, example: "USD", notes: "Display currency. Default: USD." },
         { name: "limit", required: false, example: "3", notes: "Maximum movers returned per side." },
       ],
       examples: [
         {
           title: "curl",
           lang: "curl",
-          code: `curl -s "https://cryptolink-production.up.railway.app/v1/movers?symbols=BTC,ETH,SOL&fiat=MXN&limit=3" \\
+          code: `curl -s "https://cryptolink-production.up.railway.app/v1/movers?symbols=BTC,ETH,SOL&fiat=USD&limit=3" \\
   -H "x-api-key: TU_API_KEY"`,
         },
       ],
@@ -249,7 +250,7 @@ export const cryptolinkDocs = {
         {
           status: 200,
           description: "Relative movers",
-          example: `{"ok":true,"fiat":"MXN","ts":"...","source":"internal-analysis","gainers":[],"losers":[]}`,
+          example: `{"ok":true,"fiat":"USD","ts":"...","source":"internal-history","gainers":[],"losers":[]}`,
         },
       ],
     },
@@ -262,13 +263,13 @@ export const cryptolinkDocs = {
       auth: "x-api-key",
       query: [
         { name: "symbols", required: true, example: "BTC,ETH,SOL", notes: "CSV list of assets." },
-        { name: "fiat", required: false, example: "MXN", notes: "Optional fiat currency." },
+        { name: "fiat", required: false, example: "USD", notes: "Display currency. Default: USD." },
       ],
       examples: [
         {
           title: "curl",
           lang: "curl",
-          code: `curl -s "https://cryptolink-production.up.railway.app/v1/momentum?symbols=BTC,ETH,SOL&fiat=MXN" \\
+          code: `curl -s "https://cryptolink-production.up.railway.app/v1/momentum?symbols=BTC,ETH,SOL&fiat=USD" \\
   -H "x-api-key: TU_API_KEY"`,
         },
       ],
@@ -276,7 +277,7 @@ export const cryptolinkDocs = {
         {
           status: 200,
           description: "Momentum signal read",
-          example: `{"ok":true,"fiat":"MXN","ts":"...","source":"internal-analysis","momentum":[{"symbol":"BTC","direction":"flat","strength":"low","score":0.0}]}`,
+          example: `{"ok":true,"fiat":"USD","ts":"...","source":"internal-history","momentum":[{"symbol":"BTC","direction":"flat","strength":"low","score":0.0}]}`,
         },
       ],
     },
@@ -289,13 +290,13 @@ export const cryptolinkDocs = {
       auth: "x-api-key",
       query: [
         { name: "symbols", required: true, example: "BTC,ETH,SOL", notes: "CSV list of assets." },
-        { name: "fiat", required: false, example: "MXN", notes: "Optional fiat currency." },
+        { name: "fiat", required: false, example: "USD", notes: "Display currency. Default: USD." },
       ],
       examples: [
         {
           title: "curl",
           lang: "curl",
-          code: `curl -s "https://cryptolink-production.up.railway.app/v1/regime?symbols=BTC,ETH,SOL&fiat=MXN" \\
+          code: `curl -s "https://cryptolink-production.up.railway.app/v1/regime?symbols=BTC,ETH,SOL&fiat=USD" \\
   -H "x-api-key: TU_API_KEY"`,
         },
       ],
@@ -303,7 +304,7 @@ export const cryptolinkDocs = {
         {
           status: 200,
           description: "Aggregate market regime",
-          example: `{"ok":true,"fiat":"MXN","ts":"...","source":"internal-analysis","regime":{"state":"neutral","score":0.10,"confidence":0.07,"summary":"Signals indicate a stable market with no dominant direction."}}`,
+          example: `{"ok":true,"fiat":"USD","ts":"...","source":"internal-analysis","regime":{"state":"neutral","score":0.10,"confidence":0.07,"summary":"Signals indicate a stable market with no dominant direction."}}`,
         },
       ],
     },
@@ -316,13 +317,13 @@ export const cryptolinkDocs = {
       auth: "x-api-key",
       query: [
         { name: "symbols", required: true, example: "BTC,ETH,SOL", notes: "CSV list of assets." },
-        { name: "fiat", required: false, example: "MXN", notes: "Optional fiat currency." },
+        { name: "fiat", required: false, example: "USD", notes: "Display currency. Default: USD." },
       ],
       examples: [
         {
           title: "curl",
           lang: "curl",
-          code: `curl -s "https://cryptolink-production.up.railway.app/v1/risk-flags?symbols=BTC,ETH,SOL&fiat=MXN" \\
+          code: `curl -s "https://cryptolink-production.up.railway.app/v1/risk-flags?symbols=BTC,ETH,SOL&fiat=USD" \\
   -H "x-api-key: TU_API_KEY"`,
         },
       ],
@@ -330,7 +331,7 @@ export const cryptolinkDocs = {
         {
           status: 200,
           description: "Interpretive risk layer",
-          example: `{"ok":true,"fiat":"MXN","ts":"...","source":"internal-analysis","flags":[{"code":"low_confidence_regime","severity":"medium","title":"Low regime confidence","detail":"..."}],"summary":"Weak or mixed signals currently dominate."}`,
+          example: `{"ok":true,"fiat":"USD","ts":"...","source":"internal-analysis","flags":[{"code":"low_confidence_regime","severity":"medium","title":"Low regime confidence","detail":"..."}],"summary":"Weak or mixed signals currently dominate."}`,
         },
       ],
     },
@@ -343,13 +344,13 @@ export const cryptolinkDocs = {
       auth: "x-api-key",
       query: [
         { name: "symbols", required: true, example: "BTC,ETH,SOL", notes: "CSV list of assets." },
-        { name: "fiat", required: false, example: "MXN", notes: "Optional fiat currency." },
+        { name: "fiat", required: false, example: "USD", notes: "Display currency. Default: USD." },
       ],
       examples: [
         {
           title: "curl",
           lang: "curl",
-          code: `curl -s "https://cryptolink-production.up.railway.app/v1/anomalies?symbols=BTC,ETH,SOL&fiat=MXN" \\
+          code: `curl -s "https://cryptolink-production.up.railway.app/v1/anomalies?symbols=BTC,ETH,SOL&fiat=USD" \\
   -H "x-api-key: TU_API_KEY"`,
         },
       ],
@@ -357,7 +358,7 @@ export const cryptolinkDocs = {
         {
           status: 200,
           description: "Anomaly detection layer",
-          example: `{"ok":true,"fiat":"MXN","ts":"...","source":"internal-analysis","anomalies":[],"summary":"No relevant anomalies detected at this time."}`,
+          example: `{"ok":true,"fiat":"USD","ts":"...","source":"internal-analysis","anomalies":[],"summary":"No relevant anomalies detected at this time."}`,
         },
       ],
     },
@@ -370,13 +371,13 @@ export const cryptolinkDocs = {
       auth: "x-api-key",
       query: [
         { name: "symbols", required: true, example: "BTC,ETH,SOL", notes: "CSV list of assets." },
-        { name: "fiat", required: false, example: "MXN", notes: "Optional fiat currency." },
+        { name: "fiat", required: false, example: "USD", notes: "Display currency. Default: USD." },
       ],
       examples: [
         {
           title: "curl",
           lang: "curl",
-          code: `curl -s "https://cryptolink-production.up.railway.app/v1/market-health?symbols=BTC,ETH,SOL&fiat=MXN" \\
+          code: `curl -s "https://cryptolink-production.up.railway.app/v1/market-health?symbols=BTC,ETH,SOL&fiat=USD" \\
   -H "x-api-key: TU_API_KEY"`,
         },
       ],
@@ -384,7 +385,7 @@ export const cryptolinkDocs = {
         {
           status: 200,
           description: "Executive market condition layer",
-          example: `{"ok":true,"fiat":"MXN","ts":"...","source":"internal-analysis","marketHealth":{"state":"under_pressure","score":27,"summary":"The market is operating under pressure and requires additional attention."}}`,
+          example: `{"ok":true,"fiat":"USD","ts":"...","source":"internal-analysis","marketHealth":{"state":"under_pressure","score":27,"summary":"The market is operating under pressure and requires additional attention."}}`,
         },
       ],
     },
