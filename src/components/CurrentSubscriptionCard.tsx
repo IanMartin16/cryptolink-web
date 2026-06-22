@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { UI } from "@/lib/ui";
 
 export default function CurrentSubscriptionCard() {
   const [apiKey, setApiKey] = useState("");
@@ -20,63 +21,60 @@ export default function CurrentSubscriptionCard() {
 
       const response = await fetch("/api/cryptolink/portal", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          apiKey: normalizedApiKey,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ apiKey: normalizedApiKey }),
       });
 
       const data = await response.json().catch(() => null);
 
       if (!response.ok || !data?.ok || !data?.url) {
         throw new Error(
-          data?.message ||
-            data?.detail ||
-            data?.error ||
-            "Unable to open the billing portal"
+          data?.message || data?.detail || data?.error || "Unable to open the billing portal"
         );
       }
 
       window.location.assign(data.url);
     } catch (error: unknown) {
-      setError(
-        error instanceof Error
-          ? error.message
-          : "Unable to open the billing portal"
-      );
+      setError(error instanceof Error ? error.message : "Unable to open the billing portal");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <article className="overflow-hidden rounded-2xl border border-orange-400/25 bg-[#0d1017] shadow-[0_0_40px_rgba(249,115,22,0.05)]">
-      <div className="border-b border-white/10 bg-gradient-to-r from-orange-500/10 to-transparent px-6 py-5">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-orange-400">
+    <article
+      style={{
+        overflow: "hidden",
+        borderRadius: UI.radiusLg,
+        border: `1px solid ${UI.border}`,
+        background: UI.panel,
+        boxShadow: "0 16px 50px rgba(0,0,0,0.22)",
+      }}
+    >
+      <div
+        style={{
+          borderBottom: `1px solid ${UI.border}`,
+          background: "linear-gradient(90deg, rgba(255,159,67,0.10), transparent)",
+          padding: "20px 24px",
+        }}
+      >
+        <p style={{ fontSize: 12, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.2em", color: UI.orange, margin: 0 }}>
           Current subscription
         </p>
-
-        <h2 className="mt-2 text-xl font-semibold text-white">
+        <h2 style={{ marginTop: 8, fontSize: 20, fontWeight: 600, color: UI.text }}>
           Manage your CryptoLink plan
         </h2>
-
-        <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-400">
-          Enter the API key associated with your subscription to
-          securely access Stripe Billing Portal.
+        <p style={{ marginTop: 8, maxWidth: 640, fontSize: 14, lineHeight: 1.6, color: UI.muted }}>
+          Enter the API key associated with your subscription to securely access the Stripe Billing Portal.
         </p>
       </div>
 
-      <div className="p-6">
-        <label
-          htmlFor="billing-api-key"
-          className="text-sm font-medium text-zinc-300"
-        >
+      <div style={{ padding: 24 }}>
+        <label htmlFor="billing-api-key" style={{ fontSize: 14, fontWeight: 500, color: "rgba(230,237,243,0.85)" }}>
           CryptoLink API key
         </label>
 
-        <div className="mt-3 flex flex-col gap-3 lg:flex-row">
+        <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 12 }} className="lg:flex-row">
           <input
             id="billing-api-key"
             type="password"
@@ -85,31 +83,60 @@ export default function CurrentSubscriptionCard() {
             placeholder="cl_••••••••••••••••••••"
             autoComplete="off"
             spellCheck={false}
-            className="min-w-0 flex-1 rounded-xl border border-white/10 bg-black/30 px-4 py-3 font-mono text-sm text-white outline-none transition placeholder:text-zinc-700 focus:border-orange-400/60 focus:ring-2 focus:ring-orange-500/10"
+            style={{
+              minWidth: 0,
+              flex: 1,
+              borderRadius: UI.radius,
+              border: `1px solid ${UI.border}`,
+              background: "rgba(0,0,0,0.30)",
+              padding: "12px 16px",
+              fontFamily: "ui-monospace, monospace",
+              fontSize: 14,
+              color: UI.text,
+              outline: "none",
+            }}
           />
 
           <button
             type="button"
             onClick={openPortal}
             disabled={loading || !apiKey.trim()}
-            className="rounded-xl bg-orange-500 px-6 py-3 text-sm font-semibold text-black transition hover:bg-orange-400 disabled:cursor-not-allowed disabled:opacity-50"
+            style={{
+              borderRadius: UI.radius,
+              background: UI.orange,
+              padding: "12px 24px",
+              fontSize: 14,
+              fontWeight: 600,
+              color: "#0b0f14",
+              border: "none",
+              cursor: loading || !apiKey.trim() ? "not-allowed" : "pointer",
+              opacity: loading || !apiKey.trim() ? 0.5 : 1,
+              transition: "all 140ms ease",
+              whiteSpace: "nowrap",
+            }}
           >
-            {loading
-              ? "Opening portal..."
-              : "Manage subscription"}
+            {loading ? "Opening portal..." : "Manage subscription"}
           </button>
         </div>
 
         {error && (
-          <div className="mt-4 rounded-xl border border-red-500/20 bg-red-500/5 px-4 py-3 text-sm text-red-300">
+          <div
+            style={{
+              marginTop: 16,
+              borderRadius: UI.radius,
+              border: `1px solid ${UI.red}33`,
+              background: `${UI.red}0d`,
+              padding: "12px 16px",
+              fontSize: 14,
+              color: "rgba(255,107,107,0.9)",
+            }}
+          >
             {error}
           </div>
         )}
 
-        <p className="mt-4 text-xs leading-5 text-zinc-600">
-          Your API key is used only to locate the associated
-          subscription. It is not included in the Stripe redirect
-          URL.
+        <p style={{ marginTop: 16, fontSize: 12, lineHeight: 1.5, color: "rgba(230,237,243,0.45)" }}>
+          Your API key is used only to locate the associated subscription. It is not included in the Stripe redirect URL.
         </p>
       </div>
     </article>

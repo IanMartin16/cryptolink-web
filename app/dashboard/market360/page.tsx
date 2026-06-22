@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import SymbolsPanel from "@/components/SymbolsPanel";
+import Market360Panel from "@/components/Market360Panel";
 import type { Health } from "@/lib/health";
 import { getSymbols, setSymbols } from "@/lib/symbolsStore";
 import MarketIntelligencePanel from "@/components/MarketIntelligencePanel";
@@ -124,7 +124,7 @@ export default function SymbolsPage() {
         insight={moodInsight}
       />
       <div className="min-h-[320px] sm:min-h-[360px]">
-        <SymbolsPanel />
+        <Market360Panel />
       </div>
 
       <div className="min-h-[320px] sm:min-h-[360px]">

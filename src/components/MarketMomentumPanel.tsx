@@ -212,7 +212,7 @@ function MomentumLeaderChart({ items }: { items: MomentumItem[] }) {
   );
 }
 
-export default function MarketMomentumPanel({ topN = 5 }: { topN?: number }) {
+export default function MarketMomentumPanel({ topN = 10 }: { topN?: number}) {
   const storedMomentum = useMarketSignalsStore((s) => s.momentum);
   const setMomentumStore = useMarketSignalsStore((s) => s.setMomentum);
 

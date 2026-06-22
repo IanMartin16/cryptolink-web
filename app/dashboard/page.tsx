@@ -59,7 +59,6 @@ export default function DashboardPage() {
     prev: r.prevPrice,
     pct: r.pct,
   }));
-  console.log("[dash rows sample]", sample);
 }, [rows]);
 
   // ✅ 4) Snapshot KPIs (MarketSnapshotBar)
@@ -115,7 +114,7 @@ const trendsFeed = useTrendsFeed({
     <TopHeader
       title={
         <>
-          CryptoLink <span style={{ color: UI.orange }}>V3.0</span>
+          CryptoLink <span style={{ color: UI.orange }}>V4.0</span>
         </>
       }
       subtitle={"Dashboard · batch pricing · social movers · SSE"}
@@ -146,12 +145,7 @@ const trendsFeed = useTrendsFeed({
       <SocialPulseBoard trends={trendsSummary}/>
 
       <MarketSparkStrip rows={rows} max={12} />
-
-      {/* 👇 Este era el que rompía iPhone: 2 cols fijo.
-          Ahora: 1 col en mobile, 2 cols en md+ */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:items-start">
-        {/* Si PricesPanel es alto, en mobile queda arriba y Trends abajo */}
-        
     </div>
   </div>
 );

@@ -479,17 +479,7 @@ export default function Market360Panel() {
         </div>
       </div>
 
-      {/* VISTA 1 — BUBBLES (panorámica, el gancho visual) */}
-      <div
-        style={{
-          marginTop: 14, padding: 12, borderRadius: 16, border: `1px solid ${UI.border}`,
-          background: "rgba(255,255,255,0.03)",
-        }}
-      >
-        <MarketBubbles symbols={symbols} />
-      </div>
-
-      {/* VISTA 2 — FICHAS (detalle, siempre visible) */}
+      {/* VISTA 1 — FICHAS (detalle, lo más valioso: van primero) */}
       <div
         style={{
           marginTop: 14, display: "grid",
@@ -502,6 +492,16 @@ export default function Market360Panel() {
         {missing.map((sym) => (
           <MissingCard key={`missing-${sym}`} symbol={sym} />
         ))}
+      </div>
+
+      {/* VISTA 2 — BUBBLES (panorámica compacta, cierra la sección sin opacar las cards) */}
+      <div
+        style={{
+          marginTop: 14, padding: 12, borderRadius: 16, border: `1px solid ${UI.border}`,
+          background: "rgba(255,255,255,0.03)",
+        }}
+      >
+        <MarketBubbles symbols={symbols} />
       </div>
 
       {symbols.length === 0 && missing.length === 0 ? (

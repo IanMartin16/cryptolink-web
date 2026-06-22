@@ -1,3 +1,5 @@
+import { UI } from "@/lib/ui";
+
 type PlanCardProps = {
   name: string;
   description: string;
@@ -15,36 +17,45 @@ export default function PlanCard({
 }: PlanCardProps) {
   return (
     <article
-      className={[
-        "rounded-2xl border bg-[#0d1017] p-6",
-        highlighted
-          ? "border-orange-400/40 shadow-[0_0_35px_rgba(249,115,22,0.08)]"
-          : "border-white/10",
-      ].join(" ")}
+      style={{
+        borderRadius: UI.radiusLg,
+        padding: UI.padLg,
+        background: UI.panel2,
+        border: highlighted
+          ? `1px solid rgba(255,159,67,0.40)`
+          : `1px solid ${UI.border}`,
+        boxShadow: highlighted ? "0 0 35px rgba(255,159,67,0.08)" : "none",
+      }}
     >
-      <div className="flex items-center justify-between gap-4">
-        <h3 className="text-xl font-semibold text-white">
-          {name}
-        </h3>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
+        <h3 style={{ fontSize: 20, fontWeight: 700, color: UI.text, margin: 0 }}>{name}</h3>
 
         {highlighted && (
-          <span className="rounded-full border border-orange-400/30 bg-orange-500/10 px-3 py-1 text-xs font-semibold text-orange-300">
+          <span
+            style={{
+              borderRadius: 999,
+              border: `1px solid rgba(255,159,67,0.30)`,
+              background: "rgba(255,159,67,0.10)",
+              padding: "4px 12px",
+              fontSize: 12,
+              fontWeight: 600,
+              color: UI.orangeSoft,
+              whiteSpace: "nowrap",
+            }}
+          >
             Advanced
           </span>
         )}
       </div>
 
-      <p className="mt-3 text-sm leading-6 text-zinc-400">
+      <p style={{ marginTop: 12, fontSize: 14, lineHeight: 1.6, color: UI.muted }}>
         {description}
       </p>
 
-      <ul className="mt-5 space-y-3">
+      <ul style={{ marginTop: 20, listStyle: "none", padding: 0, display: "grid", gap: 12 }}>
         {features.map((feature) => (
-          <li
-            key={feature}
-            className="flex items-center gap-3 text-sm text-zinc-300"
-          >
-            <span className="h-2 w-2 rounded-full bg-orange-400" />
+          <li key={feature} style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 14, color: "rgba(230,237,243,0.85)" }}>
+            <span style={{ width: 8, height: 8, borderRadius: 999, background: UI.orange, flexShrink: 0 }} />
             {feature}
           </li>
         ))}
@@ -52,12 +63,22 @@ export default function PlanCard({
 
       <a
         href={purchaseUrl}
-        className={[
-          "mt-6 inline-flex w-full items-center justify-center rounded-xl px-4 py-3 text-sm font-semibold transition",
-          highlighted
-            ? "bg-orange-500 text-black hover:bg-orange-400"
-            : "border border-orange-400/30 text-orange-300 hover:bg-orange-500/10",
-        ].join(" ")}
+        style={{
+          marginTop: 24,
+          display: "inline-flex",
+          width: "100%",
+          alignItems: "center",
+          justifyContent: "center",
+          borderRadius: UI.radius,
+          padding: "12px 16px",
+          fontSize: 14,
+          fontWeight: 600,
+          textDecoration: "none",
+          transition: "all 140ms ease",
+          ...(highlighted
+            ? { background: UI.orange, color: "#0b0f14" }
+            : { border: `1px solid rgba(255,159,67,0.30)`, color: UI.orangeSoft }),
+        }}
       >
         View plan on Evilink
       </a>
