@@ -77,7 +77,7 @@ function mapConfidence(value: "strong" | "moderate" | "low"): NarrativeConfidenc
   return "low";
 }
 
-function compactAssets(list: string[], max = 3): string[] {
+function compactAssets(list: string[], max = 5): string[] {
   return [...new Set((list || []).filter(Boolean))].slice(0, max);
 }
 
@@ -89,22 +89,22 @@ function compactAssets(list: string[], max = 3): string[] {
     ...input.trends.topSymbols,
   ];
 
-  return compactAssets([...leaders, ...realTop, ...derived], 3);
+  return compactAssets([...leaders, ...realTop, ...derived], 5);
 }
 
 function resolveAttentionLeaders(input: LiveNarrativeInput): string[] {
   const leaders = input.basicSignals?.attentionLeaders?.map((x) => x.asset) ?? [];
   const realTop = input.basicSignals?.topAssets ?? [];
   const derived = input.socialPulse.topAssets ?? [];
-  return compactAssets([...leaders, ...realTop, ...derived], 3);
+  return compactAssets([...leaders, ...realTop, ...derived], 5);
 }
 
 function resolveThemes(input: LiveNarrativeInput, fallback: string[]): string[] {
   const realTags = input.basicSignals?.tags ?? [];
   if (realTags.length) {
-    return [...new Set([...realTags, ...fallback])].slice(0, 3);
+    return [...new Set([...realTags, ...fallback])].slice(0, 5);
   }
-  return fallback.slice(0, 3);
+  return fallback.slice(0, 5);
 }
 
 function assetsText(list: string[]): string {
@@ -274,8 +274,8 @@ function buildThemes(args: {
   if (leadership === "concentrated") out.push("concentrated leadership");
   if (leadership === "distributed") out.push("distributed leadership");
 
-  if (trends.up >= 3 && trends.up > trends.down) out.push("trend expansion");
-  if (trends.down >= 3 && trends.down > trends.up) out.push("risk-off spread");
+  if (trends.up >= 5 && trends.up > trends.down) out.push("trend expansion");
+  if (trends.down >= 5 && trends.down > trends.up) out.push("risk-off spread");
 
   return [...new Set(out)].slice(0, 4);
 }
