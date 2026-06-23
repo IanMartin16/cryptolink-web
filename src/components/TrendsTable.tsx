@@ -505,7 +505,7 @@ export default function TrendsTable({
                 const c = trendColor(t.trend);
                 const isHover = hover === t.symbol;
                 const a = intensityFromScore(t.score);
-                const isTop = rank <= 3;
+                const isTop = rank <= 5;
                 const fullName = getSymbolName(t.symbol);
 
                 const rankStyle = isTop
