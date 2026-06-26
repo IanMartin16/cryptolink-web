@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const symbols = parseSymbols(searchParams.get("symbols"));
-    const fiat = (searchParams.get("fiat") || "MXN").toUpperCase();
+    const fiat = (searchParams.get("fiat") || "USD").toUpperCase();
     const qs = encodeURIComponent(symbols.join(","));
 
     const origin = req.nextUrl.origin;

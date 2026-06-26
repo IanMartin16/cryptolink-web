@@ -14,7 +14,7 @@ export function TrendsWarmup() {
   useEffect(() => {
     async function warm() {
       try {
-        await fetch("/api/cryptolink/prices?symbols=BTC,ETH,SOL&fiat=MXN", {
+        await fetch("/api/cryptolink/prices?symbols=BTC,ETH,SOL&fiat=USD", {
           cache: "no-store",
         });
       } catch {

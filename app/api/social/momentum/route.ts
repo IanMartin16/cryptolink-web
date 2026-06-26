@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const symbols = parseSymbols(searchParams.get("symbols"));
-    const fiat = (searchParams.get("fiat") || "MXN").toUpperCase();
+    const fiat = (searchParams.get("fiat") || "USD").toUpperCase();
 
     const url =
       `${getBaseUrl()}/v1/momentum?symbols=${encodeURIComponent(symbols.join(","))}&fiat=${encodeURIComponent(fiat)}`;

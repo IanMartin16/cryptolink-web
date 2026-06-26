@@ -69,7 +69,7 @@ export type MomentumResponse = {
 
 export async function fetchMomentum(symbols: string[]): Promise<MomentumResponse> {
   const qs = encodeURIComponent(symbols.join(","));
-  const res = await fetch(`/api/social/momentum?symbols=${qs}&fiat=MXN`, { cache: "no-store" });
+  const res = await fetch(`/api/social/momentum?symbols=${qs}&fiat=USD`, { cache: "no-store" });
   if (!res.ok) throw new Error(`CryptoLink momentum HTTP ${res.status}`);
   return (await res.json()) as MomentumResponse;
 }
@@ -89,7 +89,7 @@ export type RegimeResponse = {
 
 export async function fetchRegime(symbols: string[]): Promise<RegimeResponse> {
   const qs = encodeURIComponent(symbols.join(","));
-  const res = await fetch(`/api/social/regime?symbols=${qs}&fiat=MXN`, {
+  const res = await fetch(`/api/social/regime?symbols=${qs}&fiat=USD`, {
     cache: "no-store",
   });
   if (!res.ok) throw new Error(`CryptoLink regime HTTP ${res.status}`);
@@ -110,7 +110,7 @@ export type SignalsResponse = {
 
 export async function fetchSignals(symbols: string[]): Promise<SignalsResponse> {
   const qs = encodeURIComponent(symbols.join(","));
-  const res = await fetch(`/api/social/signals?symbols=${qs}&fiat=MXN`, {
+  const res = await fetch(`/api/social/signals?symbols=${qs}&fiat=USD`, {
     cache: "no-store",
   });
   if (!res.ok) throw new Error(`Signals HTTP ${res.status}`);
@@ -131,7 +131,7 @@ export type MarketHealthResponse = {
 
 export async function fetchMarketHealth(symbols: string[]): Promise<MarketHealthResponse> {
   const qs = encodeURIComponent(symbols.join(","));
-  const res = await fetch(`/api/social/market-health?symbols=${qs}&fiat=MXN`, {
+  const res = await fetch(`/api/social/market-health?symbols=${qs}&fiat=USD`, {
     cache: "no-store",
   });
   if (!res.ok) throw new Error(`Market Health HTTP ${res.status}`);
@@ -157,7 +157,7 @@ export type SocialPulseResponse = {
 
 export async function fetchSocialPulse(symbols: string[]): Promise<SocialPulseResponse> {
   const qs = encodeURIComponent(symbols.join(","));
-  const res = await fetch(`/api/social/social-pulse?symbols=${qs}&fiat=MXN`, {
+  const res = await fetch(`/api/social/social-pulse?symbols=${qs}&fiat=USD`, {
     cache: "no-store",
   });
   if (!res.ok) throw new Error(`Social Pulse HTTP ${res.status}`);
