@@ -1,14 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import TrendsTable from "@/components/TrendsTable";
 import StatusBar from "@/components/StatusBar";
-import TrendChartPanel from "@/components/TrendChartPanel";
 import type { TrendItem } from "@/lib/types";
 import type { Health } from "@/lib/health";
 import MarketMomentumPanel from "./MarketMomentumPanel";
 import RegimePanel from "@/components/RegimePanel";
 import MarketAttentionTable from "./MarketAttentionTable";
+import AttentionPulsePanel from "./AttentionPulsePanel";
+import { AttentionRow } from "@/lib/useMarketAttention";
 
 
 export function TrendsWarmup() {
@@ -35,6 +35,7 @@ export function TrendsWarmup() {
 export default function TrendsRouteBody() {
   const [trendsHealth, setTrendsHealth] = useState<Health | undefined>(undefined);
   const [trendItems, setTrendItems] = useState<TrendItem[]>([]);
+  const [attentionItems, setAttentionItems] = useState<AttentionRow[]>([]);
 
   return (
     <>
@@ -63,10 +64,10 @@ export default function TrendsRouteBody() {
       </div>
     </div>
       <div style={{ marginTop: 12 }}>
-        <TrendChartPanel items={trendItems} maxPoints={40}/>
+        <AttentionPulsePanel items={attentionItems} maxPoints={40}/>
       </div>
       <div>
-      <MarketAttentionTable/>
+      <MarketAttentionTable onItems={setAttentionItems} onHealth={setTrendsHealth} />
       </div>
     </>
   );

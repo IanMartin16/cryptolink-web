@@ -9,6 +9,7 @@ import { getTrendHistory } from "@/lib/useTrendHistory";
 import { getSymbols } from "@/lib/symbolsStore";
 import SymbolCell from "@/components/SymbolCell";
 import { getSymbolName } from "@/lib/symbolMeta";
+import { pushTrendHistory } from "@/lib/useTrendHistory";
 
 /**
  * MarketMomentumPanel
@@ -239,6 +240,20 @@ export default function MarketMomentumPanel({ topN = 10 }: { topN?: number}) {
         // ✅ if CON llaves: todo el bloque queda dentro del condicional
         if (!cancelled) {
           setData(res);
+          
+          if (!cancelled) {
+          setData(res);
+          setMomentumStore(res);
+          setStatus("live");
+
+          // auto-alimentar el historial que MomentumLeaderChart grafica
+          // (antes lo llenaba useTrendsFeed; ahora Momentum es autónomo)
+          for (const m of res.momentum ?? []) {
+            if (typeof m.score === "number") {
+              pushTrendHistory(m.symbol, m.score, 120);
+            }
+          }
+        }
           setMomentumStore(res);
           setStatus("live");
         }
