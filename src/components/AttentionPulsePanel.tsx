@@ -9,7 +9,7 @@ import {
   type ISeriesApi,
   type UTCTimestamp,
 } from "lightweight-charts";
-import type { AttentionRow } from "@/lib/trends/useMarketAttention";
+import type { AttentionRow } from "@/lib/useMarketAttention";
 
 /**
  * AttentionPulsePanel (antes TrendChartPanel / "Trend Pulse").
