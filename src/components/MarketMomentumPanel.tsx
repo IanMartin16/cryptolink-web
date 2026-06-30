@@ -223,7 +223,7 @@ export default function MarketMomentumPanel({ topN = 10 }: { topN?: number}) {
     storedMomentum ? "restored" : "refreshing"
   );
 
-  useEffect(() => {
+    useEffect(() => {
     let cancelled = false;
 
     async function load() {
@@ -237,11 +237,7 @@ export default function MarketMomentumPanel({ topN = 10 }: { topN?: number}) {
 
         const res = await fetchMomentum(symbols);
 
-        // ✅ if CON llaves: todo el bloque queda dentro del condicional
         if (!cancelled) {
-          setData(res);
-          
-          if (!cancelled) {
           setData(res);
           setMomentumStore(res);
           setStatus("live");
@@ -253,9 +249,6 @@ export default function MarketMomentumPanel({ topN = 10 }: { topN?: number}) {
               pushTrendHistory(m.symbol, m.score, 120);
             }
           }
-        }
-          setMomentumStore(res);
-          setStatus("live");
         }
       } catch (e: any) {
         if (!cancelled) setError(e?.message ?? "unknown");
@@ -270,6 +263,7 @@ export default function MarketMomentumPanel({ topN = 10 }: { topN?: number}) {
       clearInterval(id);
     };
   }, []);
+
 
   const top = useMemo(() => {
     const listed = data?.momentum ?? [];

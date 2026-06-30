@@ -11,18 +11,6 @@ import {
 } from "lightweight-charts";
 import type { AttentionRow } from "@/lib/useMarketAttention";
 
-/**
- * AttentionPulsePanel (antes TrendChartPanel / "Trend Pulse").
- *
- * Renombrado por honestidad: su fuente ahora es Market Attention (attentionScore),
- * no los trends de crypto. Grafica el PULSO DE ATENCIÓN del mercado en el tiempo
- * (composite del attentionScore de los leaders), no un "trend score".
- *
- * El composite y el sample siguen igual; solo cambió el campo leído
- * (score -> attentionScore) y el tono/umbral, ya que attentionScore es 0..100
- * (no -N..+N como el trend score viejo).
- */
-
 export default function AttentionPulsePanel({
   items,
   maxPoints = 40,
