@@ -105,7 +105,7 @@ export default function MarketSnapshotBar({ snapshot, status = "live" }: Props) 
                 color: "rgba(255,255,255,0.66)",
               }}
             >
-              <span style={{ color: UI.orange }}>MARKET SNAPSHOT</span>
+              MARKET<span style={{ color: UI.orange }}> SNAPSHOT</span>
             </div>
             <div style={{ marginTop: 4, fontSize: 13, color: "rgba(255,255,255,0.55)" }}>
               Fast read of key market conditions

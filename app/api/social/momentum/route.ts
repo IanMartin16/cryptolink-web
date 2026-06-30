@@ -2,13 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 
 function parseSymbols(raw: string | null): string[] {
-  const arr = (raw || "BTC,ETH,SOL")
+  const arr = (raw || "BTC,ETH,USDT,BNB,USDC")
     .split(",")
     .map((x) => x.trim().toUpperCase())
     .filter(Boolean)
     .slice(0, 60);
 
-  return arr.length ? arr : ["BTC", "ETH", "SOL"];
+  return arr.length ? arr : ["BTC", "ETH", "USDT", "BNB", "USDC"];
 }
 
 function getBaseUrl() {

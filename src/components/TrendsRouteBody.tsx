@@ -8,6 +8,7 @@ import type { TrendItem } from "@/lib/types";
 import type { Health } from "@/lib/health";
 import MarketMomentumPanel from "./MarketMomentumPanel";
 import RegimePanel from "@/components/RegimePanel";
+import MarketAttentionTable from "./MarketAttentionTable";
 
 
 export function TrendsWarmup() {
@@ -65,7 +66,7 @@ export default function TrendsRouteBody() {
         <TrendChartPanel items={trendItems} maxPoints={40}/>
       </div>
       <div>
-      <TrendsTable onItems={setTrendItems} onHealth={setTrendsHealth} />
+      <MarketAttentionTable/>
       </div>
     </>
   );
