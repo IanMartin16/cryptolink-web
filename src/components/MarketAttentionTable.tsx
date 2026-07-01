@@ -298,7 +298,7 @@ export default function MarketAttentionTable({
             right: 0,
             height: 2,
             background: "linear-gradient(90deg, transparent, rgba(255,159,67,0.95), transparent)",
-            animation: "clSweep 650ms ease-out infinite",
+            animation: "clSweep 950ms ease-out infinite",
             pointerEvents: "none",
           }}
         />
