@@ -70,6 +70,7 @@ const OVERRIDES: Record<string, string> = {
   ONDO: "/icons/crypto/ondo.png",
   RLUSD: "/icons/crypto/rlusd.png",
   USDD: "/icons/crypto/usdd.png",
+  WLD: "/icons/crypto/wld.png",
   BGB: "/icons/crypto/bgb.png",
   ETC: "/icons/crypto/etc.png",
   MORPHO: "/icons/crypto/morpho.png",
