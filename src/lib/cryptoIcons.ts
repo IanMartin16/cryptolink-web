@@ -58,7 +58,7 @@ const OVERRIDES: Record<string, string> = {
   GRT: "/icons/crypto/grt.png",
   JUP: "/icons/crypto/jup.png",
   PYTH: "/icons/crypto/pyth.png",
-  ZEC: "/icons/crypto/zcash.png",
+  ZEC: "/icons/crypto/zec.png",
   USDS: "/icons/crypto/usds.png",
   USD1: "/icons/crypto/usd1.png",
   GRAM: "/icons/crypto/gram.png",

@@ -63,7 +63,7 @@ export const SYMBOL_META: Record<string, { name: string }> = {
   ZEC: { name: "Zcash" },
   USDS: { name: "USDS" },
   USD1: { name: "USD1" },
-  XAUt: { name: "Tether Gold" },
+  XAUT: { name: "Tether Gold" },
   M: { name: "MemeCore" },
   DEXE: { name: "DeXe" },
   ASTER: { name: "Aster" },
