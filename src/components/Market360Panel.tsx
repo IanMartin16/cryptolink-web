@@ -67,16 +67,20 @@ function fmtTs(iso?: string) {
 
 function MarketBubbles({ symbols }: { symbols: SymbolMarket[] }) {
   const [hover, setHover] = useState<string | null>(null);
+  const MAX_BUBBLES = 10;
 
   // solo burbujas con las 3 dimensiones válidas
   const points = useMemo(
     () =>
-      symbols.filter(
-        (s) =>
-          Number.isFinite(s.change24h as number) &&
-          Number.isFinite(s.volume24h as number) &&
-          Number.isFinite(s.marketCap as number)
-      ),
+      symbols
+        .filter(
+          (s) =>
+            Number.isFinite(s.change24h as number) &&
+            Number.isFinite(s.volume24h as number) &&
+            Number.isFinite(s.marketCap as number)
+        )
+        .sort((a, b) => (b.marketCap as number) - (a.marketCap as number))
+        .slice(0, MAX_BUBBLES),
     [symbols]
   );
 
@@ -273,6 +277,7 @@ function MarketBubbles({ symbols }: { symbols: SymbolMarket[] }) {
         <span>● size = market cap</span>
         <span style={{ color: "#2BFF88" }}>● gaining</span>
         <span style={{ color: "#FF6B6B" }}>● losing</span>
+        <span style={{ opacity: 0.5 }}>top {MAX_BUBBLES} by market cap</span>
       </div>
 
       <style jsx>{`
