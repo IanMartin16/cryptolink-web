@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
 
     const apiKey = process.env.CRYPTOLINK_DEMO_KEY || "";
     const res = await fetch(url, {
-      cache: "no-store",
+      next: { revalidate: 180 },
       headers: apiKey ? { "x-api-key": apiKey } : {},
     });
 

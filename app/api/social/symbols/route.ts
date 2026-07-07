@@ -20,14 +20,14 @@ export const runtime = "nodejs";
  * Paneles menores podrían ir sin key más adelante, tras medir consumo real.
  */
 
-const REVALIDATE_SECONDS = 600; // 5 min — acorde al presupuesto de 10k/mes
+const REVALIDATE_SECONDS = 300; // 5 min — acorde al presupuesto de 10k/mes
 
 const MARKET_360_TOP = [
   "BTC", "ETH", "USDT", "BNB", "SOL", "USDC", "XRP", "TRX", "HYPE", "DOGE",
   "RAIN", "USDS", "LEO", "ADA", "ZEC", "XLM", "WBT", "XMR", "LINK", "CC", 
   "LAB", "BCH", "GRAM", "DAI", "USD1", "USDE", "LTC", "HBAR", "USDG", "FIGR_HELOC",
   "AVAX", "PYUSD", "CRO", "NEAR", "XAUT", "SHIB", "BUIDL", "USDY", "TAO", "UNI",
-  "M", "PAXG", "WLFI", "ASTER", "OKB", "ONDO", "RLUSD", "HTX", "MNT", "DOT"
+  "M", "PAXG", "WLFI", "ASTER", "OKB", "ONDO", "RLUSD", "HTX", "USDD", "DOT"
 ];
 
 function getBaseUrl() {

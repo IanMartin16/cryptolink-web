@@ -13,7 +13,9 @@ function parseSymbols(raw: string | null): string[] {
 }
 
 async function getJson(url: string) {
-  const res = await fetch(url, { cache: "no-store" });
+  const res = await fetch(url, { 
+    next: { revalidate: 300 } 
+  });
   const text = await res.text();
   try {
     return JSON.parse(text);
