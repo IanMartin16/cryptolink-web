@@ -27,7 +27,7 @@ const MARKET_360_TOP = [
   "RAIN", "USDS", "LEO", "ADA", "ZEC", "XLM", "WBT", "XMR", "LINK", "CC", 
   "LAB", "BCH", "GRAM", "DAI", "USD1", "USDE", "LTC", "HBAR", "USDG", "FIGR_HELOC",
   "AVAX", "PYUSD", "CRO", "NEAR", "XAUT", "SHIB", "BUIDL", "USDY", "TAO", "UNI",
-  "M", "PAXG", "WLFI", "ASTER", "OKB", "ONDO", "RLUSD", "HTX", "USDD", "DOT"
+  "M", "PAXG", "WLFI", "ASTER", "OKB", "ONDO", "RLUSD", "HTX", "USYC", "BANANA"
 ];
 
 function getBaseUrl() {
