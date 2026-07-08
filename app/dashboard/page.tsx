@@ -140,7 +140,7 @@ const trendsFeed = useTrendsFeed({
         moodScore={mood.score}
       />
       <div className="mt-1">
-        <StatCards rows={rows} />
+        <StatCards  />
       </div>
       <SocialPulseBoard trends={trendsSummary}/>
 
