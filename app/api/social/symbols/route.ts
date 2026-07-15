@@ -25,7 +25,7 @@ const REVALIDATE_SECONDS = 300; // 5 min — acorde al presupuesto de 10k/mes
 const MARKET_360_TOP = [
   "BTC", "ETH", "USDT", "BNB", "SOL", "USDC", "XRP", "TRX", "HYPE", "DOGE",
   "RAIN", "USDS", "LEO", "ADA", "ZEC", "XLM", "WBT", "XMR", "LINK", "CC", 
-  "LAB", "BCH", "GRAM", "DAI", "USD1", "USDE", "LTC", "HBAR", "USDG", "FIGR_HELOC",
+  "SUI", "BCH", "GRAM", "DAI", "USD1", "USDE", "LTC", "HBAR", "USDG", "FIGR_HELOC",
   "AVAX", "PYUSD", "CRO", "NEAR", "XAUT", "SHIB", "BUIDL", "USDY", "TAO", "UNI",
   "M", "PAXG", "WLFI", "ASTER", "OKB", "ONDO", "RLUSD", "HTX", "USYC", "USDD"
 ];
