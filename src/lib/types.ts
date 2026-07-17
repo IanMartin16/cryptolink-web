@@ -62,3 +62,17 @@ export type TrendsSummary = {
   avgScore: number;
   topSymbols: string[];
 };
+
+export type TrendingCoin = {
+  id: string;
+  symbol: string;
+  name: string;
+  rank: number | null;       // market_cap_rank — contexto: rank 2000 != rank 2
+  image: string | null;
+  price: number | null;
+  change24h: number | null;
+  sparkline: string | null;  // URL del SVG que CoinGecko ya provee
+  marketCap: string | null;  // viene preformateado: "$42,537,178,536"
+  volume24h: string | null;
+  description: string | null;
+};
