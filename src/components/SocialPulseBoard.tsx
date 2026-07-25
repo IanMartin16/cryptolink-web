@@ -112,7 +112,7 @@ useEffect(() => {
   }
 
   load();
-  const id = setInterval(load, 10000);
+  const id = setInterval(load, 15000);
 
   return () => {
     cancelled = true;

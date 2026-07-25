@@ -92,7 +92,7 @@ export default function MarketIntelligencePanel({
     }
 
     load();
-    const id = setInterval(load, 10000);
+    const id = setInterval(load, 15000);
 
     // reactividad global del portal (mismo patrón que usePricesFeed)
     const onFiat = () => load();

@@ -256,7 +256,7 @@ export default function MarketMomentumPanel({ topN = 10 }: { topN?: number}) {
     }
 
     load();
-    const id = setInterval(load, 10000);
+    const id = setInterval(load, 15000);
 
     return () => {
       cancelled = true;

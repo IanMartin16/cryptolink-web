@@ -90,7 +90,7 @@ export function useOverviewPrices() {
       if (id) clearInterval(id);
       id = setInterval(() => {
         if (document.visibilityState === "visible") load();
-      }, 15000);
+      }, 30000);
     };
     startPolling();
 

@@ -195,7 +195,7 @@ export function usePricesFeed({
     const startPolling = () => {
       if (id) clearInterval(id);
       if (!auto) return;
-      id = setInterval(() => load("refresh"), 15000);
+      id = setInterval(() => load("refresh"), 30000);
     };
 
     startPolling();

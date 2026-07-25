@@ -135,7 +135,7 @@ export default function AttentionPulsePanel({
 
   useEffect(() => {
     if (!items?.length) return;
-    const SAMPLE_MS = 10_000;
+    const SAMPLE_MS = 15_000;
     const sample = () => {
       const nowSec = Math.floor(Date.now() / 1000) as UTCTimestamp;
       if (nowSec === lastTimeRef.current) return;
