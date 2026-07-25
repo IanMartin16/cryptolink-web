@@ -67,7 +67,7 @@ function fmtTs(iso?: string) {
 
 function MarketBubbles({ symbols }: { symbols: SymbolMarket[] }) {
   const [hover, setHover] = useState<string | null>(null);
-  const MAX_BUBBLES = 10;
+  const MAX_BUBBLES = 15;
 
   // solo burbujas con las 3 dimensiones válidas
   const points = useMemo(

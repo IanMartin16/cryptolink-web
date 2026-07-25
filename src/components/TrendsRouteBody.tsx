@@ -24,7 +24,7 @@ export function TrendsWarmup() {
     }
 
     warm();
-    const id = setInterval(warm, 10000);
+    const id = setInterval(warm, 30000);
 
     return () => clearInterval(id);
   }, []);
