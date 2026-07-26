@@ -83,14 +83,14 @@ useEffect(() => {
       setError("");
       setStatus((prev) => (prev === "live" ? "refreshing" : prev));
 
-      const pulseRes = await fetchSocialPulse(["BTC", "ETH", "USDT", "BNB", "USDC", "XRP", "SOL", "TRX", "FIGURE HELOC", "HYPE"]);
+      const pulseRes = await fetchSocialPulse(["BTC", "ETH", "USDT", "BNB", "USDC", "XRP", "SOL", "TRX", "FIGR_HELOC", "HYPE"]);
 
        let basicResData: BasicSignalsResponse | null = null;
 
       try {
         const basicRes = await fetchBasicSignals({
           window: "1h",
-          assets: ["BTC", "ETH", "USDT", "BNB", "USDC", "XRP", "SOL", "TRX", "FIGURE HELOC", "HYPE"],
+          assets: ["BTC", "ETH", "USDT", "BNB", "USDC", "XRP", "SOL", "TRX", "FIGR_HELOC", "HYPE"],
           limit: 10,
         });
 
