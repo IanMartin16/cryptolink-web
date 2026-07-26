@@ -13,8 +13,6 @@ import type { PriceRow, TrendItem } from "@/lib/types";
 import type { SnapshotKPIs } from "@/lib/types";
 import { computeSnapshotKPIs } from "@/lib/snapshotEngine";
 import MarketSnapshotBar from "@/components/MarketSnapshotBar";
-import MarketSparkStrip from "@/components/MarketSparkStrip";
-import SocialPulseBoard from "@/components/SocialPulseBoard";
 import InsightCard from "@/components/InsightCard";
 import { buildInsightV2 } from "@/lib/insight/buildInsightV2";
 import { usePricesFeed } from "@/lib/hooks/usePricesFeed";
@@ -144,8 +142,6 @@ const trendsFeed = useTrendsFeed({
         <StatCards  />
       </div>
       <TrendingNow/>
-
-      <MarketSparkStrip rows={rows} max={12} />
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:items-start">
     </div>
   </div>

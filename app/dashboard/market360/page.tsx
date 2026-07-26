@@ -126,10 +126,6 @@ export default function SymbolsPage() {
       <div className="min-h-[320px] sm:min-h-[360px]">
         <Market360Panel />
       </div>
-
-      <div className="min-h-[320px] sm:min-h-[360px]">
-        <MarketIntelligencePanel />
-      </div>
     </div>
   );
 }

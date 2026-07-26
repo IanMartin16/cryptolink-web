@@ -10,6 +10,7 @@ import { usePricesFeed } from "@/lib/hooks/usePricesFeed";
 import { getFiat } from "@/lib/fiatStore";
 import { getSymbols } from "@/lib/symbolsStore";
 import { fetchSymbols360, type SymbolMarket } from "@/lib/cryptoLink";
+import MarketSparkStrip from "./MarketSparkStrip";
 
 export default function PricesRouteBody() {
   const {
@@ -87,8 +88,7 @@ export default function PricesRouteBody() {
         assetsCount={rows.length || symbolsCount}
         lastUpdated={rows[0]?.updatedAt ?? lastUpdated}
       />
-
-      <SignalsRadarPanel />
+      <MarketSparkStrip rows={rows} max={12} />
 
       {/* Tabla principal: Watchlist (precio en vivo) + Top Movers (24h real + volumen).
           markets = datos ricos de CoinGecko, cruzados por símbolo en Top Movers. */}

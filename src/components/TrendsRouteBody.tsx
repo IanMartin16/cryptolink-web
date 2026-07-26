@@ -49,6 +49,12 @@ export default function TrendsRouteBody() {
           marginTop: 16,
         }}
       >
+      <div>
+      <MarketAttentionTable onItems={setAttentionItems} onHealth={setTrendsHealth} />
+      </div>
+      <div style={{ marginTop: 12 }}>
+        <AttentionPulsePanel items={attentionItems} maxPoints={40}/>
+      </div>
         <RegimePanel />
 
         <div
@@ -63,12 +69,6 @@ export default function TrendsRouteBody() {
         <TrendsWarmup />
       </div>
     </div>
-      <div style={{ marginTop: 12 }}>
-        <AttentionPulsePanel items={attentionItems} maxPoints={40}/>
-      </div>
-      <div>
-      <MarketAttentionTable onItems={setAttentionItems} onHealth={setTrendsHealth} />
-      </div>
     </>
   );
 }
