@@ -18,7 +18,7 @@ async function fetchMarketAttentionRemote(): Promise<BasicSignalsResponse> {
   if (!base) {
     throw new Error("SOCIAL_LINK_BASE_URL not configured");
   }
-  const res = await fetch(`${base}/internal/v1/basic-signals?window=1h&limit=10`, {
+  const res = await fetch(`${base}/internal/v1/basic-signals?window=1h&limit=15`, {
     method: "GET",
     headers: { accept: "application/json" },
     cache: "no-store",
