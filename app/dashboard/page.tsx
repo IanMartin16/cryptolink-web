@@ -18,6 +18,7 @@ import { buildInsightV2 } from "@/lib/insight/buildInsightV2";
 import { usePricesFeed } from "@/lib/hooks/usePricesFeed";
 import { useTrendsFeed } from "@/lib/trends/useTrendsFeed";
 import TrendingNow from "@/components/TrendingNow";
+import { useMarketSignalsStore } from "@/lib/stores/marketSignalsStore";
 
 
 export default function DashboardPage() {
@@ -34,6 +35,15 @@ export default function DashboardPage() {
 
   // ✅ 2) Mood UNA vez (source of truth)
   const mood = useMemo(() => computeMood(rows, normalizedTrends), [rows, normalizedTrends]);
+
+  // leer lo persistido
+  const storedSnapshot = useMarketSignalsStore((s: any) => s.snapshot);
+  const setSnapshotStore = useMarketSignalsStore((s: any) => s.setSnapshot);
+
+  const computed: SnapshotKPIs = useMemo(
+    () => computeSnapshotKPIs({ rows, trends: normalizedTrends, moodScore: mood.score, confidence: mood.confidence }),
+    [rows, normalizedTrends, mood.score, mood.confidence]
+  );
 
   const trendsSummary = useMemo(() => {
       const up = normalizedTrends.filter(t => t.trend === "up").length;
@@ -52,25 +62,37 @@ export default function DashboardPage() {
     }, [normalizedTrends]);
 
   useEffect(() => {
-  const sample = rows.slice(0, 6).map(r => ({
-    sym: r.symbol,
-    price: r.price,
-    prev: r.prevPrice,
-    pct: r.pct,
-  }));
-}, [rows]);
+    const sample = rows.slice(0, 6).map(r => ({
+      sym: r.symbol,
+      price: r.price,
+      prev: r.prevPrice,
+      pct: r.pct,
+    }));
+  }, [rows]);
+
+  const snapshot: SnapshotKPIs = useMemo(() => {
+    const computedWarming =
+      (computed?.items ?? []).some(
+        (k) => typeof k.value === "string" && k.value.toLowerCase().includes("warming")
+      );
+    if (!computedWarming) return computed;         // datos frescos reales
+    if (storedSnapshot) return storedSnapshot;      // arranque: usa el último conocido
+    return computed;                                // no hay guardado: warming honesto
+  }, [computed, storedSnapshot]);
+
+// Persistir cuando el calculado tenga datos reales (no warming)
+  useEffect(() => {
+    const warming =
+      (computed?.items ?? []).some(
+        (k) => typeof k.value === "string" && k.value.toLowerCase().includes("warming")
+      );
+    if (!warming && computed?.items?.length) {
+      setSnapshotStore(computed);
+    }
+  }, [computed, setSnapshotStore]);
 
   // ✅ 4) Snapshot KPIs (MarketSnapshotBar)
-  const snapshot: SnapshotKPIs = useMemo(
-    () =>
-      computeSnapshotKPIs({
-        rows,
-        trends: normalizedTrends,
-        moodScore: mood.score,
-        confidence: mood.confidence,
-      }),
-    [rows, normalizedTrends, mood.score, mood.confidence]
-  );
+  
 
   // ✅ 5) Insight narrativo V2
   
@@ -130,7 +152,13 @@ const trendsFeed = useTrendsFeed({
       <StatusBar prices={pricesHealth} trends={trendsHealth} />
     </div>
 
-      <MarketSnapshotBar snapshot={snapshot} />
+      <MarketSnapshotBar
+        snapshot={snapshot}
+        status={
+        snapshot === storedSnapshot ? "restored" :
+        (pricesFeed.rows.length ? "live" : "refreshing")
+        }
+      />
 
       <InsightCard
         headline={insight.headline}

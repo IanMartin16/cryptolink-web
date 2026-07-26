@@ -2,6 +2,7 @@
 
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+import { SnapshotKPIs } from "../types";
 
 type TrendItem = {
   symbol: string;
@@ -71,6 +72,7 @@ type MarketSignalsState = {
   marketHealth: any | null;
   trendPulseHistory: Point[];
   socialPulse: any | null;
+  snapshot: SnapshotKPIs | null;
 
   trendsUpdatedAt: number | null;
   momentumUpdatedAt: number | null;
@@ -79,6 +81,7 @@ type MarketSignalsState = {
   marketHealthUpdatedAt: number | null;
   trendPulseUpdatedAt: number | null;
   socialPulseUpdatedAt: number | null;
+  snapshotUpdatedAt: string | null;
 
   setTrends: (v: TrendsResponse) => void;
   setMomentum: (v: MomentumResponse) => void;
@@ -88,6 +91,7 @@ type MarketSignalsState = {
   setTrendPulseHistory: (points: Point[]) => void;
   appendTrendPulsePoint: (point: Point, maxPoints?: number) => void;
   setSocialPulse: (v: any) => void;
+  setSnapshot: (s: SnapshotKPIs) => void;
 
   clearAll: () => void;
 };
@@ -102,6 +106,7 @@ export const useMarketSignalsStore = create<MarketSignalsState>()(
       marketHealth: null,
       trendPulseHistory: [],
       socialPulse: null,
+      snapshot: null as SnapshotKPIs | null,
 
       trendsUpdatedAt: null,
       momentumUpdatedAt: null,
@@ -110,6 +115,7 @@ export const useMarketSignalsStore = create<MarketSignalsState>()(
       marketHealthUpdatedAt: null,
       trendPulseUpdatedAt: null,
       socialPulseUpdatedAt: null,
+      snapshotUpdatedAt: null as string | null,
 
       setTrends: (v) =>
         set({
@@ -152,6 +158,9 @@ export const useMarketSignalsStore = create<MarketSignalsState>()(
           socialPulse: v,
           socialPulseUpdatedAt: Date.now(),
         }),
+
+      setSnapshot: (s: SnapshotKPIs) =>
+        set({ snapshot: s, snapshotUpdatedAt: new Date().toISOString() }),
 
       appendTrendPulsePoint: (point, maxPoints = 40) =>
         set((state) => {
