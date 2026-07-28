@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 export const runtime = "nodejs";
-
+import type { GlobalMarket, GlobalDominance } from "@/lib/types";
 /**
  * /api/social/global — Market Global (macro del mercado entero).
  *
@@ -17,18 +17,6 @@ export const runtime = "nodejs";
 const GLOBAL_URL = "https://api.coingecko.com/api/v3/global";
 const REVALIDATE_SECONDS = 600;
 
-export type GlobalDominance = { symbol: string; pct: number };
-
-export type GlobalMarket = {
-  marketCapUsd: number | null;
-  marketCapChange24h: number | null;   // % cambio 24h del market cap total
-  volumeUsd: number | null;
-  volumeChange24h: number | null;       // % cambio 24h del volumen total
-  dominance: GlobalDominance[];         // top por dominancia (BTC, ETH, ...)
-  activeCryptos: number | null;
-  markets: number | null;
-  ts: string;
-};
 
 export async function GET() {
   const ts = new Date().toISOString();

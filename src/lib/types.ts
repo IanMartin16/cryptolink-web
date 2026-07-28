@@ -76,3 +76,16 @@ export type TrendingCoin = {
   volume24h: string | null;
   description: string | null;
 };
+
+export type GlobalDominance = { symbol: string; pct: number };
+
+export type GlobalMarket = {
+  marketCapUsd: number | null;
+  marketCapChange24h: number | null;   // % cambio 24h del market cap total
+  volumeUsd: number | null;
+  volumeChange24h: number | null;       // % cambio 24h del volumen total
+  dominance: GlobalDominance[];         // top por dominancia (BTC, ETH, ...)
+  activeCryptos: number | null;
+  markets: number | null;
+  ts: string;
+};

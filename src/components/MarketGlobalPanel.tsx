@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { UI } from "@/lib/ui";
-
-
+import type { GlobalMarket, GlobalDominance } from "@/lib/types";
 /**
  * MarketGlobalPanel — macro del mercado entero (va en la sección Prices, arriba).
  *
@@ -16,18 +15,6 @@ import { UI } from "@/lib/ui";
  */
 
 // colores por símbolo para la barra de dominancia (los demás caen a "otros")
-type GlobalDominance = { symbol: string; pct: number };
-
-type GlobalMarket = {
-  marketCapUsd: number | null;
-  marketCapChange24h: number | null;   // % cambio 24h del market cap total
-  volumeUsd: number | null;
-  volumeChange24h: number | null;       // % cambio 24h del volumen total
-  dominance: GlobalDominance[];         // top por dominancia (BTC, ETH, ...)
-  activeCryptos: number | null;
-  markets: number | null;
-  ts: string;
-};
 
 const DOM_COLORS: Record<string, string> = {
   BTC: "#f7931a",
