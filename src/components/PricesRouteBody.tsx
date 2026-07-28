@@ -4,13 +4,13 @@ import { useEffect, useState } from "react";
 import StatusBar from "@/components/StatusBar";
 import PricesSplit from "@/components/PricesSplit";
 import PricesHeaderBar from "@/components/PricesHeaderBar";
-import SignalsRadarPanel from "@/components/SignalsRadarPanel";
 import { pushPricesToHistory } from "@/lib/priceHistoryStore";
 import { usePricesFeed } from "@/lib/hooks/usePricesFeed";
 import { getFiat } from "@/lib/fiatStore";
 import { getSymbols } from "@/lib/symbolsStore";
 import { fetchSymbols360, type SymbolMarket } from "@/lib/cryptoLink";
 import MarketSparkStrip from "./MarketSparkStrip";
+import MarketGlobalPanel from "./MarketGlobalPanel";
 
 export default function PricesRouteBody() {
   const {
@@ -89,6 +89,8 @@ export default function PricesRouteBody() {
         lastUpdated={rows[0]?.updatedAt ?? lastUpdated}
       />
       <MarketSparkStrip rows={rows} max={12} />
+
+      <MarketGlobalPanel /> 
 
       {/* Tabla principal: Watchlist (precio en vivo) + Top Movers (24h real + volumen).
           markets = datos ricos de CoinGecko, cruzados por símbolo en Top Movers. */}
