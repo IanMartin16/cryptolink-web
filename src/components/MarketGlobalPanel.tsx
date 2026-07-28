@@ -38,6 +38,7 @@ const DOM_COLORS: Record<string, string> = {
   XRP: "#23292f",
   SOL: "#14f195",
   TRX: "#ff060a",
+  FIGR_HELOC: "#fF069a",
 };
 const OTHER_COLOR = "rgba(255,255,255,0.22)";
 
@@ -87,7 +88,7 @@ function Metric({ label, value, change }: { label: string; value: string; change
 
 function DominanceBar({ dominance }: { dominance: GlobalDominance[] }) {
   // top 6 explícitos + "otros" agregado
-  const top = dominance.slice(0, 6);
+  const top = dominance.slice(0, 9);
   const topSum = top.reduce((a, d) => a + d.pct, 0);
   const others = Math.max(0, 100 - topSum);
 

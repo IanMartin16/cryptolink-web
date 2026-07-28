@@ -88,9 +88,10 @@ export default function PricesRouteBody() {
         assetsCount={rows.length || symbolsCount}
         lastUpdated={rows[0]?.updatedAt ?? lastUpdated}
       />
-      <MarketSparkStrip rows={rows} max={12} />
 
       <MarketGlobalPanel /> 
+
+      <MarketSparkStrip rows={rows} max={12} />
 
       {/* Tabla principal: Watchlist (precio en vivo) + Top Movers (24h real + volumen).
           markets = datos ricos de CoinGecko, cruzados por símbolo en Top Movers. */}
