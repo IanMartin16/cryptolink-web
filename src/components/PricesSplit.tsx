@@ -8,6 +8,7 @@ import { getSymbolName } from "@/lib/symbolMeta";
 import Sparkline from "@/components/Sparkline";
 import { getPriceHistory } from "@/lib/usePriceHistory";
 
+
 function fmtPrice(n?: number) {
   if (typeof n !== "number") return "—";
   return n >= 1000 ? n.toFixed(0) : n >= 1 ? n.toFixed(2) : n.toFixed(6);
@@ -140,7 +141,7 @@ function buildMovers(
       if (ao !== bo) return ao - bo;
       return Math.abs(b.change24h) - Math.abs(a.change24h);
     })
-    .slice(0, 5);
+    .slice(0, 10);
 }
 
 export default function PricesSplit({
@@ -185,10 +186,12 @@ export default function PricesSplit({
             <div className="text-xs font-semibold tracking-wide text-white/70">{titleLeft}</div>
             <FreshnessTag live={live} lastUpdated={lastUpdated} />
           </div>
-          <div className="text-[11px] text-white/45">{watch.length} assets</div>
+          <div className="text-[11px] text-white/45" title="A rotating daily selection across the market · refreshes every 24h">
+            {watch.length} assets · rotating daily
+          </div>
         </div>
 
-        <div className="max-h-[720px] overflow-auto">
+        <div className="max-h-[1080px] overflow-auto">
           <table className="w-full">
             <thead className="sticky top-0 bg-black/20 backdrop-blur">
               <tr className="text-[11px] text-white/55">
@@ -208,13 +211,13 @@ export default function PricesSplit({
                 return (
                   <tr key={r.symbol} className="border-t border-white/5 hover:bg-white/[0.04]">
                     <td className="px-3 py-2"><SymbolCell symbol={r.symbol} fiat={r.fiat}/> </td>
-                    <th className="flex flex-col min-w-0">
+                    <td className="flex flex-col min-w-0">
                           {fullName ? (
                             <div className="border-t border-white/5 hover:bg-white/[0.04]">
                               {fullName}
                             </div>
                           ) : null}
-                        </th>
+                        </td>
                     <td className="px-3 py-2 text-right tabular-nums text-white/85">{fmtPrice(r.price)}</td>
                     <td className="px-3 py-2 text-right"><PctCell pct={pct} /></td>
                     <td className="px-3 py-2 text-right">
@@ -262,7 +265,7 @@ export default function PricesSplit({
           <div className="text-[11px] text-white/45">24h</div>
         </div>
 
-        <div className="max-h-[420px] space-y-2 overflow-auto p-2">
+        <div className="max-h-[840px] space-y-2 overflow-auto p-2">
           {movers.map((r) => {
             const hist = getPriceHistory(r.symbol, r.fiat ?? "USD").slice(-20);
             const tone = sparkTone(r.change24h);

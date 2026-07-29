@@ -11,6 +11,10 @@ import { getSymbols } from "@/lib/symbolsStore";
 import { fetchSymbols360, type SymbolMarket } from "@/lib/cryptoLink";
 import MarketSparkStrip from "./MarketSparkStrip";
 import MarketGlobalPanel from "./MarketGlobalPanel";
+import { SYMBOL_META } from "@/lib/symbolMeta";
+import { getDailyRotation } from "@/lib/dailyRotation";
+import { setSymbols } from "@/lib/symbolsStore";
+
 
 export default function PricesRouteBody() {
   const {
@@ -65,6 +69,13 @@ export default function PricesRouteBody() {
       window.removeEventListener("cryptolink:symbols" as any, onSymbols);
     };
   }, []);
+
+  useEffect(() => {
+  const daily = getDailyRotation(Object.keys(SYMBOL_META));
+  console.log("[rotation] sembrando:", daily.length, daily); // ¿calcula 20?
+  setSymbols(daily);
+  console.log("[rotation] getSymbols tras set:", getSymbols().length); // ¿guardó 20?
+}, []);
 
   // historial de precios (lo seguimos alimentando para sparklines de la tabla)
   useEffect(() => {
