@@ -50,7 +50,7 @@ function ensureSparkData(hist: number[], current?: number, prev?: number) {
 
 export default function MarketSparkStrip({
   rows,
-  max = 12,
+  max = 20,
   title = "MARKET PULSE BAR"
 }: {
   rows: PriceRow[];
@@ -78,7 +78,7 @@ export default function MarketSparkStrip({
         </div>
       </div>
 
-      <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
         {items.map(({ row: r, hist }) => {
           const sparkValues = ensureSparkData(hist.slice(-30), r.price, r.prevPrice);
           const path = sparkPath(sparkValues, 90, 28);
