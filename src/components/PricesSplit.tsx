@@ -141,7 +141,7 @@ function buildMovers(
       if (ao !== bo) return ao - bo;
       return Math.abs(b.change24h) - Math.abs(a.change24h);
     })
-    .slice(0, 10);
+    .slice(0, 13);
 }
 
 export default function PricesSplit({
@@ -265,7 +265,7 @@ export default function PricesSplit({
           <div className="text-[11px] text-white/45">24h</div>
         </div>
 
-        <div className="max-h-[840px] space-y-2 overflow-auto p-2">
+        <div className="max-h-[1080px] space-y-2 overflow-auto p-2">
           {movers.map((r) => {
             const hist = getPriceHistory(r.symbol, r.fiat ?? "USD").slice(-20);
             const tone = sparkTone(r.change24h);
