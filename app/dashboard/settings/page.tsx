@@ -78,7 +78,7 @@ export default function SettingsPage() {
           </div>
         </div>
 
-        <div className="mt-4 max-h-[320px] overflow-auto pr-1">
+        <div className="mt-4 max-h-[480px] overflow-auto pr-1">
           <SymbolChips
             symbols={available}
             selected={selected}
