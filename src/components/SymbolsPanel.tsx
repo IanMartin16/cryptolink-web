@@ -463,7 +463,7 @@ export default function Market360Panel() {
         <div>
           <h2 style={{ margin: 0, fontSize: 22 }}>Market <span style={{ color: UI.orange }}>360°</span></h2>
           <p style={{ marginTop: 8, opacity: 0.78, fontSize: 14 }}>
-            Activity vs performance, then full detail per asset.
+            Activity vs performance, then full detail per asset - Top75 by Market Cap.
           </p>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
