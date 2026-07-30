@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import Market360Panel from "@/components/Market360Panel";
 import type { Health } from "@/lib/health";
 import { getSymbols, setSymbols } from "@/lib/symbolsStore";
-import MarketIntelligencePanel from "@/components/MarketIntelligencePanel";
 import MarketMood from "@/components/MarketMood";
 import { normalizeTrends } from "@/lib/trendEngine";
 import { computeSnapshotKPIs } from "@/lib/snapshotEngine";
