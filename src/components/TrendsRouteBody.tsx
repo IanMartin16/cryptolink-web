@@ -65,7 +65,7 @@ export default function TrendsRouteBody() {
             alignItems: "start",
           }}
         >
-        <MarketMomentumPanel topN={5} />
+        <MarketMomentumPanel topN={10} />
         <TrendsWarmup />
       </div>
     </div>
