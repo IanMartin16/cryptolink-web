@@ -133,7 +133,7 @@ const OVERRIDES: Record<string, string> = {
   TIA: "/icons/crypto/tia.png",
   ZRO: "/icons/crypto/zro.png",
   KAITO: "/icons/crypto/kaito.png",
-  LDO: "/icons/crypto/kaito.png",
+  LDO: "/icons/crypto/ldo.png",
   GNO: "/icons/crypto/gno.png",
   LUNC: "/icons/crypto/lunc.png",
   JTO: "/icons/crypto/jto.png",
