@@ -361,8 +361,8 @@ export default function MarketAttentionTable({
           ))}
         </div>
       ) : (
-        <div style={{ marginTop: 12, overflowX: "auto", maxHeight: 840 }}>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <div style={{ overflowX: "auto", maxWidth: "100%", maxHeight: 840 }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 560 }}>
             <thead>
               <tr style={{ textAlign: "left", borderBottom: `1px solid ${UI.border}`, position: "sticky", top: 0, background: UI.panel, zIndex: 1 }}>
                 <th style={{ padding: "10px 8px", fontSize: 12, opacity: 0.75, fontWeight: 800 }}>#</th>
