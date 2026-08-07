@@ -219,7 +219,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           aria-hidden
           style={{
             position: "absolute",
-            inset: -200,
+            inset: 0,
             background:
               "radial-gradient(600px 360px at 70% 10%, rgba(255,159,67,0.10), transparent 60%), radial-gradient(520px 320px at 20% 30%, rgba(46,229,157,0.06), transparent 60%)",
             pointerEvents: "none",
