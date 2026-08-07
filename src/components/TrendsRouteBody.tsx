@@ -47,12 +47,15 @@ export default function TrendsRouteBody() {
           display: "grid",
           gap: 16,
           marginTop: 16,
+          minWidth: 0,
+          maxWidth: "100%",
+          overflowX: "clip",
         }}
       >
-      <div>
+      <div style={{ minWidth: 0 }}>
       <MarketAttentionTable onItems={setAttentionItems} onHealth={setTrendsHealth} />
       </div>
-      <div style={{ minWidth: 0 }}>
+      <div style={{ marginTop: 12, minWidth: 0 }}>
         <AttentionPulsePanel items={attentionItems} maxPoints={40}/>
       </div>
         <RegimePanel />
