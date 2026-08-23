@@ -40,12 +40,13 @@ export default function DerivedIntelligencePage() {
       </div>
 
       <div className="min-h-[320px]">
-        <SocialPulseBoard />
+        <SignalsRadarPanel />
       </div>
 
       <div className="min-h-[320px]">
-        <SignalsRadarPanel />
+        <SocialPulseBoard />
       </div>
+
     </div>
   );
 }

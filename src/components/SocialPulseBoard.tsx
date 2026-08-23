@@ -79,37 +79,48 @@ useEffect(() => {
   let cancelled = false;
 
   async function load() {
+  try {
+    setError("");
+    setStatus((prev) => (prev === "live" ? "refreshing" : prev));
+
+    // top 10 dinámico por market cap (en vez de lista fija)
+    let pulseSymbols: string[] = ["BTC", "ETH", "USDT", "BNB", "USDC"]; // fallback
     try {
-      setError("");
-      setStatus((prev) => (prev === "live" ? "refreshing" : prev));
-
-      const pulseRes = await fetchSocialPulse(["BTC", "ETH", "USDT", "BNB", "USDC", "XRP", "SOL", "TRX", "FIGR_HELOC", "HYPE"]);
-
-       let basicResData: BasicSignalsResponse | null = null;
-
-      try {
-        const basicRes = await fetchBasicSignals({
-          window: "1h",
-          assets: ["BTC", "ETH", "USDT", "BNB", "USDC", "XRP", "SOL", "TRX", "FIGR_HELOC", "HYPE"],
-          limit: 10,
-        });
-
-        basicResData = basicRes;
-      } catch (error) {
-        console.error("basicSignals fetch failed", error);
-        basicResData = null;
-      }
-
-      if (!cancelled) {
-        setData(pulseRes);
-        setSocialPulseStore(pulseRes);
-        setBasicSignals(basicResData);
-        setStatus("live");
-      }
-    } catch (e: any) {
-      if (!cancelled) setError(e?.message ?? "unknown");
+      const topRes = await fetchTopSymbols(10, "USD");
+      const syms = (topRes.symbols ?? [])
+        .map((s: any) => s.symbol)
+        .filter(Boolean)
+        .slice(0, 10);
+      if (syms.length) pulseSymbols = syms;
+    } catch {
+      // si el top falla, usamos el fallback de majors (no rompe el panel)
     }
+
+    const pulseRes = await fetchSocialPulse(pulseSymbols);
+
+    let basicResData: BasicSignalsResponse | null = null;
+    try {
+      const basicRes = await fetchBasicSignals({
+        window: "1h",
+        assets: pulseSymbols,   // mismos símbolos que el pulse (coherencia)
+        limit: 10,
+      });
+      basicResData = basicRes;
+    } catch (error) {
+      console.error("basicSignals fetch failed", error);
+      basicResData = null;
+    }
+
+    if (!cancelled) {
+      setData(pulseRes);
+      setSocialPulseStore(pulseRes);
+      setBasicSignals(basicResData);
+      setStatus("live");
+    }
+  } catch (e: any) {
+    if (!cancelled) setError(e?.message ?? "unknown");
   }
+}
 
   load();
   const id = setInterval(load, 300000);

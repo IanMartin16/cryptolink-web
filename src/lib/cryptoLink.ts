@@ -294,3 +294,15 @@ export async function fetchSymbols360(
   if (!res.ok) throw new Error(`Symbols 360 HTTP ${res.status}`);
   return (await res.json()) as SymbolsResponse;
 }
+
+export async function fetchTopSymbols(
+  top: number = 10,
+  fiat: string = "USD"
+): Promise<SymbolsResponse> {
+  const res = await fetch(
+    `/api/social/symbols?top=${top}&fiat=${encodeURIComponent(fiat)}`,
+    { cache: "no-store" }
+  );
+  if (!res.ok) throw new Error(`Top symbols HTTP ${res.status}`);
+  return (await res.json()) as SymbolsResponse;
+}
