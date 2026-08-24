@@ -20,7 +20,7 @@ export default function Footer() {
       </div>
 
       <div className="mt-2 text-[11px] text-white/25">
-        Demo build · Data may be delayed · Not financial advice
+        Live market showcase · Data may be delayed · Not financial advice
       </div>
     </footer>
   );
