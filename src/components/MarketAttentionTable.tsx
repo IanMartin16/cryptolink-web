@@ -377,7 +377,7 @@ export default function MarketAttentionTable({
               {viewRows.map((r, idx) => {
                 const rank = idx + 1;
                 const isHover = hover === r.symbol;
-                const isTop = rank <= 3;
+                const isTop = rank <= 5;
                 const fullName = getSymbolName(r.symbol);
                 const h = getTrendHistory(r.symbol).slice(-24);
                 const c = dirColor(r.direction);

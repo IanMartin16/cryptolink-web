@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
     const symbols = MARKET_360_TOP;
 
     const url =
-      `${getBaseUrl()}/internal/v1/symbols?top=75&fiat=USD`
+      `${getBaseUrl()}/internal/v1/symbols?top=100&fiat=USD`
     // Header de la app hacia el motor (si aplica)
     const apiKey = process.env.CRYPTOLINK_DEMO_KEY || "";
 
