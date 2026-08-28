@@ -101,7 +101,7 @@ export function buildInsightV2(input: {
   const confPct = Math.round(confidence * 100);
   const confTone = toneWord(kConf?.tone);
 
-  const themes = topTrends(input.trends, 2);
+  const themes = topTrends(input.trends, 5);
   const themeTxt = themes.length ? ` • themes: ${themes.join(", ")}` : "";
 
   const sign = pressure >= 0 ? "+" : "";
