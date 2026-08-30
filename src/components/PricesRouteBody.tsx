@@ -14,6 +14,7 @@ import MarketGlobalPanel from "./MarketGlobalPanel";
 import { SYMBOL_META } from "@/lib/symbolMeta";
 import { getDailyRotation } from "@/lib/dailyRotation";
 import { setSymbols } from "@/lib/symbolsStore";
+import TopMoversStrip from "@/components/TopMoversStrip";
 
 
 export default function PricesRouteBody() {
@@ -103,6 +104,8 @@ export default function PricesRouteBody() {
       <MarketGlobalPanel /> 
 
       <MarketSparkStrip rows={rows} max={20} />
+
+      <TopMoversStrip rows={rows} markets={markets} perSide={5} />
 
       {/* Tabla principal: Watchlist (precio en vivo) + Top Movers (24h real + volumen).
           markets = datos ricos de CoinGecko, cruzados por símbolo en Top Movers. */}

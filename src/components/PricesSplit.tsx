@@ -107,42 +107,6 @@ type MoverRow = {
   volume24h?: number | null;
 };
 
-function buildMovers(
-  rows: PriceRow[],
-  marketMap: Map<string, SymbolMarket>,
-  filter: "all" | "gainers" | "losers"
-): MoverRow[] {
-  const out: MoverRow[] = [];
-
-  for (const r of rows) {
-    const m = marketMap.get(r.symbol.toUpperCase());
-    // solo entra al ranking si CoinGecko nos dio el 24h real
-    if (!m || typeof m.change24h !== "number" || !Number.isFinite(m.change24h)) continue;
-
-    out.push({
-      symbol: r.symbol,
-      fiat: r.fiat,
-      price: typeof r.price === "number" ? r.price : (m.price ?? undefined),
-      ok: r.ok,
-      change24h: m.change24h,
-      volume24h: m.volume24h,
-    });
-  }
-
-  return out
-    .filter((r) => {
-      if (filter === "gainers") return r.change24h > 0;
-      if (filter === "losers") return r.change24h < 0;
-      return true;
-    })
-    .sort((a, b) => {
-      const ao = a.ok ? 0 : 1;
-      const bo = b.ok ? 0 : 1;
-      if (ao !== bo) return ao - bo;
-      return Math.abs(b.change24h) - Math.abs(a.change24h);
-    })
-    .slice(0, 13);
-}
 
 export default function PricesSplit({
   rows,
@@ -159,7 +123,6 @@ export default function PricesSplit({
   lastUpdated?: string | number;
   live?: boolean;
 }) {
-  const [moversFilter, setMoversFilter] = useState<"all" | "gainers" | "losers">("all");
 
   const marketMap = useMemo(() => {
     const m = new Map<string, SymbolMarket>();
@@ -167,10 +130,6 @@ export default function PricesSplit({
     return m;
   }, [markets]);
 
-  const movers = useMemo(
-    () => buildMovers(rows || [], marketMap, moversFilter),
-    [rows, marketMap, moversFilter]
-  );
 
   const watch = useMemo(() => sortForWatchlist(rows || []), [rows]);
 
@@ -178,9 +137,9 @@ export default function PricesSplit({
   const hasMarkets = marketMap.size > 0;
 
   return (
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+    <div className="w-full">
       {/* LEFT: WATCHLIST (precio en vivo, Δ% sesión) — sin cambios */}
-      <div className="lg:col-span-2 rounded-xl border border-white/10 bg-white/[0.03]">
+      <div className="w-full rounded-xl border border-white/10 bg-white/[0.03]">
         <div className="flex items-center justify-between border-b border-white/10 px-3 py-2">
           <div className="flex items-center gap-3">
             <div className="text-xs font-semibold tracking-wide text-white/70">{titleLeft}</div>
@@ -233,68 +192,6 @@ export default function PricesSplit({
               ) : null}
             </tbody>
           </table>
-        </div>
-      </div>
-
-      {/* RIGHT: TOP MOVERS (24h REAL + volumen, de CoinGecko) */}
-      <div className="flex flex-col rounded-xl border border-white/10 bg-white/[0.03]">
-        <div className="flex items-center justify-between border-b border-white/10 px-3 py-2">
-          <div className="text-xs font-semibold tracking-wide text-white/70">{titleRight}</div>
-          <div className="flex items-center gap-2">
-            <div className="flex gap-1">
-              {(["all", "gainers", "losers"] as const).map((k) => {
-                const active = moversFilter === k;
-                const label = k === "all" ? "All" : k === "gainers" ? "▲" : "▼";
-                return (
-                  <button
-                    key={k}
-                    onClick={() => setMoversFilter(k)}
-                    className={[
-                      "rounded-md border px-2 py-0.5 text-[11px] font-semibold transition",
-                      active ? "border-white/20 bg-white/10 text-white" : "border-white/10 bg-white/[0.03] text-white/55 hover:bg-white/[0.06]",
-                    ].join(" ")}
-                    aria-pressed={active}
-                    title={k}
-                  >
-                    {label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-          <div className="text-[11px] text-white/45">24h</div>
-        </div>
-
-        <div className="max-h-[1080px] space-y-2 overflow-auto p-2">
-          {movers.map((r) => {
-            const hist = getPriceHistory(r.symbol, r.fiat ?? "USD").slice(-20);
-            const tone = sparkTone(r.change24h);
-            return (
-              <div key={r.symbol} className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.02] px-2 py-2">
-                <div className="min-w-0">
-                  <SymbolCell symbol={r.symbol} fiat={r.fiat} />
-                  {/* volumen como contexto debajo del símbolo */}
-                  <div className="mt-0.5 text-[10px] text-white/40">
-                    Vol {fmtVol(r.volume24h)}
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <Sparkline values={hist} w={64} h={18} stroke={tone.stroke} fill={tone.fill} />
-                  <div className="flex flex-col items-end leading-tight">
-                    <div className="text-sm tabular-nums text-white/85">{fmtPrice(r.price)}</div>
-                    <div className="text-xs"><PctCell pct={r.change24h} /></div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-
-          {!movers.length ? (
-            <div className="px-2 py-4 text-sm text-white/50">
-              {hasMarkets ? "No movers in this filter." : "Loading 24h market data…"}
-            </div>
-          ) : null}
         </div>
       </div>
     </div>
