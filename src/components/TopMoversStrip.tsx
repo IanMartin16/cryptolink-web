@@ -5,18 +5,6 @@ import type { PriceRow } from "@/lib/types";
 import type { SymbolMarket } from "@/lib/cryptoLink";
 import SymbolCell from "@/components/SymbolCell";
 
-/**
- * TopMoversStrip — tira discreta arriba de Prices.
- * Muestra 5 gainers + 5 losers al mismo tiempo (sin selector), por Δ% 24h REAL
- * de CoinGecko (markets payload). La data ya existía en PricesSplit/buildMovers;
- * esto solo la EXPONE mejor (antes vivía tras un selector que arrancaba en "all"
- * y escondía la mitad).
- *
- * Cero backend nuevo: cruza rows (precio en vivo) con markets (change24h real),
- * igual que buildMovers, pero separa en dos grupos y ordena cada uno por su lado
- * para GARANTIZAR ver ambos siempre (el buildMovers viejo ordenaba por magnitud
- * absoluta y podía dar 13 gainers / 0 losers en día verde).
- */
 
 type MoverRow = {
   symbol: string;

@@ -177,9 +177,9 @@ export default function PricesSplit({
                             </div>
                           ) : null}
                         </td>
-                    <td className="px-3 py-2 text-right tabular-nums text-white/85">{fmtPrice(r.price)}</td>
-                    <td className="px-3 py-2 text-right"><PctCell pct={pct} /></td>
-                    <td className="px-3 py-2 text-right">
+                      <td className="px-3 py-2 text-right tabular-nums text-white/85">{fmtPrice(r.price)}</td>
+                      <td className="px-3 py-2 text-right"><PctCell pct={pct} /></td>
+                      <td className="px-3 py-2 text-right">
                       <div className="inline-flex items-center justify-end">
                         <Sparkline values={hist} w={72} h={18} stroke={tone.stroke} fill={tone.fill} />
                       </div>
