@@ -1,4 +1,5 @@
 import { SocialAttentionItem, SocialLinkBasicSignalsResponse } from "@/lib/social/basicSignalsMock";
+import { categoriesOf, hasCategory } from "@/lib/symbolMeta";
 
 type CoinGeckoTrendingCoin = {
   item: {
@@ -73,20 +74,9 @@ const ASSET_DESCRIPTOR_TAGS = new Set([
   "smart-contracts",
 ]);
 
-function inferTags(symbol: string, name?: string): string[] {
-  const s = symbol.toUpperCase();
-  const n = (name ?? "").toLowerCase();
-
-  const tags: string[] = [];
-
-  if (s === "BTC" || s === "ETH") tags.push("majors-led");
-  if (["SOL", "ADA", "AVAX", "ATOM", "NEAR"].includes(s)) tags.push("layer1");
-  if (["DOGE", "SHIB", "PEPE", "FLOKI"].includes(s)) tags.push("meme");
-  if (["LINK", "UNI", "AAVE", "MKR"].includes(s)) tags.push("defi");
-  if (n.includes("bitcoin")) tags.push("store-of-value");
-  if (n.includes("ethereum")) tags.push("smart-contracts");
-
-  return [...new Set(tags)];
+function inferTags(symbol: string, _name?: string): string[] {
+  // el bucket interno "major" se pinta como "majors-led" en el UI/NARRATIVE_TAGS
+  return categoriesOf(symbol).map((c) => (c === "major" ? "majors-led" : c));
 }
 
 function deriveCoverage(args: {
@@ -275,21 +265,10 @@ function buildMarketNarrativeTags(args: {
   return [...new Set(tags)].slice(0, 4);
 }
 
-function isMajorAsset(asset: string): boolean {
-  return asset === "BTC" || asset === "ETH";
-}
-
-function isMemeAsset(asset: string): boolean {
-  return ["DOGE", "SHIB", "PEPE", "FLOKI"].includes(asset);
-}
-
-function isLayer1Asset(asset: string): boolean {
-  return ["SOL", "ADA", "AVAX", "ATOM", "NEAR"].includes(asset);
-}
-
-function isDefiAsset(asset: string): boolean {
-  return ["LINK", "UNI", "AAVE", "MKR"].includes(asset);
-}
+function isMajorAsset(a: string){ return hasCategory(a, "major"); }
+function isMemeAsset(a: string){ return hasCategory(a, "meme"); }
+function isLayer1Asset(a: string){ return hasCategory(a, "layer1"); }
+function isDefiAsset(a: string){ return hasCategory(a, "defi"); }
 
 
 export const mockCoinGeckoTrending: CoinGeckoTrendingResponse = {

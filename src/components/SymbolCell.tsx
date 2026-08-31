@@ -1,6 +1,6 @@
 "use client";
 
-import { getCryptoIconUrl } from "@/lib/cryptoIcons";
+import { getCryptoIconUrl } from "@/lib/symbolMeta";
 
 function initials(sym: string) {
   return (sym || "—").slice(0, 3).toUpperCase();
