@@ -126,7 +126,7 @@ function tagTone(tag: string): { c: string; bg: string; b: string } {
     return { c: "#A5B5C5", bg: "rgba(165,181,197,0.12)", b: "rgba(165,181,197,0.25)" };
   // stablecoins -> naranja
   if (["stablecoin", "oracle"].includes(t))
-    return { c: "#FBBF24", bg: "rgba(251,191,36,0.12)", b: "rgba(251,191,36,0.30)" }
+    return { c: "#FBBF24", bg: "rgba(251,191,36,0.12)", b: "rgba(251,191,36,0.30)" };
   // defi -> verde
   if (t === "defi")
     return { c: UI.green, bg: "rgba(46,229,157,0.10)", b: "rgba(46,229,157,0.25)" };
