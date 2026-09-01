@@ -120,10 +120,13 @@ function tagTone(tag: string): { c: string; bg: string; b: string } {
     return { c: "#C08BFF", bg: "rgba(192,139,255,0.10)", b: "rgba(192,139,255,0.25)" };
   // ai, infra, gaming -> pink
   if (["ai", "infra", "gaming"].includes(t))
-    return { c: "#F43F5E", bg: "rgba(244,63,94,0.10)", b: "rgba(244,63,94,0.25)" };
+    return { c: "#f43fbe", bg: "rgba(244,63,94,0.10)", b: "rgba(244,63,94,0.25)" };
+  // payments, layer2, privacy
+  if (["layer2", "privacy", "payments"].includes(t))
+    return { c: "#A5B5C5", bg: "rgba(165,181,197,0.12)", b: "rgba(165,181,197,0.25)" };
   // stablecoins -> naranja
   if (["stablecoin", "oracle"].includes(t))
-    return {c: "#EAB308", bg: "rgba(234,179,8,0.10)", b: "rgba(234,179,8,0.25)" };
+    return { c: "#FBBF24", bg: "rgba(251,191,36,0.12)", b: "rgba(251,191,36,0.30)" }
   // defi -> verde
   if (t === "defi")
     return { c: UI.green, bg: "rgba(46,229,157,0.10)", b: "rgba(46,229,157,0.25)" };
