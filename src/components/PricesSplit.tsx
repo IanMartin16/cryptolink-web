@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import type { PriceRow } from "@/lib/types";
 import type { SymbolMarket } from "@/lib/cryptoLink";
 import SymbolCell from "@/components/SymbolCell";
@@ -70,6 +70,8 @@ function sparkTone(pct?: number | null) {
   return { stroke: "rgba(255,255,255,0.55)", fill: "rgba(255,255,255,0.06)" };
 }
 
+import { useState, useEffect } from "react";
+
 function freshness(lastUpdated?: string | number) {
   if (!lastUpdated) return null;
   const t = new Date(lastUpdated).getTime();
@@ -81,6 +83,13 @@ function freshness(lastUpdated?: string | number) {
 }
 
 function FreshnessTag({ live, lastUpdated }: { live?: boolean; lastUpdated?: string | number }) {
+  // tick cada 1s para que "Xs ago" avance aunque no lleguen datos nuevos
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setTick((t) => (t + 1) % 1_000_000), 1000);
+    return () => clearInterval(id);   // limpieza: sin fugas de timer
+  }, []);
+
   const ago = freshness(lastUpdated);
   const dot = live ? "rgba(46,229,157,0.95)" : "rgba(255,255,255,0.30)";
   return (
