@@ -70,8 +70,6 @@ function sparkTone(pct?: number | null) {
   return { stroke: "rgba(255,255,255,0.55)", fill: "rgba(255,255,255,0.06)" };
 }
 
-import { useState, useEffect } from "react";
-
 function freshness(lastUpdated?: string | number) {
   if (!lastUpdated) return null;
   const t = new Date(lastUpdated).getTime();
