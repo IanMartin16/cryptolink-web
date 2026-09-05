@@ -1,6 +1,6 @@
 export type SymbolCategory =
   | "major" | "layer1" | "layer2" | "meme" | "defi" | "stablecoin" | "wallets"
-  | "rwa" | "ai" | "privacy" | "infra" | "oracle" | "exchange-token" | "binance" 
+  | "rwa" | "ai" | "privacy" | "infra" | "oracle" | "exchange-token" | "binance alpha spotlight" 
   | "payments" | "gaming" | "store-of-value" | "smart-contracts" | "launchpad" | "cefi";
 
 export type SymbolMetaEntry = { name: string; icon?: string; categories?: SymbolCategory[]; };
@@ -180,7 +180,7 @@ export const SYMBOL_META: Record<string, SymbolMetaEntry> = {
   CASHCAT: { name: "Cash Cat", icon: "/icons/crypto/cashcat.png", categories: ["meme"] },
   USDAI: { name: "USDai", icon: "/icons/crypto/usdai.png", categories: ["stablecoin"] },
   RAY: { name: "Raydium", icon: "/icons/crypto/ray.png", categories: ["defi"] },
-  KOGE: { name: "KOGE", icon: "/icons/crypto/koge.png", categories: ["binance"] },
+  KOGE: { name: "KOGE", icon: "/icons/crypto/koge.png", categories: ["binance alpha spotlight"] },
   PONS: { name: "Pons", icon: "/icons/crypto/pons.png", categories: ["launchpad"] },
   FRAX: { name: "Legacy Frax Dollar", icon: "/icons/crypto/frax.png", categories: ["stablecoin"] },
   CVX: { name: "Convex Finance", icon: "/icons/crypto/cvx.png", categories: ["defi"] },
@@ -189,7 +189,7 @@ export const SYMBOL_META: Record<string, SymbolMetaEntry> = {
   TWT: { name: "Trust Wallet", icon: "/icons/crypto/twt.png", categories: ["wallets"] },
   ULTIMA: { name: "Ultima", icon: "/icons/crypto/ultima.png", categories: ["defi","layer1"] },
   KAIA: { name: "Kaia", icon: "/icons/crypto/kaia.png", categories: ["layer1","smart-contracts"] },
-  "2z": { name: "DoubleZero", icon: "/icons/crypto/2z.png", categories: ["binance"] },
+  "2z": { name: "DoubleZero", icon: "/icons/crypto/2z.png", categories: ["binance alpha spotlight"] },
   IOTA: { name: "IOTA", icon: "/icons/crypto/iota.png", categories: ["defi","layer1"] },
   SKR: { name: "Seeker", icon: "/icons/crypto/skr.png", categories: ["infra"] },
   EDGE: { name: "edgeX", icon: "/icons/crypto/edge.png", categories: ["defi"] },
