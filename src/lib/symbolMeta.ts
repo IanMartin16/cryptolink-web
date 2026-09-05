@@ -1,6 +1,6 @@
 export type SymbolCategory =
-  | "major" | "layer1" | "layer2" | "meme" | "defi" | "stablecoin"
-  | "rwa" | "ai" | "privacy" | "infra" | "oracle" | "exchange-token" | "binance"
+  | "major" | "layer1" | "layer2" | "meme" | "defi" | "stablecoin" | "wallets"
+  | "rwa" | "ai" | "privacy" | "infra" | "oracle" | "exchange-token" | "binance" 
   | "payments" | "gaming" | "store-of-value" | "smart-contracts" | "launchpad" | "cefi";
 
 export type SymbolMetaEntry = { name: string; icon?: string; categories?: SymbolCategory[]; };
