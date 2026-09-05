@@ -25,7 +25,7 @@ const DOM_COLORS: Record<string, string> = {
   XRP: "#23292f",
   SOL: "#14f195",
   TRX: "#ff060a",
-  FIGR_HELOC: "#fF069a",
+  HYPE: "#fF069a",
 };
 const OTHER_COLOR = "rgba(255,255,255,0.22)";
 
