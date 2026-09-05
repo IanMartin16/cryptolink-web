@@ -1,6 +1,6 @@
 export type SymbolCategory =
   | "major" | "layer1" | "layer2" | "meme" | "defi" | "stablecoin"
-  | "rwa" | "ai" | "privacy" | "infra" | "oracle" | "exchange-token"
+  | "rwa" | "ai" | "privacy" | "infra" | "oracle" | "exchange-token" | "binance"
   | "payments" | "gaming" | "store-of-value" | "smart-contracts" | "launchpad" | "cefi";
 
 export type SymbolMetaEntry = { name: string; icon?: string; categories?: SymbolCategory[]; };
@@ -200,7 +200,7 @@ export const SYMBOL_META: Record<string, SymbolMetaEntry> = {
   BORG: { name: "SwissBorg", icon: "/icons/crypto/borg.png", categories: ["cefi"] },
   USELESS: { name: "Useless Coin", icon: "/icons/crypto/useless.png", categories: ["meme"] },
   TEL: { name: "Telcoin", icon: "/icons/crypto/tel.png", categories: ["defi","layer1"] },
-  牛来: { name: "牛来(Niu Lai)", icon: "/icons/crypto/牛来.png", categories: ["meme"] },
+  '牛来': { name: "牛来(Niu Lai)", icon: "/icons/crypto/牛来.png", categories: ["meme"] },
   DRV: { name: "Derive", icon: "/icons/crypto/drv.png", categories: ["defi"] },
   COCO: { name: "coco", icon: "/icons/crypto/coco.png", categories: ["meme"] },
   MX: { name: "MX", icon: "/icons/crypto/mx.png", categories: ["exchange-token"] },
