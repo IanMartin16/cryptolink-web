@@ -1,7 +1,7 @@
 export type SymbolCategory =
   | "major" | "layer1" | "layer2" | "meme" | "defi" | "stablecoin"
   | "rwa" | "ai" | "privacy" | "infra" | "oracle" | "exchange-token"
-  | "payments" | "gaming" | "store-of-value" | "smart-contracts";
+  | "payments" | "gaming" | "store-of-value" | "smart-contracts" | "launchpad" | "cefi";
 
 export type SymbolMetaEntry = { name: string; icon?: string; categories?: SymbolCategory[]; };
 
@@ -169,7 +169,7 @@ export const SYMBOL_META: Record<string, SymbolMetaEntry> = {
   OHM: { name: "Olympus", icon: "/icons/crypto/ohm.png", categories: ["defi"] },
   PIEVERSE: { name: "Pieverse", icon: "/icons/crypto/pieverse.png", categories: ["ai"] },
   ONYC: { name: "OnRe Tokenized Reinsurance", icon: "/icons/crypto/onyc.png", categories: ["rwa"] },
-  SAFE: { name: "SAFEbit", icon: "/icons/crypto/safe.png", categories: ["exchange"] },
+  SAFE: { name: "SAFEbit", icon: "/icons/crypto/safe.png", categories: ["exchange-token"] },
   CRVUSD: { name: "crvUSD", icon: "/icons/crypto/crvusd.png", categories: ["stablecoin","defi"] },
   KAG: { name: "Kinesis Silver", icon: "/icons/crypto/kag.png", categories: ["rwa"] },
   GRASS: { name: "Grass", icon: "/icons/crypto/grass.png", categories: ["ai"] },
