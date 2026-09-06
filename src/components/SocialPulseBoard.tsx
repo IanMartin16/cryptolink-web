@@ -70,7 +70,7 @@ function symbolFontSize(sym: string, isPrimary: boolean): number {
     // primary: base 32, se encoge para símbolos largos
     if (len <= 5) return 32;   // BTC, SOL, PEPE, USDT
     if (len <= 8) return 24;   // símbolos medianos
-    return 19;                 // FIGR_HELOC (10) y más largos
+    return 21;                 // FIGR_HELOC (10) y más largos
   } else {
     // rank 2/3: base 24
     if (len <= 5) return 24;
