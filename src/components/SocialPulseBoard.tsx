@@ -64,6 +64,21 @@ function formatTs(ts: string) {
   }
 }
 
+function symbolFontSize(sym: string, isPrimary: boolean): number {
+  const len = sym.length;
+  if (isPrimary) {
+    // primary: base 32, se encoge para símbolos largos
+    if (len <= 5) return 32;   // BTC, SOL, PEPE, USDT
+    if (len <= 8) return 24;   // símbolos medianos
+    return 19;                 // FIGR_HELOC (10) y más largos
+  } else {
+    // rank 2/3: base 24
+    if (len <= 5) return 24;
+    if (len <= 8) return 19;
+    return 16;
+  }
+}
+
 export default function SocialPulseBoard({ trends }: { trends?: TrendsSummary }) {
   const storedSocialPulse = useMarketSignalsStore((s: any) => s.socialPulse);
   const socialPulseUpdatedAt = useMarketSignalsStore((s: any) => s.socialPulseUpdatedAt);
@@ -626,12 +641,16 @@ useEffect(() => {
                         <div
                           style={{
                             position: "relative",
-                            fontSize: isPrimary ? 32 : 24,
+                            fontSize: symbolFontSize(asset, isPrimary),
                             fontWeight: 900,
                             color: isPrimary ? tone : "rgba(255,255,255,0.92)",
                             lineHeight: 1,
                             letterSpacing: -0.7,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",   // no parte en dos líneas; si no cabe, elipsis
                           }}
+                          title={asset}   // el símbolo completo en hover, por si se corta
                         >
                           {asset}
                         </div>
