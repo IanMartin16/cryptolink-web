@@ -192,7 +192,7 @@ export const SYMBOL_META: Record<string, SymbolMetaEntry> = {
   "2z": { name: "DoubleZero", icon: "/icons/crypto/2z.png", categories: ["binance alpha spotlight"] },
   IOTA: { name: "IOTA", icon: "/icons/crypto/iota.png", categories: ["defi","layer1"] },
   SKR: { name: "Seeker", icon: "/icons/crypto/skr.png", categories: ["infra"] },
-  EDGE: { name: "edgeX", icon: "/icons/crypto/edge.png", categories: ["defi"] },
+  USAT: { name: "USAT", icon: "/icons/crypto/usat.png", categories: ["defi"] },
   COMP: { name: "Compound", icon: "/icons/crypto/comp.png", categories: ["defi"] },
   STRK: { name: "Starknet", icon: "/icons/crypto/strk.png", categories: ["layer2"] },
   AKE: { name: "Akedo", icon: "/icons/crypto/ake.png", categories: ["ai"] },
