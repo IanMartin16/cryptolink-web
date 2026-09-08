@@ -517,7 +517,7 @@ useEffect(() => {
                   gap: 12,
                   alignItems: "end",
                   position: "relative",
-                  minHeight: 96,
+                  minHeight: 120,
                 }}
               >
                 {[...Array(12)].map((_, i) => {
@@ -533,7 +533,7 @@ useEffect(() => {
                       height: `${h}px`,
                       borderRadius: 999,
                       background: barFill,
-                      opacity: 0.82 - i * 0.12,
+                      opacity: 0.82 - i * 0.03,   // barra 11: 0.82 - 0.33 = 0.49, aún visible
                       boxShadow: `0 0 12px ${glow}`,
                       animation: `pulseBars ${(3.8 + i * 0.12).toFixed(2)}s ease-in-out infinite`,
                       transformOrigin: "bottom center",
