@@ -563,11 +563,10 @@ useEffect(() => {
 
                 <div
                   style={{
-                    marginTop: 12,
-                    display: "grid",
-                    gridTemplateColumns:
-                      pulse.topAssets.length >= 3 ? "1.25fr 1fr 0.95fr" : "1.25fr 1fr",
-                    gap: 10,
+                  marginTop: 12,
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
+                  gap: 10,
                   }}
                 >
                   {pulse.topAssets.slice(0, 3).map((asset, i) => {
