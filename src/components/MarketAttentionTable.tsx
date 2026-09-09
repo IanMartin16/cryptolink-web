@@ -413,7 +413,6 @@ export default function MarketAttentionTable({
                     </td>
 
                     <td style={{ padding: "12px 8px", fontWeight: 950 }}>
-                      <SymbolCell symbol={r.symbol} />
                       <button
                         onClick={async () => {
                           try {
@@ -426,6 +425,7 @@ export default function MarketAttentionTable({
                         style={{ all: "unset", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 8, color: "#e6edf3" }}
                         title="Copy symbol"
                       >
+                        <SymbolCell symbol={r.symbol} />
                         {fullName ? <span className="hidden sm:inline" style={{ fontSize: 13, color: "rgba(255,255,255,0.45)" }}>{fullName}</span> : null}
                       </button>
                     </td>
