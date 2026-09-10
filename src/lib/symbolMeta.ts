@@ -189,7 +189,7 @@ export const SYMBOL_META: Record<string, SymbolMetaEntry> = {
   TWT: { name: "Trust Wallet", icon: "/icons/crypto/twt.png", categories: ["wallets"] },
   ULTIMA: { name: "Ultima", icon: "/icons/crypto/ultima.png", categories: ["defi","layer1"] },
   KAIA: { name: "Kaia", icon: "/icons/crypto/kaia.png", categories: ["layer1","smart-contracts"] },
-  "2z": { name: "DoubleZero", icon: "/icons/crypto/2z.png", categories: ["binance alpha spotlight"] },
+  '2z': { name: "DoubleZero", icon: "/icons/crypto/2z.png", categories: ["binance alpha spotlight"] },
   IOTA: { name: "IOTA", icon: "/icons/crypto/iota.png", categories: ["defi","layer1"] },
   SKR: { name: "Seeker", icon: "/icons/crypto/skr.png", categories: ["infra"] },
   USAT: { name: "USAT", icon: "/icons/crypto/usat.png", categories: ["defi"] },
