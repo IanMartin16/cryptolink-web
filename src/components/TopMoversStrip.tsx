@@ -53,7 +53,7 @@ function MoverPill({ r }: { r: MoverRow }) {
   const c = up ? "text-emerald-300" : "text-rose-300";
   return (
     <div className="flex items-center justify-between gap-2 rounded-lg border border-white/10 bg-white/[0.02] px-2 py-1.5">
-      <SymbolCell symbol={r.symbol} fiat={r.fiat} />
+      <SymbolCell symbol={r.symbol} showName />
       <div className="flex items-center gap-2">
         <span className="text-xs tabular-nums text-white/70">{fmtPrice(r.price)}</span>
         <span className={`text-xs font-semibold tabular-nums ${c}`}>

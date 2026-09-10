@@ -6,7 +6,6 @@ import { Skeleton } from "@/components/Skeleton";
 import Toast from "@/components/Toast";
 import Sparkline from "@/components/Sparkline";
 import SymbolCell from "@/components/SymbolCell";
-import { getSymbolName } from "@/lib/symbolMeta";
 import { getTrendHistory } from "@/lib/useTrendHistory";
 import {
   useMarketAttention,
@@ -387,7 +386,6 @@ export default function MarketAttentionTable({
                 const rank = idx + 1;
                 const isHover = hover === r.symbol;
                 const isTop = rank <= 5;
-                const fullName = getSymbolName(r.symbol);
                 const h = getTrendHistory(r.symbol).slice(-24);
                 const c = dirColor(r.direction);
 
@@ -425,8 +423,7 @@ export default function MarketAttentionTable({
                         style={{ all: "unset", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 8, color: "#e6edf3" }}
                         title="Copy symbol"
                       >
-                        <SymbolCell symbol={r.symbol} />
-                        {fullName ? <span className="hidden sm:inline" style={{ fontSize: 13, color: "rgba(255,255,255,0.45)" }}>{fullName}</span> : null}
+                        <SymbolCell symbol={r.symbol} showName />
                       </button>
                     </td>
 
