@@ -1,17 +1,3 @@
-// lib/dailyRotation.ts
-//
-// Selección rotativa diaria DETERMINÍSTICA por fecha.
-//
-// Por qué determinística por fecha (no aleatoria por visitante):
-//   - Todos los visitantes de HOY calculan la MISMA lista de 20 -> misma URL a
-//     prices -> el caché compartido se mantiene (no se fragmenta como pasaría con
-//     selección por-usuario). Ese ahorro es justo lo que costó tanto lograr.
-//   - Mañana la semilla (fecha) cambia -> otros 17 rotativos -> descubrimiento al
-//     volver, y más símbolos acumulan historia para los derivados.
-//
-// Anclas fijas (nunca rotan): BTC, ETH, USDT -> la lista nunca se ve "sin criterio".
-// 17 rotativos del resto del universo (los 120 top market cap ya curados).
-
 const ANCHORS = ["BTC", "ETH", "USDT"];
 const ROTATION_SIZE = 17; // 3 anclas + 17 = 20
 
