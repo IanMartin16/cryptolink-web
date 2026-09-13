@@ -7,6 +7,7 @@ import PricesHeaderBar from "@/components/PricesHeaderBar";
 import { pushPricesToHistory } from "@/lib/priceHistoryStore";
 import { usePricesFeed } from "@/lib/hooks/usePricesFeed";
 import { getFiat } from "@/lib/fiatStore";
+import { hydratePriceHistory } from "@/lib/usePriceHistory";
 import { getSymbols } from "@/lib/symbolsStore";
 import { fetchSymbols360, type SymbolMarket } from "@/lib/cryptoLink";
 import MarketSparkStrip from "./MarketSparkStrip";
@@ -88,6 +89,15 @@ export default function PricesRouteBody() {
   const pricesHealth = error
     ? { ok: false, lastErr: error }
     : { ok: true, lastOkAt: lastUpdated };
+
+  // dentro de PricesBody, cuando ya hay rows:
+  useEffect(() => {
+    const symbols = rows.map((r) => r.symbol);
+    const fiat = rows[0]?.fiat ?? "USD";
+    if (symbols.length) {
+      hydratePriceHistory(symbols, fiat);
+    }
+  }, [rows]); 
 
   return (
     <div className="space-y-4">

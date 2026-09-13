@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect } from "react";
+import { hydratePriceHistory } from "@/lib/usePriceHistory";
 
 export default function Sparkline({
   values,
@@ -41,6 +42,8 @@ export default function Sparkline({
   });
 
   const area = `M0,${h} L${points.join(" L")} L${w},${h} Z`;
+
+ 
 
   return (
     <svg width={w} height={h}>
