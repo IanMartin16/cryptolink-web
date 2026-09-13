@@ -11,22 +11,6 @@ import SymbolCell from "@/components/SymbolCell";
 import { getSymbolName } from "@/lib/symbolMeta";
 import { pushTrendHistory } from "@/lib/useTrendHistory";
 
-/**
- * MarketMomentumPanel
- * Fusión de los antiguos MomentumPanel + TrendsPanel.
- * - Fuente ÚNICA: fetchMomentum (un solo fetch, un solo reloj → sin parpadeo LIVE/REFRESHING).
- * - Héroe de cada card: score. Soporte: dirección + strength + fluctuación.
- * - Una sola gráfica comparativa abajo (líder resaltado), NO sparkline por card
- *   (evita redundancia con los sparklines de Overview).
- * - topN parametrizado: hoy 5; el día de los tiers de suscripción se pasa topN={isPro ? 60 : 5}
- *   desde arriba, sin tocar este componente.
- *
- * PENDIENTE DOCUMENTADO — `reason`:
- *   El texto explicativo por activo vivía en el viejo TrendsPanel, alimentado por
- *   fetchTrends (socialLink) = una SEGUNDA fuente. Se deja fuera a propósito para no
- *   mantener dos fetches desincronizados. Revivir SOLO cuando el backend de Momentum
- *   incluya `reason` en su propio payload (entonces es gratis, sin segundo fetch).
- */
 
 type MomentumItem = {
   symbol: string;

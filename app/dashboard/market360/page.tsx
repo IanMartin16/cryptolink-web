@@ -10,7 +10,7 @@ import { computeSnapshotKPIs } from "@/lib/snapshotEngine";
 import type { SnapshotKPIs } from "@/lib/types";
 import type { PriceRow, TrendItem } from "@/lib/types";
 import { computeMood } from "@/lib/moodEngine";
-import { buildMarketInsight } from "@/lib/insights";
+import { buildInsightV2 } from "@/lib/insight/buildInsightV2"
 import StatusBar from "@/components/StatusBar";
 import PageHeader from "@/components/PageHeader";
 import { usePricesFeed } from "@/lib/hooks/usePricesFeed";
@@ -32,28 +32,35 @@ export default function SymbolsPage() {
   // Mood UNA vez (source of truth)
   const mood = useMemo(() => computeMood(rows, normalizedTrends), [rows, normalizedTrends]);
 
-  // Insight "market sentiment"
-  const moodInsight = useMemo(
-    () =>
-      buildMarketInsight({
-        rows,
-        moodScore: mood.score,
-        trends: normalizedTrends,
-      }),
-    [rows, mood.score, normalizedTrends]
-  );
+  // PRIMERO snapshot (v2 lo necesita)
+const snapshot: SnapshotKPIs = useMemo(
+  () =>
+    computeSnapshotKPIs({
+      rows,
+      trends: normalizedTrends,
+      moodScore: mood.score,
+      confidence: mood.confidence,
+    }),
+  [rows, normalizedTrends, mood.score, mood.confidence]
+);
 
-  // Snapshot KPIs (MarketSnapshotBar)
-  const snapshot: SnapshotKPIs = useMemo(
-    () =>
-      computeSnapshotKPIs({
-        rows,
-        trends: normalizedTrends,
-        moodScore: mood.score,
-        confidence: mood.confidence,
-      }),
-    [rows, normalizedTrends, mood.score, mood.confidence]
-  );
+  // Insight "market sentiment"
+  const moodInsight = useMemo(() => {
+  const v2 = buildInsightV2({
+    mood: { score: mood.score, confidence: mood.confidence },
+    snapshot,
+    rows,
+    trends: normalizedTrends,
+  });
+
+  return {
+    line1: v2.headline,
+    line2: v2.note ? `${v2.summary} — ${v2.note}` : v2.summary,
+    // divergence: v2 no da flag directo. Derivarlo del note (menciona divergencia)
+    // o dejarlo en false. Simple: true si el note habla de divergencia/whipsaw.
+    divergence: !!v2.note && /diverg|whipsaw/i.test(v2.note),
+  };
+}, [mood.score, mood.confidence, snapshot, rows, normalizedTrends]);
 
   // "last updated" del mood
   useEffect(() => {
