@@ -222,7 +222,9 @@ export const cryptolinkDocs = {
         {
           status: 200,
           description: "Derived trend signals",
-          example: `{"ok":true,"trends":[{"symbol":"BTC","direction":"up","changePct":0.26,"score":0.26,"last":79130.00,"source":"price-history-db"},{"symbol":"SOL","direction":"up","changePct":0.25,"score":0.25,"last":102.95,"source":"price-history-db"},{"symbol":"ETH","direction":"flat","changePct":0.19,"score":0.19,"last":2537.03,"source":"price-history-db"}],"source":"internal-history","ts":"...","fiat":"USD"}`,
+          example: `{"ok":true,"trends":[{"symbol":"BTC","direction":"up","changePct":0.26,"score":0.26,"last":79130.00,"source":"price-history-db"},
+          {"symbol":"SOL","direction":"up","changePct":0.25,"score":0.25,"last":102.95,"source":"price-history-db"},
+          {"symbol":"ETH","direction":"flat","changePct":0.19,"score":0.19,"last":2537.03,"source":"price-history-db"}],"source":"internal-history","ts":"...","fiat":"USD"}`,
         },
       ],
     },
@@ -277,7 +279,10 @@ export const cryptolinkDocs = {
         {
           status: 200,
           description: "Momentum signal read",
-          example: `{"ok":true,"momentum":[{"symbol":"SOL","direction":"up","changePct":0.56,"strength":"medium","score":0.37,"last":103.42,"source":"price-history-db"},{"symbol":"BTC","direction":"up","changePct":0.31,"strength":"low","score":0.15,"last":79127.00,"source":"price-history-db"},{"symbol":"ETH","direction":"up","changePct":0.19,"strength":"low","score":0.08,"last":2538.34,"source":"price-history-db"}],"source":"internal-history","ts":"...","fiat":"USD"}`,
+          example: `{"ok":true,"momentum":[{"symbol":"SOL","direction":"up","changePct":0.56,"strength":"medium","score":0.37,"last":103.42,"source":"price-history-db"},
+          {"symbol":"BTC","direction":"up","changePct":0.31,"strength":"low","score":0.15,"last":79127.00,"source":"price-history-db"},
+          {"symbol":"ETH","direction":"up","changePct":0.19,"strength":"low","score":0.08,"last":2538.34,"source":"price-history-db"}],
+          "source":"internal-history","ts":"...","fiat":"USD"}`,
         },
       ],
     },
@@ -304,7 +309,8 @@ export const cryptolinkDocs = {
         {
           status: 200,
           description: "Aggregate market regime",
-          example: `{"ok":true,"regime":{"ok":true,"regime":{"state":"bullish","score":1.40,"confidence":0.93,"summary":"A strong bullish lean with high confidence — 3 of 3 leaning up."},"source":"internal-analysis","ts":"...","fiat":"USD"}`,
+          example: `{"ok":true,"regime":{"ok":true,"regime":{"state":"bullish","score":1.40,"confidence":0.93,"summary":"A strong bullish lean with high confidence — 3 of 3 leaning up."},
+          "source":"internal-analysis","ts":"...","fiat":"USD"}`,
         },
       ],
     },
