@@ -135,7 +135,7 @@ export const cryptolinkDocs = {
         {
           status: 200,
           description: "OK",
-          example: `{"ok":true,"symbol":"BTC","fiat":"USD","price":63315.0,"ts":"...","source":"..."}`,
+          example: `{"ts":".......","ok":true,"source":".....","marketCap":1583962661795.2954,"price":78852.0,"symbol":"BTC","change24h":1.9696273628936847,"fiat":"USD"}`,
         },
         { status: 401, description: "Missing or invalid API key" },
         { status: 400, description: "Invalid symbol or request format" },
@@ -165,7 +165,7 @@ export const cryptolinkDocs = {
         {
           status: 200,
           description: "OK",
-          example: `{"ok":true,"prices":{"BTC":63315,"ETH":1724},"fiat":"USD","ts":"...","source":"..."}`,
+          example: `{"marketCap":{"BTC":1584127244458.4119,"ETH":309104894066.60004},"change24h":{"BTC":1.982788636074705,"ETH":0.9509427550316462},"prices":{"BTC":78882.0,"ETH":2530.93},"ok":true,"source":"...","fiat":"USD","ts":"..."}`,
         },
         { status: 401, description: "Missing or invalid API key" },
         { status: 400, description: "Invalid symbols or plan symbol limit exceeded" },
@@ -195,7 +195,7 @@ export const cryptolinkDocs = {
         {
           status: 200,
           description: "OK",
-          example: `{"ok":true,"fiat":"USD","ts":"...","source":"coingecko","snapshot":{"marketMood":"neutral","summary":"..."}}`,
+          example: `{"snapshot":{"source":"...","asOf":"...","prices":{"BTC":79003.0,"ETH":2533.94},"fiat":"USD","provider":"...","marketMood":"neutral"},"ok":true}`,
         },
       ],
     },
@@ -222,7 +222,7 @@ export const cryptolinkDocs = {
         {
           status: 200,
           description: "Derived trend signals",
-          example: `{"ok":true,"fiat":"USD","ts":"...","source":"internal-history","trends":[{"symbol":"BTC","direction":"flat","changePct":0.18,"score":0.18}]}`,
+          example: `{"ok":true,"trends":[{"symbol":"BTC","direction":"up","changePct":0.26,"score":0.26,"last":79130.00,"source":"price-history-db"},{"symbol":"SOL","direction":"up","changePct":0.25,"score":0.25,"last":102.95,"source":"price-history-db"},{"symbol":"ETH","direction":"flat","changePct":0.19,"score":0.19,"last":2537.03,"source":"price-history-db"}],"source":"internal-history","ts":"...","fiat":"USD"}`,
         },
       ],
     },
@@ -277,7 +277,7 @@ export const cryptolinkDocs = {
         {
           status: 200,
           description: "Momentum signal read",
-          example: `{"ok":true,"fiat":"USD","ts":"...","source":"internal-history","momentum":[{"symbol":"BTC","direction":"flat","strength":"low","score":0.0}]}`,
+          example: `{"ok":true,"momentum":[{"symbol":"SOL","direction":"up","changePct":0.56,"strength":"medium","score":0.37,"last":103.42,"source":"price-history-db"},{"symbol":"BTC","direction":"up","changePct":0.31,"strength":"low","score":0.15,"last":79127.00,"source":"price-history-db"},{"symbol":"ETH","direction":"up","changePct":0.19,"strength":"low","score":0.08,"last":2538.34,"source":"price-history-db"}],"source":"internal-history","ts":"...","fiat":"USD"}`,
         },
       ],
     },
@@ -304,7 +304,7 @@ export const cryptolinkDocs = {
         {
           status: 200,
           description: "Aggregate market regime",
-          example: `{"ok":true,"fiat":"USD","ts":"...","source":"internal-analysis","regime":{"state":"neutral","score":0.10,"confidence":0.07,"summary":"Signals indicate a stable market with no dominant direction."}}`,
+          example: `{"ok":true,"regime":{"ok":true,"regime":{"state":"bullish","score":1.40,"confidence":0.93,"summary":"A strong bullish lean with high confidence — 3 of 3 leaning up."},"source":"internal-analysis","ts":"...","fiat":"USD"}`,
         },
       ],
     },
@@ -331,7 +331,10 @@ export const cryptolinkDocs = {
         {
           status: 200,
           description: "Interpretive risk layer",
-          example: `{"ok":true,"fiat":"USD","ts":"...","source":"internal-analysis","flags":[{"code":"low_confidence_regime","severity":"medium","title":"Low regime confidence","detail":"..."}],"summary":"Weak or mixed signals currently dominate."}`,
+          example: `{"source":"internal-analysis","summary":"3 risk flags active, 1 at medium severity — worth a closer look.","ok":true,"fiat":"USD","flags":
+          [{"code":"low_confidence_regime","severity":"medium","title":"Low regime confidence","detail":"The neutral regime reads at only 16% confidence, so directional signals are weakly supported."},
+          {"code":"weak_momentum","severity":"low","title":"Weak momentum","detail":"All 3 tracked assets show low momentum strength — little conviction behind current moves."},
+          {"code":"flat_market","severity":"low","title":"No clear direction","detail":"2 of 3 trend signals are flat — the group is holding without a clear direction."}],"ts":"..."}`,
         },
       ],
     },
@@ -358,7 +361,9 @@ export const cryptolinkDocs = {
         {
           status: 200,
           description: "Anomaly detection layer",
-          example: `{"ok":true,"fiat":"USD","ts":"...","source":"internal-analysis","anomalies":[],"summary":"No relevant anomalies detected at this time."}`,
+          example: `{"source":"internal-analysis","summary":"1 signal drifting outside the recent pattern, none extreme.","anomalies":
+          [{"symbol":"SOL","type":"momentum_spike","severity":"medium","score":2.38,"detail":
+          "SOL is running clearly ahead of the group on momentum, about 2.38x the group average."}],"ok":true,"fiat":"USD","ts":"..."}`,
         },
       ],
     },
@@ -385,7 +390,8 @@ export const cryptolinkDocs = {
         {
           status: 200,
           description: "Executive market condition layer",
-          example: `{"ok":true,"fiat":"USD","ts":"...","source":"internal-analysis","marketHealth":{"state":"under_pressure","score":27,"summary":"The market is operating under pressure and requires additional attention."}}`,
+          example: `{"marketHealth":{"state":"healthy","score":94,"summary":"Conditions look healthy — driven by a bullish regime and 1 anomaly."},
+          "ok":true,"source":"internal-analysis","ts":"....","fiat":"USD"}`,
         },
       ],
     },
