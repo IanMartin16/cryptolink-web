@@ -50,7 +50,7 @@ export const cryptolinkDocs = {
   },
 
   version: "2.0.0",
-  updatedAt: "2026-06-21",
+  updatedAt: "2026-09-14",
 
   baseUrl:
     process.env.NEXT_PUBLIC_CRYPTOLINK_API_BASE?.replace(/\/+$/, "") ||

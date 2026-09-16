@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import Market360Panel from "@/components/Market360Panel";
 import type { Health } from "@/lib/health";
 import { getSymbols, setSymbols } from "@/lib/symbolsStore";
-import MarketMood from "@/components/MarketMood";
 import { normalizeTrends } from "@/lib/trendEngine";
 import { computeSnapshotKPIs } from "@/lib/snapshotEngine";
 import type { SnapshotKPIs } from "@/lib/types";
@@ -17,7 +16,7 @@ import { usePricesFeed } from "@/lib/hooks/usePricesFeed";
 import { useTrendsFeed } from "@/lib/trends/useTrendsFeed";
 import { HEALTH_OK } from "@/lib/health";
 
-export default function SymbolsPage() {
+export default function Market360Page() {
   const [selected, setSelectedState] = useState<string[]>([]);
   const [rows, setRows] = useState<PriceRow[]>([]);
   const [marketHealth] = useState<Health>(HEALTH_OK);
@@ -43,24 +42,6 @@ const snapshot: SnapshotKPIs = useMemo(
     }),
   [rows, normalizedTrends, mood.score, mood.confidence]
 );
-
-  // Insight "market sentiment"
-  const moodInsight = useMemo(() => {
-  const v2 = buildInsightV2({
-    mood: { score: mood.score, confidence: mood.confidence },
-    snapshot,
-    rows,
-    trends: normalizedTrends,
-  });
-
-  return {
-    line1: v2.headline,
-    line2: v2.note ? `${v2.summary} — ${v2.note}` : v2.summary,
-    // divergence: v2 no da flag directo. Derivarlo del note (menciona divergencia)
-    // o dejarlo en false. Simple: true si el note habla de divergencia/whipsaw.
-    divergence: !!v2.note && /diverg|whipsaw/i.test(v2.note),
-  };
-}, [mood.score, mood.confidence, snapshot, rows, normalizedTrends]);
 
   // "last updated" del mood
   useEffect(() => {
@@ -122,12 +103,6 @@ const snapshot: SnapshotKPIs = useMemo(
           },
         ]}
         trailingLabel="market data · intelligence"
-      />
-      <MarketMood
-        score={mood.score}
-        confidence={mood.confidence}
-        updatedAt={moodUpdatedAt}
-        insight={moodInsight}
       />
       <div className="min-h-[320px] sm:min-h-[360px]">
         <Market360Panel />
