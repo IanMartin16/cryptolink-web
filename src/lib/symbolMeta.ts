@@ -215,7 +215,7 @@ export const SYMBOL_META: Record<string, SymbolMetaEntry> = {
   BR: { name: "Bedrock", icon: "/icons/crypto/br.png", categories: [""]},
   STONK: { name: "STONK", icon: "/icons/crypto/stonk.png", categories: [""]},
   EURCV: { name: "EUR CoinVertible", icon: "/icons/crypto/eurcv.png", categories: [""]},
-  EIGEN: { name: "EigenCloud (prev. EigenLayer)", icon: "/icons/crypto/eigen.png" categories: [""]},
+  EIGEN: { name: "EigenCloud (prev. EigenLayer)", icon: "/icons/crypto/eigen.png", categories: [""]},
   THETA: { name: "Theta Network", icon: "/icons/crypto/theta.png", categories: [""]},
   WIF: { name: "dogwifhat", icon: "/icons/crypto/wif.png", categories: [""] },
   B: { name: "BUILDon", icon: "/icons/crypto/b.png", cotegories: [""] },
