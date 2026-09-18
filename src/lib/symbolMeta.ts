@@ -234,7 +234,7 @@ export const SYMBOL_META: Record<string, SymbolMetaEntry> = {
   '龙虾': { name: "龙虾 (Lobster)", icon: "/icons/crypto/龙虾.png", categories: ["meme"] },
   ZCAT: { name: "Anonymous Cat", icon: "/icons/crypto/zcat.png", categories: ["meme"] },
   AKT: { name: "Akash Network", icon: "/icons/crypto/akt.png", categories: ["ai"] },
-  CHZ: { name: "Chiliz", icon: "/icons/crypto/chiliz.png", categories: ["layer1"] },
+  CHZ: { name: "Chiliz", icon: "/icons/crypto/chz.png", categories: ["layer1"] },
   NEO: { name: "NEO", icon: "/icons/crypto/neo.png", categories: ["smart-contracts"] },
   SHFL: { name: "Shuffle", icon: "/icons/crypto/shfl.png", categories: ["gambling"] },
   GUSD: { name: "GUSD", icon: "/icons/crypto/gusd.png", categories: ["stablecoin"] },
