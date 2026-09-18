@@ -1,5 +1,5 @@
 export type SymbolCategory =
-  | "major" | "layer1" | "layer2" | "meme" | "defi" | "stablecoin" | "wallets"
+  | "major" | "layer1" | "layer2" | "meme" | "defi" | "stablecoin" | "wallets" | "null"
   | "rwa" | "ai" | "privacy" | "infra" | "oracle" | "exchange-token" | "binance alpha spotlight" 
   | "payments" | "gaming" | "store-of-value" | "smart-contracts" | "launchpad" | "cefi";
 
