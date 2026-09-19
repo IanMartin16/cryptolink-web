@@ -20,7 +20,7 @@ import type { TrendingCoin } from "@/lib/types";
  * Muestra 15 y despliega el resto con "View all".
  */
 
-const VISIBLE_DEFAULT = 4;
+const VISIBLE_DEFAULT = 3;
 
 function fmtPrice(v: number | null) {
   if (v == null || !Number.isFinite(v)) return "—";
