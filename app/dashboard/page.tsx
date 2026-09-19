@@ -19,6 +19,7 @@ import { usePricesFeed } from "@/lib/hooks/usePricesFeed";
 import { useTrendsFeed } from "@/lib/trends/useTrendsFeed";
 import TrendingNow from "@/components/TrendingNow";
 import { useMarketSignalsStore } from "@/lib/stores/marketSignalsStore";
+import MarketOverviewTable from "@/components/MarketOverviewTable";
 
 
 export default function DashboardPage() {
@@ -170,7 +171,8 @@ const trendsFeed = useTrendsFeed({
         <StatCards  />
       </div>
       <TrendingNow/>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:items-start">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-1 md:items-start">
+      <MarketOverviewTable /> 
     </div>
   </div>
 );
