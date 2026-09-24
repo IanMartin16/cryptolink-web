@@ -1,23 +1,6 @@
 import { NextResponse } from "next/server";
 export const runtime = "nodejs";
 
-/**
- * /api/social/trending — Trending Now (CRUDO, sin adapter).
- *
- * IMPORTANTE: NO usa mapCoinGeckoTrendingToBasicSignals. Ese adapter FABRICA
- * datos (attentionScore derivado del rank, losers inventados) y sirve para
- * basic-signals, no para esto. Aquí se sirve el /search/trending TAL CUAL:
- * lo que CoinGecko reporta como trending por volumen de búsqueda. Sin filtros,
- * sin scores derivados, sin rellenos.
- *
- * CACHÉ desde el diseño: revalidate 600s (10 min). El trending cambia lento y el
- * presupuesto del free tier es ~13-14 calls/hora. Una llamada cada 10 min sirve
- * a todos los visitantes (URL estable -> caché compartido).
- *
- * Degradación honesta: si CoinGecko falla -> ok:false + coins:[] -> el panel
- * muestra "unavailable". NUNCA se rellena con otra fuente ni con mocks.
- */
-
 const TRENDING_URL = "https://api.coingecko.com/api/v3/search/trending";
 const REVALIDATE_SECONDS = 600;
 
