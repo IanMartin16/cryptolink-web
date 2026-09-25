@@ -196,7 +196,7 @@ export function useMarketAttention({
     let stopped = false;
     let failCount = 0;
 
-    const ACTIVE_MS = 30_000;
+    const ACTIVE_MS = 600_000;
     const IDLE_MS = 90_000;
     const MAX_BACKOFF_MS = 180_000;
 
