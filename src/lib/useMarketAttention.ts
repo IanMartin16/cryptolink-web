@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { BasicSignalsResponse, SocialAttentionItem } from "@/lib/social/fetchBasicSignals";
-import { pushTrendHistory } from "@/lib/useTrendHistory";
 
 /**
  * IMPORTANTE: Market Attention consume SOLO el remoto real de social_link.
@@ -18,13 +17,15 @@ async function fetchMarketAttentionRemote(): Promise<BasicSignalsResponse> {
   if (!base) {
     throw new Error("SOCIAL_LINK_BASE_URL not configured");
   }
-  const res = await fetch(`${base}/internal/v1/basic-signals?window=1h&limit=15`, {
+  // ANTES: /internal/v1/basic-signals?window=1h&limit=15
+  // AHORA: el endpoint v2 de atención real
+  const res = await fetch(`${base}/internal/v1/attention?limit=15`, {
     method: "GET",
     headers: { accept: "application/json" },
     cache: "no-store",
   });
   if (!res.ok) {
-    throw new Error(`basic-signals HTTP ${res.status}`);
+    throw new Error(`attention HTTP ${res.status}`);
   }
   return (await res.json()) as BasicSignalsResponse;
 }
@@ -48,6 +49,7 @@ export type AttentionRow = {
   attentionDeltaPct: number;     // cambio de atención
   direction: "up" | "down" | "flat";
   tags: string[];                // "majors-led", "store-of-value"... (el "reason" real)
+  spark: number[];
 };
 
 export type FearGreed = {
@@ -133,12 +135,8 @@ export function useMarketAttention({
           attentionDeltaPct: typeof l.attentionDeltaPct === "number" ? l.attentionDeltaPct : 0,
           direction: normDirection(l.direction, l.attentionDeltaPct),
           tags: Array.isArray(l.tags) ? l.tags : [],
+          spark: Array.isArray((l as any).spark) ? (l as any).spark : [],   // ← del endpoint
         })).filter((r) => r.symbol);
-
-        // historial de attentionScore para sparklines (reusa el store existente)
-        for (const r of mapped) {
-          pushTrendHistory(r.symbol, r.attentionScore, 120);
-        }
 
         const bd = res.backdrop ?? null;
         const fg: FearGreed = bd

@@ -6,7 +6,6 @@ import { Skeleton } from "@/components/Skeleton";
 import Toast from "@/components/Toast";
 import Sparkline from "@/components/Sparkline";
 import SymbolCell from "@/components/SymbolCell";
-import { getTrendHistory } from "@/lib/useTrendHistory";
 import {
   useMarketAttention,
   type AttentionRow,
@@ -386,8 +385,8 @@ export default function MarketAttentionTable({
                 const rank = idx + 1;
                 const isHover = hover === r.symbol;
                 const isTop = rank <= 5;
-                const h = getTrendHistory(r.symbol).slice(-24);
                 const c = dirColor(r.direction);
+                const sparkValues = Array.isArray(r.spark) ? r.spark.map((pos) => 15 - pos) : [];
 
                 const rankStyle = isTop
                   ? { background: "rgba(255,159,67,0.12)", border: `1px solid rgba(255,159,67,0.22)`, color: UI.orangeSoft }
@@ -430,7 +429,7 @@ export default function MarketAttentionTable({
                     <td style={{ padding: "12px 8px" }}>
                       <div style={{ display: "inline-flex", alignItems: "center", gap: 10 }}>
                         <Sparkline
-                          values={h}
+                          values={sparkValues}                          // ← antes era {h}
                           w={82}
                           h={20}
                           stroke={c}
