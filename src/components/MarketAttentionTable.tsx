@@ -386,6 +386,7 @@ export default function MarketAttentionTable({
                 const isHover = hover === r.symbol;
                 const isTop = rank <= 5;
                 const c = dirColor(r.direction);
+                const sparkValues = Array.isArray(r.spark) ? r.spark.map((pos) => 15 - pos) : [];
 
                 const rankStyle = isTop
                   ? { background: "rgba(255,159,67,0.12)", border: `1px solid rgba(255,159,67,0.22)`, color: UI.orangeSoft }
