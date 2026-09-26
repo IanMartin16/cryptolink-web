@@ -197,8 +197,8 @@ export function useMarketAttention({
     let failCount = 0;
 
     const ACTIVE_MS = 600_000;
-    const IDLE_MS = 90_000;
-    const MAX_BACKOFF_MS = 180_000;
+    const IDLE_MS = 600_000;
+    const MAX_BACKOFF_MS = 600_000;
 
     const nextDelay = () => {
       const base = document.visibilityState === "visible" ? ACTIVE_MS : IDLE_MS;
