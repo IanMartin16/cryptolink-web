@@ -107,31 +107,71 @@ function FearGreedGauge({ value, label }: { value: number; label: string }) {
 
 function tagTone(tag: string): { c: string; bg: string; b: string } {
   const t = tag.toLowerCase();
+
   // majors / store-of-value / smart-contracts -> naranja (marca)
   if (["majors-led", "store-of-value", "smart-contracts"].includes(t))
     return { c: UI.orangeSoft, bg: "rgba(255,159,67,0.10)", b: "rgba(255,159,67,0.25)" };
+  
   // layer1 -> azul
   if (["layer1", "layer1 rotation"].includes(t))
     return { c: "#6FB7FF", bg: "rgba(111,183,255,0.10)", b: "rgba(111,183,255,0.25)" };
+  
   // meme -> morado
   if (["meme", "meme-led"].includes(t))
     return { c: "#C08BFF", bg: "rgba(192,139,255,0.10)", b: "rgba(192,139,255,0.25)" };
+  
   // ai, infra, gaming -> pink
   if (["ai", "infra", "gaming"].includes(t))
     return { c: "#f43fbe", bg: "rgba(244,63,94,0.10)", b: "rgba(244,63,94,0.25)" };
-  // payments, layer2, privacy
+  
+  // payments, layer2, privacy -> gris azulado
   if (["layer2", "privacy", "payments"].includes(t))
     return { c: "#A5B5C5", bg: "rgba(165,181,197,0.12)", b: "rgba(165,181,197,0.25)" };
-  // stablecoins -> naranja
+  
+  // stablecoins -> amarillo/oro
   if (["stablecoin", "oracle"].includes(t))
     return { c: "#FBBF24", bg: "rgba(251,191,36,0.12)", b: "rgba(251,191,36,0.30)" };
-  // defi -> verde
+
+   // ==========================================
+  // NUEVAS CATEGORÍAS
+  // ==========================================
+
+  // nfts, web3, socialfi, metaverse -> Cian (Frescura, digital)
+  if (["nft", "nfts", "web3", "socialfi", "metaverse"].includes(t))
+    return { c: "#06B6D4", bg: "rgba(6,182,212,0.10)", b: "rgba(6,182,212,0.25)" };
+
+  // dex, cex, amm, exchange -> Índigo (Finanzas, liquidez)
+  if (["dex", "cex", "exchange", "amm", "cefi"].includes(t))
+    return { c: "#818CF8", bg: "rgba(129,140,248,0.10)", b: "rgba(129,140,248,0.25)" };
+
+  // rwa, depin, tokenization -> Bronce/Ámbar (Activos tangibles, mundo real)
+  if (["rwa", "tokenization", "depin", "gambling"].includes(t))
+    return { c: "#D97706", bg: "rgba(217,119,6,0.10)", b: "rgba(217,119,6,0.25)" };
+
+  // staking, lst, lrt, yield -> Lima/Verde Amarillo (Rendimiento, crecimiento)
+  if (["staking", "lst", "lrt", "yield", "restaking", "launchpad"].includes(t))
+    return { c: "#A3E635", bg: "rgba(163,230,53,0.10)", b: "rgba(163,230,53,0.25)" };
+
+  // bridge, omnichain, interoperability -> Fucsia/Magenta (Conexión, cruce)
+  if (["bridge", "omnichain", "interoperability", "cross-chain", "wallets"].includes(t))
+    return { c: "#E879F9", bg: "rgba(232,121,249,0.10)", b: "rgba(232,121,249,0.25)" };
+
+  // dao, governance -> Esmeralda/Menta (Comunidad, votos)
+  if (["dao", "governance", "gov", "analytics"].includes(t))
+    return { c: "#34D399", bg: "rgba(52,211,153,0.10)", b: "rgba(52,211,153,0.25)" };
+
+  // ==========================================
+  
+  // defi -> verde (asumiendo que UI.green es un verde estándar)
   if (t === "defi")
     return { c: UI.green, bg: "rgba(46,229,157,0.10)", b: "rgba(46,229,157,0.25)" };
+
+
   // señales de cautela -> rojo
-  if (["risk-off", "weak major participation"].includes(t))
+  if (["risk-off", "weak major participation", "bearish"].includes(t))
     return { c: UI.red, bg: "rgba(255,107,107,0.10)", b: "rgba(255,107,107,0.25)" };
-  // narrativos / breadth -> neutro
+  
+  // narrativos / breadth / default -> neutro
   return { c: "rgba(255,255,255,0.78)", bg: "rgba(255,255,255,0.05)", b: UI.border };
 }
 
