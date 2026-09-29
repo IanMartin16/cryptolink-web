@@ -8,7 +8,8 @@ import MarketMomentumPanel from "./MarketMomentumPanel";
 import RegimePanel from "@/components/RegimePanel";
 import MarketAttentionTable from "./MarketAttentionTable";
 import AttentionPulsePanel from "./AttentionPulsePanel";
-import { AttentionRow, PulsePoint } from "@/lib/useMarketAttention";
+import type { PulsePoint } from "@/lib/social/fetchBasicSignals";
+import { AttentionRow } from "@/lib/useMarketAttention";
 
 
 export function TrendsWarmup() {
