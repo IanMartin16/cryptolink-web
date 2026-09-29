@@ -1,5 +1,4 @@
 import type { MarketBackdrop } from "@/lib/social/basicSignalsMock";
-import type { PulsePoint } from "@/lib/useMarketAttention";
 
 
 function buildQuery(args?: {
