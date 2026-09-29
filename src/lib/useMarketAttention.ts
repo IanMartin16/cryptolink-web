@@ -104,6 +104,7 @@ export function useMarketAttention({
 }: {
   onHealth?: (h: AttentionHealth) => void;
   onItems?: (rows: AttentionRow[]) => void;
+  onPulseSeries?: (s: PulsePoint[]) => void; 
 } = {}) {
   const [rows, setRows] = useState<AttentionRow[]>([]);
   const [fearGreed, setFearGreed] = useState<FearGreed>(null);
