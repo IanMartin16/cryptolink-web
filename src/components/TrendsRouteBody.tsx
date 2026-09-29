@@ -36,6 +36,8 @@ export default function TrendsRouteBody() {
   const [trendsHealth, setTrendsHealth] = useState<Health | undefined>(undefined);
   const [trendItems, setTrendItems] = useState<TrendItem[]>([]);
   const [attentionItems, setAttentionItems] = useState<AttentionRow[]>([]);
+  const [pulseSeries, setPulseSeries] = useState<PulsePoint[]>([]);
+
 
   return (
     <>
@@ -53,10 +55,11 @@ export default function TrendsRouteBody() {
         }}
       >
       <div style={{ minWidth: 0 }}>
-      <MarketAttentionTable onItems={setAttentionItems} onHealth={setTrendsHealth} />
+      <MarketAttentionTable onItems={setAttentionItems} onHealth={setTrendsHealth} 
+      onPulseSeries={setPulseSeries}/>
       </div>
       <div style={{ marginTop: 12, minWidth: 0 }}>
-        <AttentionPulsePanel items={attentionItems} maxPoints={40}/>
+        <AttentionPulsePanel series={pulseSeries}/>
       </div>
         <RegimePanel />
 

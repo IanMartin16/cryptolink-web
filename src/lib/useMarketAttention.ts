@@ -73,6 +73,8 @@ export type AttentionHealth = {
   lastErr?: string;
 };
 
+export type PulsePoint = { day: string; composite: number };
+
 function normDirection(d?: string, delta?: number): AttentionRow["direction"] {
   const v = String(d ?? "").toLowerCase();
   if (v === "up" || v === "down" || v === "flat") return v as AttentionRow["direction"];
@@ -98,6 +100,7 @@ function computeStats(rows: AttentionRow[], coverage: string): AttentionStats {
 export function useMarketAttention({
   onHealth,
   onItems,
+  onPulseSeries
 }: {
   onHealth?: (h: AttentionHealth) => void;
   onItems?: (rows: AttentionRow[]) => void;
@@ -111,6 +114,7 @@ export function useMarketAttention({
   const [refreshing, setRefreshing] = useState(false);
   const [auto, setAuto] = useState(true);
   const [filter, setFilter] = useState<"all" | "up" | "down">("all");
+  const [pulseSeries, setPulseSeries] = useState<PulsePoint[]>([]);
 
   const reqSeq = useRef(0);
 
@@ -128,6 +132,8 @@ export function useMarketAttention({
         // el payload rico vive en res.market (attentionLeaders) + res.backdrop
         const market = res.market ?? (res as any);
         const leaders: SocialAttentionItem[] = market?.attentionLeaders ?? [];
+        const pulse: PulsePoint[] = Array.isArray(market?.pulseSeries) ? market.pulseSeries : [];
+        setPulseSeries(pulse);
 
         const mapped: AttentionRow[] = leaders.map((l) => ({
           symbol: String(l.asset ?? "").toUpperCase(),
@@ -155,6 +161,8 @@ export function useMarketAttention({
           if (seq !== reqSeq.current) return;
           onItems?.(mapped);
           onHealth?.({ ok: true, lastOkAt: resolvedTs });
+          // y en el queueMicrotask, subirlo si hay callback onPulseSeries:
+          onPulseSeries?.(pulse);
         });
       } catch (e: any) {
         if (seq !== reqSeq.current) return;
@@ -234,6 +242,7 @@ export function useMarketAttention({
       document.removeEventListener("visibilitychange", onVis);
     };
   }, [auto, load]);
+  
 
   const stats = useMemo(() => computeStats(rows, coverage), [rows, coverage]);
 
@@ -251,6 +260,7 @@ export function useMarketAttention({
     error,
     loading,
     refreshing,
+    pulseSeries,
     auto,
     setAuto,
     filter,

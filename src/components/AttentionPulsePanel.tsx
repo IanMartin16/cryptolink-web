@@ -1,80 +1,50 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
-import { useMarketSignalsStore } from "@/lib/stores/marketSignalsStore";
+import { useEffect, useRef } from "react";
 import {
   createChart,
   AreaSeries,
   type IChartApi,
   type ISeriesApi,
-  type UTCTimestamp,
 } from "lightweight-charts";
-import type { AttentionRow } from "@/lib/useMarketAttention";
+import type { PulsePoint } from "@/lib/useMarketAttention";   // el tipo {day, composite}
 
 export default function AttentionPulsePanel({
-  items,
-  maxPoints = 40,
+  series,
 }: {
-  items: AttentionRow[];
-  maxPoints?: number;
+  series: PulsePoint[];
 }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const chartRef = useRef<IChartApi | null>(null);
-  const seriesRef = useRef<ISeriesApi<"Area"> | null>(null);
+  const areaRef = useRef<ISeriesApi<"Area"> | null>(null);   // ← la serie del chart (no choca con la prop `series`)
 
-  const trendPulseHistory = useMarketSignalsStore((s) => s.trendPulseHistory);
-  const appendTrendPulsePoint = useMarketSignalsStore((s) => s.appendTrendPulsePoint);
-  const lastTimeRef = useRef<UTCTimestamp | 0>(0);
+  // ---- cálculos derivados (ANTES de usarlos) ----
+  const compositeScore = series.length ? series[series.length - 1].composite : 0;
+  const trackedAssets = series.length;
 
-  // composite del attentionScore (0..100) de los leaders
-  const compositeScore = useMemo(() => {
-    if (!items?.length) return 0;
-    const valid = items.filter((x) => typeof x.attentionScore === "number");
-    if (!valid.length) return 0;
-    return valid.reduce((acc, x) => acc + x.attentionScore, 0) / valid.length;
-  }, [items]);
-
-  const trackedAssets = useMemo(() => items?.length ?? 0, [items]);
-
-  // umbrales acordes a 0..100: >55 alta atención, <35 baja
   const tone =
-    compositeScore >= 55
-      ? "HIGH"
-      : compositeScore <= 35
-      ? "LOW"
-      : "NEUTRAL";
+    compositeScore >= 55 ? "HIGH" : compositeScore <= 35 ? "LOW" : "NEUTRAL";
 
   const lineColor =
     tone === "HIGH" ? "#34d399" : tone === "LOW" ? "#fb7185" : "#f59e0b";
-
   const areaTop =
-    tone === "HIGH"
-      ? "rgba(52,211,153,0.28)"
-      : tone === "LOW"
-      ? "rgba(251,113,133,0.28)"
-      : "rgba(245,158,11,0.24)";
+    tone === "HIGH" ? "rgba(52,211,153,0.28)"
+    : tone === "LOW" ? "rgba(251,113,133,0.28)"
+    : "rgba(245,158,11,0.24)";
   const areaBottom =
-    tone === "HIGH"
-      ? "rgba(52,211,153,0.02)"
-      : tone === "LOW"
-      ? "rgba(251,113,133,0.02)"
-      : "rgba(245,158,11,0.02)";
-
+    tone === "HIGH" ? "rgba(52,211,153,0.02)"
+    : tone === "LOW" ? "rgba(251,113,133,0.02)"
+    : "rgba(245,158,11,0.02)";
   const panelGlow =
-    tone === "HIGH"
-      ? "inset 0 0 44px rgba(52,211,153,0.10), 0 8px 30px rgba(0,0,0,0.25)"
-      : tone === "LOW"
-      ? "inset 0 0 44px rgba(251,113,133,0.10), 0 8px 30px rgba(0,0,0,0.25)"
-      : "inset 0 0 44px rgba(245,158,11,0.08), 0 8px 30px rgba(0,0,0,0.25)";
-
+    tone === "HIGH" ? "inset 0 0 44px rgba(52,211,153,0.10), 0 8px 30px rgba(0,0,0,0.25)"
+    : tone === "LOW" ? "inset 0 0 44px rgba(251,113,133,0.10), 0 8px 30px rgba(0,0,0,0.25)"
+    : "inset 0 0 44px rgba(245,158,11,0.08), 0 8px 30px rgba(0,0,0,0.25)";
   const toneCls =
-    tone === "HIGH"
-      ? "border-emerald-400/30 bg-emerald-400/10 text-emerald-200"
-      : tone === "LOW"
-      ? "border-rose-400/30 bg-rose-400/10 text-rose-200"
-      : "border-white/15 bg-white/5 text-white/70";
+    tone === "HIGH" ? "border-emerald-400/30 bg-emerald-400/10 text-emerald-200"
+    : tone === "LOW" ? "border-rose-400/30 bg-rose-400/10 text-rose-200"
+    : "border-white/15 bg-white/5 text-white/70";
 
-  // 1) init chart
+  // ---- 1) init del chart (una sola vez) ----
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -87,13 +57,14 @@ export default function AttentionPulsePanel({
       },
       rightPriceScale: { borderVisible: false },
       leftPriceScale: { visible: false },
-      timeScale: { borderVisible: false, secondsVisible: true, timeVisible: true },
+      // eje por DÍA ahora (no horas): sin segundos ni hora
+      timeScale: { borderVisible: false, secondsVisible: false, timeVisible: false },
       crosshair: { vertLine: { visible: true }, horzLine: { visible: true } },
       handleScroll: true,
       handleScale: true,
     });
 
-    const series = chart.addSeries(AreaSeries, {
+    const areaSeries = chart.addSeries(AreaSeries, {
       lineWidth: 2,
       lineColor,
       topColor: areaTop,
@@ -104,7 +75,7 @@ export default function AttentionPulsePanel({
     });
 
     chartRef.current = chart;
-    seriesRef.current = series;
+    areaRef.current = areaSeries;
     chart.applyOptions({ width: containerRef.current.clientWidth });
 
     const onResize = () => {
@@ -117,50 +88,31 @@ export default function AttentionPulsePanel({
       window.removeEventListener("resize", onResize);
       chart.remove();
       chartRef.current = null;
-      seriesRef.current = null;
+      areaRef.current = null;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // 2) colores según tono
+  // ---- 2) colores según el tono ----
   useEffect(() => {
-    if (!seriesRef.current) return;
-    seriesRef.current.applyOptions({ lineColor, topColor: areaTop, bottomColor: areaBottom });
+    if (!areaRef.current) return;
+    areaRef.current.applyOptions({ lineColor, topColor: areaTop, bottomColor: areaBottom });
   }, [lineColor, areaTop, areaBottom]);
 
-  // 3) muestreo uniforme
-  const compositeRef = useRef(compositeScore);
+  // ---- 3) render de la serie histórica (por día) ----
   useEffect(() => {
-    compositeRef.current = compositeScore;
-  }, [compositeScore]);
-
-  useEffect(() => {
-    if (!items?.length) return;
-    const SAMPLE_MS = 600_000;
-    const sample = () => {
-      const nowSec = Math.floor(Date.now() / 1000) as UTCTimestamp;
-      if (nowSec === lastTimeRef.current) return;
-      lastTimeRef.current = nowSec;
-      appendTrendPulsePoint({ time: nowSec, value: compositeRef.current }, maxPoints);
-    };
-    sample();
-    const id = setInterval(sample, SAMPLE_MS);
-    return () => clearInterval(id);
-  }, [items?.length, maxPoints, appendTrendPulsePoint]);
-
-  // 4) render desde el histórico
-  useEffect(() => {
-    if (!seriesRef.current) return;
-    if (!trendPulseHistory?.length) {
-      seriesRef.current.setData([]);
+    if (!areaRef.current) return;
+    if (!series.length) {
+      areaRef.current.setData([]);
       return;
     }
-    const data = trendPulseHistory.map((p) => ({
-      time: p.time as UTCTimestamp,
-      value: p.value,
+    const data = series.map((p) => ({
+      time: p.day as any,          // "2026-09-28" (business day string)
+      value: p.composite,
     }));
-    seriesRef.current.setData(data);
+    areaRef.current.setData(data);
     chartRef.current?.timeScale().fitContent();
-  }, [trendPulseHistory]);
+  }, [series]);
 
   return (
     <div
@@ -185,7 +137,7 @@ export default function AttentionPulsePanel({
           </div>
         </div>
         <div className="text-[11px] text-white/45">
-          {trackedAssets} assets · {maxPoints} pts
+          {trackedAssets} days
         </div>
       </div>
       <div ref={containerRef} className="relative" />

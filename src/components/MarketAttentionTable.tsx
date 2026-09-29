@@ -234,9 +234,11 @@ function fmtDelta(v: number) {
 export default function MarketAttentionTable({
   onHealth,
   onItems,
+  onPulseSeries,
 }: {
   onHealth?: (h: AttentionHealth) => void;
   onItems?: (rows: AttentionRow[]) => void;
+  onPulseSeries?: (s: PulsePoint[]) => void;
 }) {
   const [hover, setHover] = useState<string | null>(null);
   const [toast, setToast] = useState<{ msg: string; tone?: "ok" | "warn" | "err" } | null>(null);
@@ -255,7 +257,7 @@ export default function MarketAttentionTable({
     filter,
     setFilter,
     stats,
-  } = useMarketAttention({ onHealth, onItems });
+  } = useMarketAttention({ onHealth, onItems, onPulseSeries });
 
   const showSkeleton = loading && rows.length === 0;
 
