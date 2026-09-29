@@ -115,7 +115,6 @@ export function useMarketAttention({
   const [refreshing, setRefreshing] = useState(false);
   const [auto, setAuto] = useState(true);
   const [filter, setFilter] = useState<"all" | "up" | "down">("all");
-  const [pulseSeries, setPulseSeries] = useState<PulsePoint[]>([]);
 
   const reqSeq = useRef(0);
 
@@ -133,6 +132,7 @@ export function useMarketAttention({
         // el payload rico vive en res.market (attentionLeaders) + res.backdrop
         const market = res.market ?? (res as any);
         const leaders: SocialAttentionItem[] = market?.attentionLeaders ?? [];
+        const [pulseSeries, setPulseSeries] = useState<PulsePoint[]>([]);
         const pulse: PulsePoint[] = Array.isArray(market?.pulseSeries) ? market.pulseSeries : [];
         setPulseSeries(pulse);
 
