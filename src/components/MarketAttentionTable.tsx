@@ -6,9 +6,9 @@ import { Skeleton } from "@/components/Skeleton";
 import Toast from "@/components/Toast";
 import Sparkline from "@/components/Sparkline";
 import SymbolCell from "@/components/SymbolCell";
+import type { PulsePoint } from "@/lib/social/fetchBasicSignals";
 import {
   useMarketAttention,
-  PulsePoint,
   type AttentionRow,
   type AttentionHealth,
 } from "@/lib/useMarketAttention";
