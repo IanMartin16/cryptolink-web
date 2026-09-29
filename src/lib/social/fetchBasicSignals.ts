@@ -1,4 +1,5 @@
 import type { MarketBackdrop } from "@/lib/social/basicSignalsMock";
+import type { PulsePoint } from "@/lib/useMarketAttention";
 
 
 function buildQuery(args?: {
@@ -15,6 +16,8 @@ function buildQuery(args?: {
   const qs = params.toString();
   return qs ? `?${qs}` : "";
 }
+
+export type PulsePoint = { day: string; composite: number };
 
 export type SocialAttentionItem = {
   asset: string;

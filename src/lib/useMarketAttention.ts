@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { BasicSignalsResponse, SocialAttentionItem } from "@/lib/social/fetchBasicSignals";
+import type { BasicSignalsResponse, SocialAttentionItem, PulsePoint } from "@/lib/social/fetchBasicSignals";
 
 /**
  * IMPORTANTE: Market Attention consume SOLO el remoto real de social_link.
@@ -73,7 +73,6 @@ export type AttentionHealth = {
   lastErr?: string;
 };
 
-export type PulsePoint = { day: string; composite: number };
 
 function normDirection(d?: string, delta?: number): AttentionRow["direction"] {
   const v = String(d ?? "").toLowerCase();
