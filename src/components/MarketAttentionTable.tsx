@@ -8,6 +8,7 @@ import Sparkline from "@/components/Sparkline";
 import SymbolCell from "@/components/SymbolCell";
 import {
   useMarketAttention,
+  PulsePoint,
   type AttentionRow,
   type AttentionHealth,
 } from "@/lib/useMarketAttention";
