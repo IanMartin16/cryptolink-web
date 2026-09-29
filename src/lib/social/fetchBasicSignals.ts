@@ -35,6 +35,7 @@ export type BasicSignalsResponse = {
     attentionLosers: SocialAttentionItem[];
     tags: string[];
     coverage: "low" | "moderate" | "broad";
+    pulseSeries?: PulsePoint[];
   };
   backdrop?: MarketBackdrop;
 };
