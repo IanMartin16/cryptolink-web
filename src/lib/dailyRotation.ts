@@ -1,4 +1,4 @@
-const ANCHORS = ["BTC", "ETH", "USDT", "ZEC"];
+const ANCHORS = ["BTC", "ETH", "USDT", "SOL"];
 const ROTATION_SIZE = 16; // 3 anclas + 17 = 20
 
 /** Semilla estable por DÍA (UTC): misma toda la jornada, distinta al día siguiente. */

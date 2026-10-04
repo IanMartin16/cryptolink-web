@@ -85,11 +85,6 @@ export default function PricesRouteBody() {
     pushPricesToHistory(rows);
   }, [rows]);
 
-  // salud derivada del feed para el StatusBar (antes venía por onHealth)
-  const pricesHealth = error
-    ? { ok: false, lastErr: error }
-    : { ok: true, lastOkAt: lastUpdated };
-
   // dentro de PricesBody, cuando ya hay rows:
   useEffect(() => {
     const symbols = rows.map((r) => r.symbol);
@@ -98,6 +93,11 @@ export default function PricesRouteBody() {
       hydratePriceHistory(symbols, fiat);
     }
   }, [rows]); 
+
+  // salud derivada del feed para el StatusBar (antes venía por onHealth)
+  const pricesHealth = error
+    ? { ok: false, lastErr: error }
+    : { ok: true, lastOkAt: lastUpdated };
 
   return (
     <div className="space-y-4">
