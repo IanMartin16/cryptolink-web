@@ -368,7 +368,7 @@ export const SYMBOL_META: Record<string, SymbolMetaEntry> = {
   ZIL: { name: "Zilliqa", icon: "/icons/crypto/zil.png", categories: ["null"] },
   T: { name: "Threshold Network", icon: "/icons/crypto/t.png", categories: ["null"] },
   CAP: { name: "Cap", icon: "/icons/crypto/cap.png", categories: ["null"] },
-  '1INCH' { name: "1INCH", icon: "/icons/crypto/1inch.png", categories: ["null"] },
+  '1INCH': { name: "1INCH", icon: "/icons/crypto/1inch.png", categories: ["null"] },
   SHX: { name: "Stronghold", icon: "/icons/crypto/shx.png", categories: ["null"] },
   SOON: { name: "SOON", icon: "/icons/crypto/soon.png", categories: ["null"] },
   NMR: { name: "Numeraire", icon: "/icons/crypto/nmr.png", categories: ["null"] },
