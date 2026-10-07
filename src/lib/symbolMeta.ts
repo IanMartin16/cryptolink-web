@@ -396,7 +396,7 @@ export const SYMBOL_META: Record<string, SymbolMetaEntry> = {
   HOLO: { name: "Holoworld", icon: "/icons/crypto/holo.png", categories: ["null"] },
   AZTEC: { name: "Aztec", icon: "/icons/crypto/aztec.png", categories: ["null"] },
   NEX: { name: "Nexus", icon: "/icons/crypto/nex.png", categories: ["null"] },
-  EDGE: { name: "Definitive", icon: "/icons/crypto/edge.png", categories: ["null"] },
+  SN4: { name: "Targon", icon: "/icons/crypto/sn4.png", categories: ["null"] },
   W: { name: "Wormhole", icon: "/icons/crypto/w.png", categories: ["null"] },
   PROS: { name: "Pharos", icon: "/icons/crypto/pros.png", categories: ["null"] },
   QUBIC: { name: "Qubic", icon: "/icons/crypto/qubic.png", categories: ["null"] },
