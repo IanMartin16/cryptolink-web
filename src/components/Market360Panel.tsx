@@ -9,9 +9,14 @@ import { fetchSymbols360, type SymbolMarket, type SymbolsResponse } from "@/lib/
 
 /**
  * Market360Panel (antes SymbolsPanel) — sección "Market 360°".
- * Una sola fuente (fetchSymbols360) alimenta DOS vistas:
- *   1. MarketBubbles (panorámica) — arriba, el gancho visual.
- *   2. Fichas (detalle) — abajo.
+ * Una sola fuente (fetchSymbols360) alimenta DOS vistas, lado a lado:
+ *   1. Fichas (detalle) — IZQUIERDA, lo más valioso, posición primaria de lectura.
+ *   2. MarketBubbles (panorámica) — DERECHA, el mapa visual acompañante (sticky).
+ * En pantallas angostas (<980px) se apilan en una columna, fichas primero.
+ *
+ * Antes iban apiladas (fichas arriba, bubbles abajo): el grid de fichas crecía a
+ * lo alto y enterraba las bubbles bajo el fold — solo el scroll total las descubría.
+ * El layout de 2 columnas aprovecha el ancho desperdiciado y mantiene ambas a la vista.
  * Ambas visibles siempre (no toggle): los logs muestran que los usuarios se
  * enganchan con lo visual y no abrirían una vista escondida, perdiéndose los
  * datos ricos. Por eso el detalle no se esconde.
@@ -61,7 +66,7 @@ function fmtTs(iso?: string) {
 }
 
 // =====================================================================
-// VISTA 1 — MarketBubbles (panorámica). Recibe los symbols ya cargados.
+// MarketBubbles (panorámica). Recibe los symbols ya cargados.
 // Eje X = change24h · Eje Y = volume24h · tamaño = marketCap.
 // =====================================================================
 
@@ -304,7 +309,7 @@ function MarketBubbles({ symbols }: { symbols: SymbolMarket[] }) {
 }
 
 // =====================================================================
-// VISTA 2 — Ficha de detalle
+// Ficha de detalle
 // =====================================================================
 
 function SymbolCard({ s }: { s: SymbolMarket }) {
@@ -468,7 +473,7 @@ export default function Market360Panel() {
         <div>
           <h2 style={{ margin: 0, fontSize: 22 }}>Market <span style={{ color: UI.orange }}>360°</span></h2>
           <p style={{ marginTop: 8, opacity: 0.78, fontSize: 14 }}>
-            Activity vs performance, then full detail per asset.
+            Per-asset detail with the live market map alongside.
           </p>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
@@ -484,36 +489,65 @@ export default function Market360Panel() {
         </div>
       </div>
 
-      {/* VISTA 1 — FICHAS (detalle, lo más valioso: van primero) */}
-      <div
-        style={{
-          marginTop: 14, display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12,
-        }}
-      >
-        {symbols.map((s) => (
-          <SymbolCard key={s.symbol} s={s} />
-        ))}
-        {missing.map((sym) => (
-          <MissingCard key={`missing-${sym}`} symbol={sym} />
-        ))}
-      </div>
+      {/* BODY — 2 columnas en desktop: fichas (izq, primario) + bubbles (der, mapa sticky).
+          Colapsa a 1 columna <980px, fichas primero. */}
+      <div className="m360-body">
+        {/* IZQUIERDA — FICHAS (detalle, lo más valioso) */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(190px, 1fr))",
+            gap: 12, minWidth: 0, alignContent: "start",
+          }}
+        >
+          {symbols.map((s) => (
+            <SymbolCard key={s.symbol} s={s} />
+          ))}
+          {missing.map((sym) => (
+            <MissingCard key={`missing-${sym}`} symbol={sym} />
+          ))}
 
-      {/* VISTA 2 — BUBBLES (panorámica compacta, cierra la sección sin opacar las cards) */}
-      <div
-        style={{
-          marginTop: 14, padding: 12, borderRadius: 16, border: `1px solid ${UI.border}`,
-          background: "rgba(255,255,255,0.03)",
-        }}
-      >
-        <MarketBubbles symbols={symbols} />
-      </div>
-
-      {symbols.length === 0 && missing.length === 0 ? (
-        <div style={{ marginTop: 14, opacity: 0.7, fontSize: 13 }}>
-          No symbols selected. Choose assets in Settings.
+          {symbols.length === 0 && missing.length === 0 ? (
+            <div style={{ opacity: 0.7, fontSize: 13 }}>
+              No symbols selected. Choose assets in Settings.
+            </div>
+          ) : null}
         </div>
-      ) : null}
+
+        {/* DERECHA — BUBBLES (panorámica, mapa acompañante, sticky) */}
+        <div
+          className="m360-bubbles-col"
+          style={{
+            padding: 12, borderRadius: 16, border: `1px solid ${UI.border}`,
+            background: "rgba(255,255,255,0.03)", minWidth: 0,
+          }}
+        >
+          <MarketBubbles symbols={symbols} />
+        </div>
+      </div>
+
+      <style jsx>{`
+        .m360-body {
+          margin-top: 14px;
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) minmax(0, 460px);
+          gap: 14px;
+          align-items: start;
+        }
+        .m360-bubbles-col {
+          position: sticky;
+          top: 12px;
+        }
+        /* En angosto: una columna, fichas primero, bubbles sin sticky. */
+        @media (max-width: 2800px) {
+          .m360-body {
+            grid-template-columns: 1fr;
+          }
+          .m360-bubbles-col {
+            position: static;
+          }
+        }
+      `}</style>
     </section>
   );
 }
