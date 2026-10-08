@@ -360,7 +360,7 @@ export const SYMBOL_META: Record<string, SymbolMetaEntry> = {
   MOVR: { name: "Moonriver", icon: "/icons/crypto/movr.png", categories: ["null"] },
   RHEA: { name: "RHEA", icon: "/icons/crypto/rhea.png", categories: ["null"] },
   SC: { name: "Siacoin", icon: "/icons/crypto/sic.png", categories: ["null"] },
-  PHA: { name: "PHALA", icon: "/icons/crypto/pha.png", categories: ["null"] },
+  PHA: { name: "PHALA", icon: "/icons/crypto/phala.png", categories: ["null"] },
   POD: { name: "Dolphin", icon: "/icons/crypto/pod.png", categories: ["null"] },
   BEAM: { name: "Beam", icon: "/icons/crypto/beam.png", categories: ["null"] },
   NEURAL: { name: "NEURALAI", icon: "/icons/crypto/neural.png", categories: ["null"] },
