@@ -115,7 +115,7 @@ export default function PricesRouteBody() {
 
       <MarketSparkStrip rows={rows} max={20} />
 
-      <TopMoversStrip rows={rows} markets={markets} perSide={5} />
+      <TopMoversStrip window="24h" limit={10} />
 
       {/* Tabla principal: Watchlist (precio en vivo) + Top Movers (24h real + volumen).
           markets = datos ricos de CoinGecko, cruzados por símbolo en Top Movers. */}
