@@ -298,7 +298,7 @@ export const SYMBOL_META: Record<string, SymbolMetaEntry> = {
   SCRT: { name: "Secret", icon: "/icons/crypto/scrt.png", categories: ["ai"] },
   S: { name: "Sonic", icon: "/icons/crypto/s.png", categories: ["smart-contracts", "layer1"] },
   BLUECHIP: { name: "BLUE CHIP", icon: "/icons/crypto/bluechip.png", categories: ["meme"] },
-  DEBIT: { name: "Teller", icon: "/icons/crypto/debit.png", categories: ["defi"] }, 
+  DEBIT: { name: "Teller", icon: "/icons/crypto/teller.png", categories: ["defi"] }, 
   ORCA: { name: "Orca", icon: "/icons/crypto/orca.png", categories: ["defi"] },
   FONE: { name: "apeonfone", icon: "/icons/crypto/fone.png", categories: ["meme"] },
   ORBIO: { name: "Orbio.so", icon: "/icons/crypto/orbio.png", categories: ["ai"] },
