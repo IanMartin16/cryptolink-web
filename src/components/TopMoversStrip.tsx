@@ -230,7 +230,7 @@ export default function TopMoversStrip({
       <div className="flex items-center justify-end gap-3">
         {wantedCount > 0 && (
           <span className="text-[11px] text-sky-200/80">
-            👁 {wantedCount} también están entre los más buscados
+            👁 {wantedCount} are also between the most wanted
           </span>
         )}
         {wantedCount > 0 && (
@@ -238,7 +238,7 @@ export default function TopMoversStrip({
             onClick={() => setOnlyWanted((v) => !v)}
             className="rounded-md border border-white/15 bg-white/[0.03] px-2 py-1 text-[11px] text-white/70 hover:bg-white/[0.07]"
           >
-            {onlyWanted ? "Ver todos" : "Solo buscados"}
+            {onlyWanted ? "Show All" : "Only Wanted"}
           </button>
         )}
       </div>
