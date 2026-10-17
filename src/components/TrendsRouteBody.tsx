@@ -59,6 +59,9 @@ export default function TrendsRouteBody() {
       <MarketAttentionTable onItems={setAttentionItems} onHealth={setTrendsHealth} 
       onPulseSeries={setPulseSeries}/>
       </div>
+
+      
+
       <div style={{ marginTop: 12, minWidth: 0 }}>
         <AttentionPulsePanel series={pulseSeries}/>
       </div>
