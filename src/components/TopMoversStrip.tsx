@@ -149,7 +149,7 @@ export default function TopMoversStrip({
   window: win = "24h",
   limit = 15,
   endpoint = "/api/cryptolink/top-movers",
-  attentionEndpoint = "/api/social/attention", // <-- AJUSTA a tu route real de Market Attention
+  attentionEndpoint = "/api/social/attention", 
 }: {
   window?: string;
   limit?: number;

@@ -1,8 +1,3 @@
-// app/api/top-movers/route.ts  (Next.js App Router — BFF proxy)
-//
-// Mismo patrón que /api/overview: la API Java va con x-api-key del lado servidor,
-// el front solo pega a /api/top-movers.
-
 import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 
