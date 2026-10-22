@@ -243,8 +243,8 @@ export default function RegimePanel() {
         setStatus((prev) => (data ? "refreshing" : prev));
 
         const [regimeRes, healthRes] = await Promise.all([
-          fetchRegime(["BTC", "ETH", "SOL"]),
-          fetchMarketHealth(["BTC", "ETH", "SOL"]),
+          fetchRegime(),
+          fetchMarketHealth(),
         ]);
 
         if (!cancelled) {

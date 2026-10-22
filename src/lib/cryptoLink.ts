@@ -87,11 +87,9 @@ export type RegimeResponse = {
   };
 };
 
-export async function fetchRegime(symbols: string[]): Promise<RegimeResponse> {
-  const qs = encodeURIComponent(symbols.join(","));
-  const res = await fetch(`/api/social/regime?symbols=${qs}&fiat=USD`, {
-    cache: "no-store",
-  });
+export async function fetchRegime(symbols?: string[]): Promise<RegimeResponse> {
+  const qs = symbols?.length ? `symbols=${encodeURIComponent(symbols.join(","))}&` : "";
+  const res = await fetch(`/api/social/regime?${qs}fiat=USD`, { cache: "no-store" });
   if (!res.ok) throw new Error(`CryptoLink regime HTTP ${res.status}`);
   return (await res.json()) as RegimeResponse;
 }
@@ -129,11 +127,9 @@ export type MarketHealthResponse = {
   };
 };
 
-export async function fetchMarketHealth(symbols: string[]): Promise<MarketHealthResponse> {
-  const qs = encodeURIComponent(symbols.join(","));
-  const res = await fetch(`/api/social/market-health?symbols=${qs}&fiat=USD`, {
-    cache: "no-store",
-  });
+export async function fetchMarketHealth(symbols?: string[]): Promise<MarketHealthResponse> {
+  const qs = symbols?.length ? `symbols=${encodeURIComponent(symbols.join(","))}&` : "";
+  const res = await fetch(`/api/social/market-health?${qs}fiat=USD`, { cache: "no-store" });
   if (!res.ok) throw new Error(`Market Health HTTP ${res.status}`);
   return (await res.json()) as MarketHealthResponse;
 }

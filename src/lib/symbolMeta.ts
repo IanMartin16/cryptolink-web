@@ -412,7 +412,7 @@ export const SYMBOL_META: Record<string, SymbolMetaEntry> = {
   MAGIC: { name: "Treasure", icon: "/icons/crypto/magic.png", categories: ["null"] },
   GALA: { name: "GALA", icon: "/icons/crypto/gala.png", categories: ["null"] },
   TAUFA: { name: "TAU FA", icon: "/icons/crypto/tau.png", categories: ["null"] },
-  DNA: { name: "NeoSoul", icon: "/icons/crypto/dna,png", categories: ["null"] },
+  DNA: { name: "NeoSoul", icon: "/icons/crypto/dna.png", categories: ["null"] },
   LUMIA: { name: "Lumia", icon: "/icons/crypto/lumia.png", categories: ["null"] },
   GTC: { name: "Gitcoin", icon: "/icons/crypto/gtc.png", categories: ["null"] },
   MEGA: { name: "MegaETH", icon: "/icons/crypto/mega.png", categories: ["null"] },
