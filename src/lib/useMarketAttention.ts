@@ -19,7 +19,7 @@ async function fetchMarketAttentionRemote(): Promise<BasicSignalsResponse> {
   }
   // ANTES: /internal/v1/basic-signals?window=1h&limit=15
   // AHORA: el endpoint v2 de atención real
-  const res = await fetch(`${base}/internal/v1/attention?limit=15`, {
+  const res = await fetch(`${base}/internal/v1/attention?limit=20`, {
     method: "GET",
     headers: { accept: "application/json" },
     cache: "no-store",

@@ -14,7 +14,7 @@ function getBaseUrl() {
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const limit = searchParams.get("limit") || "15";
+    const limit = searchParams.get("limit") || "20";
 
     const url = `${getBaseUrl()}/internal/v1/attention?limit=${encodeURIComponent(limit)}`;
     const apiKey = process.env.CRYPTOLINK_DEMO_KEY || "";
