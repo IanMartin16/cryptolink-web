@@ -106,7 +106,7 @@ useEffect(() => {
       const syms = (topRes.symbols ?? [])
         .map((s: any) => s.symbol)
         .filter(Boolean)
-        .slice(0, 10);
+        .slice(0, 20);
       if (syms.length) pulseSymbols = syms;
     } catch {
       // si el top falla, usamos el fallback de majors (no rompe el panel)
