@@ -571,7 +571,7 @@ export const SYMBOL_META: Record<string, SymbolMetaEntry> = {
   SXT: { name: "Space and Time", icon: "/icons/crypto/sxt.png", categories: ["null"] },
   RITUAL: { name: "Ritual", icon: "/icons/crypto/ritual.png", categories: ["null"] },
   HOOKR: { name: "Hookr.fun", icon: "/icons/crypto/hookr.png", categories: ["null"] },
-  STONBROKER: { name: "StonkBroker", icon: "/icons/crypto/stonkbroker.png", categories: ["null"] },
+  STONKBROKER: { name: "StonkBroker", icon: "/icons/crypto/stonkbroker.png", categories: ["null"] },
   SN110: { name: "Green Compute", icon: "/icons/crypto/sn110.png", categories: ["null"] },
   CLANKER: { name: "tokenbot", icon: "/icons/crypto/clanker.png", categories: ["null"] },
   ELSA: { name: "Elsa", icon: "/icons/crypto/elsa.png", categories: ["null"] },
