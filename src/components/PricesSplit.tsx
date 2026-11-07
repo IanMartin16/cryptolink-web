@@ -9,9 +9,25 @@ import Sparkline from "@/components/Sparkline";
 import { getPriceHistory } from "@/lib/usePriceHistory";
 
 
+const SUB = "₀₁₂₃₄₅₆₇₈₉";
+const toSub = (k: number) => String(k).split("").map((d) => SUB[+d]).join("");
+
 function fmtPrice(n?: number) {
-  if (typeof n !== "number") return "—";
-  return n >= 1000 ? n.toFixed(0) : n >= 1 ? n.toFixed(2) : n.toFixed(6);
+  if (typeof n !== "number" || !Number.isFinite(n)) return "—";
+  if (n === 0) return "0";
+  const sign = n < 0 ? "-" : "";
+  const x = Math.abs(n);
+
+  if (x >= 1000) return `${sign}${x.toFixed(0)}`;
+  if (x >= 1)    return `${sign}${x.toFixed(2)}`;
+  if (x >= 1e-6) return `${sign}${x.toFixed(6)}`;   // 0.999095, 0.150038, 0.000120 — igual que hoy
+
+  // sub-1e-6: comprime los ceros iniciales -> 0.0₉3102
+  const exp = Math.floor(Math.log10(x));
+  const zeros = -exp - 1;
+  const sig = Math.round(x / Math.pow(10, exp - 3));
+  const digits = String(sig).replace(/0+$/, "");
+  return `${sign}0.0${toSub(zeros)}${digits}`;
 }
 
 function fmtVol(v?: number | null) {
