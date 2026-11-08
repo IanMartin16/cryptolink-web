@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { UI } from "@/lib/ui";
 import { fetchMomentum } from "@/lib/cryptoLink";
+import PerformanceCompareChart from "@/components/PerformanceCompareChart";
 import { useMarketSignalsStore } from "@/lib/stores/marketSignalsStore";
 import DataStatusBadge from "./DataStatusBadge";
 import { getTrendHistory } from "@/lib/useTrendHistory";
@@ -455,12 +456,12 @@ export default function MarketMomentumPanel({ topN = 10 }: { topN?: number}) {
             marginBottom: 8,
           }}
         >
-          <div style={{ fontSize: 12, opacity: 0.72 }}>Score comparison</div>
+          <div style={{ fontSize: 12, opacity: 0.72 }}>Relative performance · rebased 100</div>
           <div style={{ fontSize: 11, opacity: 0.5 }}>
             leader: {top[0]?.symbol ?? "—"}
           </div>
         </div>
-        <MomentumLeaderChart items={top} />
+        <PerformanceCompareChart symbols={top.map((t) => t.symbol)} leader={top[0]?.symbol} window="7d" />
       </div>
     </section>
   );

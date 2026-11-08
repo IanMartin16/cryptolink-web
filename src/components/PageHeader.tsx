@@ -11,7 +11,7 @@ export default function PageHeader({
   title: string;
   subtitle?: string;
   health?: Health;
-  badge?: "LIVE" | "DERIVED" | "BETA" | "—";
+  badge?: "LIVE" | "DERIVED" | "BETA" | "—" | "INSIGHTS";
 }) {
   const tone =
     health?.ok === true
