@@ -5,7 +5,7 @@ import StatusBar from "@/components/StatusBar";
 import type { TrendItem } from "@/lib/types";
 import type { Health } from "@/lib/health";
 import MarketMomentumPanel from "./MarketMomentumPanel";
-import RegimePanel from "@/components/RegimePanel";
+import MarketSignalsPanel from "@/components/MarketSignalsPanel";
 import MarketAttentionTable from "./MarketAttentionTable";
 import AttentionPulsePanel from "./AttentionPulsePanel";
 import type { PulsePoint } from "@/lib/social/fetchBasicSignals";
@@ -65,7 +65,8 @@ export default function TrendsRouteBody() {
       <div style={{ marginTop: 12, minWidth: 0 }}>
         <AttentionPulsePanel series={pulseSeries}/>
       </div>
-        <RegimePanel />
+
+        <MarketSignalsPanel />
 
         <div
           style={{

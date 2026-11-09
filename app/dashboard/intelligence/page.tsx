@@ -44,10 +44,6 @@ export default function DerivedIntelligencePage() {
         <MarketIntelligencePanel />
       </div>
 
-      <div className="min-h-[320px]">
-        <SignalsRadarPanel />
-      </div>
-
       <div className="min-h-[280px]">
         <SocialPulseBoard />
       </div>
