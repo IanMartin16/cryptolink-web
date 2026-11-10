@@ -3,7 +3,7 @@
 import PageHeader from "@/components/PageHeader";
 import { HEALTH_OK } from "@/lib/health";
 import MarketIntelligencePanel from "@/components/MarketIntelligencePanel";
-import SocialPulseBoard from "@/components/SocialPulseBoard";
+import MarketStructurePanel from "@/components/MarketStructurePanel";
 import SignalsRadarPanel from "@/components/SignalsRadarPanel";
 import MarketBreadthPanel from "@/components/MarketBreadthPanel";
 import DivergencePanel from "@/components/DivergencePanel"
@@ -50,7 +50,7 @@ export default function DerivedIntelligencePage() {
       </div>
 
       <div className="min-h-[280px]">
-        <SocialPulseBoard />
+        <MarketStructurePanel />
       </div>
 
     </div>
