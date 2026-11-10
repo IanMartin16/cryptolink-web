@@ -555,7 +555,7 @@ export const SYMBOL_META: Record<string, SymbolMetaEntry> = {
   USDU: { name: "USDu", icon: "/icons/crypto/usdu.png", categories: ["null"] },
   FT: { name: "Flying Tulip", icon: "/icons/crypto/ft.png", categories: ["null"] },
   AB: { name: "AB", icon: "/icons/crypto/ab.png", categories: ["null"] },
-  AIN: { name: "Infinity Ground", icon: "/icons/crypto/ain.png", categories: ["null"] },
+  AIN: { name: "Infinity Ground", icon: "/icons/crypto/ain.png", categories: ["ai"] },
   LCX: { name: "LCX", icon: "/icons/crypto/lcx.png", categories: ["null"] },
   OCEAN: { name: "Ocean Protocol", icon: "/icons/crypto/ocean.png", categories: ["null"] },
   BIRB: { name: "Moonbirds", icon: "/icons/crypto/birb.png", categories: ["null"] },

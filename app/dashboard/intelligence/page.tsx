@@ -6,6 +6,7 @@ import MarketIntelligencePanel from "@/components/MarketIntelligencePanel";
 import SocialPulseBoard from "@/components/SocialPulseBoard";
 import SignalsRadarPanel from "@/components/SignalsRadarPanel";
 import MarketBreadthPanel from "@/components/MarketBreadthPanel";
+import DivergencePanel from "@/components/DivergencePanel"
 import StatusBar from "@/components/StatusBar";
 
 /**
@@ -38,6 +39,10 @@ export default function DerivedIntelligencePage() {
       {/* Orden decidido: intelligence arriba, narrativa en medio, radar abajo */}
       <div className="min-h-[180px]">
       <MarketBreadthPanel /> 
+      </div>
+
+      <div className="min-h-[280px]">
+        <DivergencePanel />
       </div>
 
       <div className="min-h-[320px]">
