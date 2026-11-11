@@ -18,7 +18,7 @@ function fmtPrice(n?: number) {
   const sign = n < 0 ? "-" : "";
   const x = Math.abs(n);
 
-  if (x >= 1000) return `${sign}${x.toFixed(0)}`;
+  if (x >= 1000) return `${sign}${x.toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
   if (x >= 1)    return `${sign}${x.toFixed(2)}`;
   if (x >= 1e-6) return `${sign}${x.toFixed(6)}`;   // 0.999095, 0.150038, 0.000120 — igual que hoy
 
@@ -41,11 +41,11 @@ function fmtVol(v?: number | null) {
 
 function PctCell({ pct }: { pct?: number | null }) {
   if (typeof pct !== "number") return <span className="text-white/45">—</span>;
-  const cls = pct > 0 ? "text-emerald-300" : pct < 0 ? "text-rose-300" : "text-white/70";
+  const zero = Math.abs(pct) < 0.005;
+  const cls = zero ? "text-white/60" : pct > 0 ? "text-emerald-300" : "text-rose-300";
   return (
     <span className={`font-semibold tabular-nums ${cls}`}>
-      {pct > 0 ? "+" : ""}
-      {pct.toFixed(2)}%
+      {zero ? "0.00%" : `${pct > 0 ? "+" : ""}${pct.toFixed(2)}%`}
     </span>
   );
 }
@@ -178,7 +178,6 @@ export default function PricesSplit({
             <thead className="sticky top-0 bg-black/20 backdrop-blur">
               <tr className="text-[11px] text-white/55">
                 <th className="px-3 py-2 text-left font-medium">Asset</th>
-                <th className="px-3 py-2 text-left font-medium">Name</th>
                 <th className="px-3 py-2 text-right font-medium">Price</th>
                 <th className="px-3 py-2 text-right font-medium">Δ% session</th>
                 <th className="px-3 py-2 text-right font-medium">Trend</th>
@@ -192,14 +191,7 @@ export default function PricesSplit({
                 const fullName = getSymbolName(r.symbol);
                 return (
                   <tr key={r.symbol} className="border-t border-white/5 hover:bg-white/[0.04]">
-                    <td className="px-3 py-2"><SymbolCell symbol={r.symbol} fiat={r.fiat}/> </td>
-                    <td className="flex flex-col min-w-0">
-                          {fullName ? (
-                            <div className="border-t border-white/5 hover:bg-white/[0.04]">
-                              {fullName}
-                            </div>
-                          ) : null}
-                        </td>
+                    <td className="px-3 py-2"><SymbolCell symbol={r.symbol} showName /></td>
                       <td className="px-3 py-2 text-right tabular-nums text-white/85">{fmtPrice(r.price)}</td>
                       <td className="px-3 py-2 text-right"><PctCell pct={pct} /></td>
                       <td className="px-3 py-2 text-right">
