@@ -136,7 +136,7 @@ const trendsFeed = useTrendsFeed({
     <TopHeader
       title={
         <>
-          CryptoLink <span style={{ color: UI.orange }}>V4.0</span>
+          CryptoLink 
         </>
       }
       subtitle={"Dashboard · batch pricing · social movers · SSE"}

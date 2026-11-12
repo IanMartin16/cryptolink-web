@@ -61,17 +61,13 @@ function scoreToPct(score: number) {
   const p = ((score - REGIME_MIN) / (REGIME_MAX - REGIME_MIN)) * 100;
   return Math.max(0, Math.min(100, p));
 }
-// heat divergente: coral (−) ↔ slate tenue (0) ↔ mint (+), clamp ±8%, opacidad llena
-function heatColor(change: number | null): string {
-  if (change == null || !Number.isFinite(change)) return "rgba(255,255,255,0.04)";
-  const c = Math.max(-8, Math.min(8, change)) / 8;      // -1..1
-  const neg = [255, 107, 107];   // tu coral (#FF6B6B)
-  const mid = [42, 48, 60];      // slate tenue: el 0 se recuesta, los movers saltan
-  const pos = [46, 229, 157];    // tu mint (#2EE59D)
-  const to = c >= 0 ? pos : neg;
-  const w = Math.abs(c);
-  const ch = (i: number) => Math.round(mid[i] + (to[i] - mid[i]) * w);
-  return `rgb(${ch(0)}, ${ch(1)}, ${ch(2)})`;
+// color del heatmap: verde (sube) ↔ rojo (baja), intensidad por magnitud (clamp ±8%)
+function heatColor(change: number | null) {
+  if (change == null || !Number.isFinite(change)) return "rgba(255,255,255,0.05)";
+  const c = Math.max(-8, Math.min(8, change)) / 8; // -1..1
+  return c >= 0
+    ? `rgba(46,229,157,${0.10 + c * 0.55})`
+    : `rgba(255,107,107,${0.10 + -c * 0.55})`;
 }
 function fmtPct(n: number | null) {
   if (n == null || !Number.isFinite(n)) return "—";

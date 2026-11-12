@@ -43,8 +43,6 @@ export default function Sparkline({
 
   const area = `M0,${h} L${points.join(" L")} L${w},${h} Z`;
 
- 
-
   return (
     <svg width={w} height={h}>
       <path d={area} fill={fill} />

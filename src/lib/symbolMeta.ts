@@ -408,7 +408,7 @@ export const SYMBOL_META: Record<string, SymbolMetaEntry> = {
   US: { name: "Talus", icon: "/icons/crypto/us.png", categories: ["ai"] },
   QTC: { name: "Quantus", icon: "/icons/crypto/qtc.png", categories: ["layer1"] },
   CCD: { name: "Concordium", icon: "/icons/crypto/ccd.png", categories: ["null"] },
-  ZIG: { name:"ZIG Finance", icon: "/icons/crypto/zig.png", categories: ["null"] },
+  ZIG: { name:"ZIG Finance", icon: "/icons/crypto/zig.png", categories: ["ai"] },
   MAGIC: { name: "Treasure", icon: "/icons/crypto/magic.png", categories: ["null"] },
   GALA: { name: "GALA", icon: "/icons/crypto/gala.png", categories: ["null"] },
   TAUFA: { name: "TAU FA", icon: "/icons/crypto/tau.png", categories: ["null"] },
