@@ -5,7 +5,6 @@ import Market360Panel from "@/components/Market360Panel";
 import type { Health } from "@/lib/health";
 import { getSymbols, setSymbols } from "@/lib/symbolsStore";
 import { normalizeTrends } from "@/lib/trendEngine";
-import { computeSnapshotKPIs } from "@/lib/snapshotEngine";
 import type { SnapshotKPIs } from "@/lib/types";
 import type { PriceRow, TrendItem } from "@/lib/types";
 import { computeMood } from "@/lib/moodEngine";
@@ -27,26 +26,6 @@ export default function Market360Page() {
 
   // Normaliza trends UNA vez
   const normalizedTrends = useMemo(() => normalizeTrends(trendItems), [trendItems]);
-
-  // Mood UNA vez (source of truth)
-  const mood = useMemo(() => computeMood(rows, normalizedTrends), [rows, normalizedTrends]);
-
-  // PRIMERO snapshot (v2 lo necesita)
-const snapshot: SnapshotKPIs = useMemo(
-  () =>
-    computeSnapshotKPIs({
-      rows,
-      trends: normalizedTrends,
-      moodScore: mood.score,
-      confidence: mood.confidence,
-    }),
-  [rows, normalizedTrends, mood.score, mood.confidence]
-);
-
-  // "last updated" del mood
-  useEffect(() => {
-    setMoodUpdatedAt(new Date().toLocaleTimeString());
-  }, [mood.score, mood.confidence, normalizedTrends.length]);
 
   // carga inicial de la selección persistida
   useEffect(() => {

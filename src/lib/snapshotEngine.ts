@@ -13,10 +13,10 @@ function safe(n: number | undefined, fallback = NaN) {
 }
 
 function fngTone(v: number): SnapshotKPI["tone"] {
-  if (v < 25) return "bad";     // fear / extreme fear
-  if (v < 45) return "warn";
-  if (v <= 70) return "good";   // neutral → greed
-  return "warn";                // extreme greed = también cautela
+  if (v < 25) return "bad";       // extreme fear → rojo
+  if (v < 45) return "warn";      // fear → ámbar
+  if (v <= 55) return "neutral";  // neutral → gris
+  return "good";                  // greed / extreme greed → verde (convención del gauge)
 }
 
 function fmtUsd(n: number) {
