@@ -1,174 +1,118 @@
-import type { PriceRow, TrendItem, SnapshotKPIs, SnapshotKPI } from "./types";
+// lib/snapshotEngine.ts
+import type { PriceRow, SnapshotKPIs, SnapshotKPI } from "./types";
 
 type SnapshotInput = {
-  rows: PriceRow[];
-  trends: TrendItem[];
-  moodScore: number;   // -100..100
-  confidence: number;  // 0..1
+  rows: PriceRow[];                                      // universo COMPLETO (no 18)
+  dominance?: { btc: number; eth: number } | null;       // market-structure
+  fng?: { value: number; label: string } | null;         // alternative.me (vía AttentionPulse)
+  mcap?: { totalUsd: number; change24h: number } | null; // overview (opcional)
 };
-
-function clamp(n: number, min: number, max: number) {
-  return Math.max(min, Math.min(max, n));
-}
 
 function safe(n: number | undefined, fallback = NaN) {
   return Number.isFinite(n as number) ? (n as number) : fallback;
 }
 
-function momentumSign(m: any): number {
-  if (m === "up" || m === "UP") return 1;
-  if (m === "down" || m === "DOWN") return -1;
-  if (m === "flat" || m === "FLAT") return 0;
-
-  const num = typeof m === "number" ? m : Number(m);
-  if (Number.isFinite(num)) return num > 0 ? 1 : num < 0 ? -1 : 0;
-
-  return 0;
+function fngTone(v: number): SnapshotKPI["tone"] {
+  if (v < 25) return "bad";     // fear / extreme fear
+  if (v < 45) return "warn";
+  if (v <= 70) return "good";   // neutral → greed
+  return "warn";                // extreme greed = también cautela
 }
 
-function divergenceLevel(div: number): { label: string; tone: SnapshotKPI["tone"] } {
-  if (div < 20) return { label: "Low", tone: "good" };
-  if (div < 45) return { label: "Med", tone: "neutral" };
-  if (div < 70) return { label: "High", tone: "warn" };
-  return { label: "Extreme", tone: "bad" };
+function fmtUsd(n: number) {
+  if (n >= 1e12) return `$${(n / 1e12).toFixed(2)}T`;
+  if (n >= 1e9) return `$${(n / 1e9).toFixed(0)}B`;
+  return `$${Math.round(n)}`;
 }
 
 export function computeSnapshotKPIs(input: SnapshotInput): SnapshotKPIs {
-  const moodScore = clamp(Number.isFinite(input.moodScore) ? input.moodScore : 0, -100, 100);
-  const confidence = clamp(Number.isFinite(input.confidence) ? input.confidence : 0, 0, 1);
+  const items: SnapshotKPI[] = [];
 
   // -------------------------
-  // 1) UP/DOWN %
+  // 1) UP/DOWN % (hecho real — se conserva del engine original)
   // -------------------------
-let up = 0;
-let down = 0;
-let flat = 0;
-let valid = 0;
+  let up = 0, down = 0, flat = 0, valid = 0;
+  const FLAT_EPS = 0.0002; // 0.02% — ahora SÍ se usa (antes se declaraba y no)
 
-const FLAT_EPS = 0.0002; // 0.02%
+  for (const r of input.rows || []) {
+    const price = safe(r.price);
+    const prev = safe(r.prevPrice);
 
-for (const r of input.rows || []) {
-  const price = safe(r.price);
-  const prev = safe(r.prevPrice);
+    let delta: number | null = null;
+    if (typeof r.pct === "number" && Number.isFinite(r.pct)) {
+      delta = r.pct / 100;
+    } else if (Number.isFinite(price) && Number.isFinite(prev) && prev !== 0) {
+      delta = (price - prev) / prev;
+    }
+    if (delta == null) continue;
+    valid++;
 
-  if (!Number.isFinite(price) || !Number.isFinite(prev) || prev === 0) continue;
-
-  // ✅ prioriza pct si ya lo traes calculado
-  let delta: number | null = null;
-
-  if (typeof r.pct === "number" && Number.isFinite(r.pct)) {
-    delta = r.pct / 100; // pct viene en %
-  } else if (Number.isFinite(price) && Number.isFinite(prev) && prev !== 0) {
-    delta = (price - prev) / prev;
+    if (Math.abs(delta) < FLAT_EPS) flat++;
+    else if (delta > 0) up++;
+    else down++;
   }
 
-  if (delta == null) continue;
-  valid++;
+  const upPct = valid ? (up / valid) * 100 : 0;
+  const downPct = valid ? (down / valid) * 100 : 0;
+  const flatPct = valid ? (flat / valid) * 100 : 0;
+  const upDownDiff = upPct - downPct;
 
-  if (delta > 0) up++;
-  else if (delta < 0) down++;
-  else flat++;
+  const diffThresh = valid >= 12 ? 10 : 20;
+  const upDownTone: SnapshotKPI["tone"] =
+    upDownDiff >= diffThresh ? "good" : upDownDiff <= -diffThresh ? "bad" : "neutral";
+
+  items.push({
+    key: "upDown",
+    label: "Up / Down",
+    value: valid ? `${Math.round(upPct)}% / ${Math.round(downPct)}%` : "warming…",
+    sub: valid
+      ? `flat ${Math.round(flatPct)}% • ${valid} assets`
+      : `waiting for prevPrice • ${(input.rows || []).length} assets`,
+    tone: valid ? upDownTone : "neutral",
+    raw: upDownDiff,
+  });
+
+  // -------------------------
+  // 2) BTC DOMINANCE (hecho real — market-structure)
+  // -------------------------
+  if (input.dominance) {
+    items.push({
+      key: "btcDom",
+      label: "BTC Dom",
+      value: `${input.dominance.btc.toFixed(1)}%`,
+      sub: `ETH ${input.dominance.eth.toFixed(1)}%`,
+      tone: "neutral",             // dominancia no es buena/mala
+      raw: input.dominance.btc,
+    });
   }
 
-const upPct = valid ? (up / valid) * 100 : 0;
-const downPct = valid ? (down / valid) * 100 : 0;
-const flatPct = valid ? (flat / valid) * 100 : 0;
-
-const upDownDiff = upPct - downPct;
-
-const diffThresh = valid >= 12 ? 10 : 20;
-const upDownTone: SnapshotKPI["tone"] =
-  upDownDiff >= diffThresh ? "good" : upDownDiff <= -diffThresh ? "bad" : "neutral";
-
-// breadth -100..100
-const breadth = valid ? ((up - down) / valid) * 100 : 0;
-
-const warming = valid < 3;
-
   // -------------------------
-  // 2) Divergence (breadth vs mood)
+  // 3) FEAR & GREED (hecho real — alternative.me)
   // -------------------------
-  const divergence = clamp(Math.abs(breadth - moodScore) / 2, 0, 100);
-  const divMeta = divergenceLevel(divergence);
-
-  // -------------------------
-  // 3) Confidence badge
-  // -------------------------
-  const confTone: SnapshotKPI["tone"] =
-    confidence >= 0.75 ? "good" :
-    confidence >= 0.55 ? "neutral" :
-    confidence >= 0.35 ? "warn" : "bad";
-
-  // -------------------------
-  // 4) Market Pressure
-  // -------------------------
-  let trendSum = 0;
-  let trendCount = 0;
-
-  for (const t of input.trends || []) {
-    const score = (t as any)?.score;
-    const scoreN = typeof score === "number" ? clamp(score, 0, 100) : NaN;
-    if (!Number.isFinite(scoreN)) continue;
-
-    const sign = momentumSign((t as any)?.momentum);
-    if (sign === 0) continue;
-
-    trendSum += sign * scoreN;
-    trendCount++;
+  if (input.fng) {
+    items.push({
+      key: "fng",
+      label: "Fear & Greed",
+      value: `${input.fng.value}`,
+      sub: input.fng.label,
+      tone: fngTone(input.fng.value),
+      raw: input.fng.value,
+    });
   }
 
-  const trendNet = trendCount ? clamp(trendSum / trendCount, -100, 100) : 0;
+  // -------------------------
+  // 4) MARKET CAP (hecho real — overview, opcional)
+  // -------------------------
+  if (input.mcap) {
+    items.push({
+      key: "mcap",
+      label: "Mkt Cap",
+      value: fmtUsd(input.mcap.totalUsd),
+      sub: `24h ${input.mcap.change24h >= 0 ? "+" : ""}${input.mcap.change24h.toFixed(1)}%`,
+      tone: input.mcap.change24h >= 0 ? "good" : "bad",
+      raw: input.mcap.change24h,
+    });
+  }
 
-  const base = 0.7 * moodScore + 0.3 * trendNet;
-  const pressure = clamp(base * (0.5 + 0.5 * confidence), -100, 100);
-
-  const pressureAbs = Math.abs(pressure);
-  const pressureTone: SnapshotKPI["tone"] =
-    pressureAbs < 10 ? "neutral" :
-    pressureAbs < 30 ? "warn" :
-    pressure >= 0 ? "good" : "bad";
-
-  const items: SnapshotKPI[] = [
-    {
-      key: "pressure",
-      label: "Market Pressure",
-      value: `${Math.round(pressure)}`,
-      sub: trendCount
-        ? `mood ${Math.round(moodScore)} • trend ${Math.round(trendNet)}`
-        : `mood ${Math.round(moodScore)}`,
-      tone: pressureTone,
-      raw: pressure,
-    },
-    {
-      key: "upDown",
-      label: "Up/Down",
-      value: valid ? `${Math.round(upPct)}% / ${Math.round(downPct)}%` : "warming…",
-      sub: valid ? `flat ${Math.round(flatPct)}% • ${valid} assets` : `waiting for prevPrice • ${input.rows.length} assets`,
-      tone: valid ? upDownTone : "neutral",
-      raw: upDownDiff,
-    },
-    {
-      key: "divergence",
-      label: "Divergence",
-      value: divMeta.label,
-      sub: valid
-        ? `breadth ${Math.round(breadth)}`
-        : "establishing baseline",
-      tone: valid ? divMeta.tone : "neutral",
-      raw: divergence,
-    },
-    {
-      key: "confidence",
-      label: "Confidence",
-      value: `${Math.round(confidence * 100)}%`,
-      sub: "signal strength",
-      tone: confTone,
-      raw: confidence,
-    },
-  ];
-
-  return {
-    updatedAt: Date.now(),
-    items,
-  };
+  return { updatedAt: Date.now(), items };
 }

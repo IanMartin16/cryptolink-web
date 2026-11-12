@@ -11,10 +11,9 @@ import { computeMood } from "@/lib/moodEngine";
 import { normalizeTrends } from "@/lib/trendEngine";
 import type { PriceRow, TrendItem } from "@/lib/types";
 import type { SnapshotKPIs } from "@/lib/types";
-import { computeSnapshotKPIs } from "@/lib/snapshotEngine";
 import MarketSnapshotBar from "@/components/MarketSnapshotBar";
-import InsightCard from "@/components/InsightCard";
 import { buildInsightV2 } from "@/lib/insight/buildInsightV2";
+import { useMarketSnapshot } from "@/lib/hooks/useMarketSnapshot";
 import { usePricesFeed } from "@/lib/hooks/usePricesFeed";
 import { useTrendsFeed } from "@/lib/trends/useTrendsFeed";
 import TrendingNow from "@/components/TrendingNow";
@@ -37,14 +36,6 @@ export default function DashboardPage() {
   // ✅ 2) Mood UNA vez (source of truth)
   const mood = useMemo(() => computeMood(rows, normalizedTrends), [rows, normalizedTrends]);
 
-  // leer lo persistido
-  const storedSnapshot = useMarketSignalsStore((s: any) => s.snapshot);
-  const setSnapshotStore = useMarketSignalsStore((s: any) => s.setSnapshot);
-
-  const computed: SnapshotKPIs = useMemo(
-    () => computeSnapshotKPIs({ rows, trends: normalizedTrends, moodScore: mood.score, confidence: mood.confidence }),
-    [rows, normalizedTrends, mood.score, mood.confidence]
-  );
 
   const trendsSummary = useMemo(() => {
       const up = normalizedTrends.filter(t => t.trend === "up").length;
@@ -71,34 +62,8 @@ export default function DashboardPage() {
     }));
   }, [rows]);
 
-  const snapshot: SnapshotKPIs = useMemo(() => {
-    const computedWarming =
-      (computed?.items ?? []).some(
-        (k) => typeof k.value === "string" && k.value.toLowerCase().includes("warming")
-      );
-    if (!computedWarming) return computed;         // datos frescos reales
-    if (storedSnapshot) return storedSnapshot;      // arranque: usa el último conocido
-    return computed;                                // no hay guardado: warming honesto
-  }, [computed, storedSnapshot]);
+  const { snapshot, status } = useMarketSnapshot();
 
-// Persistir cuando el calculado tenga datos reales (no warming)
-  useEffect(() => {
-    const warming =
-      (computed?.items ?? []).some(
-        (k) => typeof k.value === "string" && k.value.toLowerCase().includes("warming")
-      );
-    if (!warming && computed?.items?.length) {
-      setSnapshotStore(computed);
-    }
-  }, [computed, setSnapshotStore]);
-
-  // ✅ 4) Snapshot KPIs (MarketSnapshotBar)
-  
-
-  // ✅ 5) Insight narrativo V2
-  
-
-  // ✅ “last updated” del mood
   useEffect(() => {
     setMoodUpdatedAt(new Date().toLocaleTimeString());
   }, [mood.score, mood.confidence, normalizedTrends.length]);
@@ -153,20 +118,8 @@ const trendsFeed = useTrendsFeed({
       <StatusBar prices={pricesHealth} trends={trendsHealth} />
     </div>
 
-      <MarketSnapshotBar
-        snapshot={snapshot}
-        status={
-        snapshot === storedSnapshot ? "restored" :
-        (pricesFeed.rows.length ? "live" : "refreshing")
-        }
-      />
+    <MarketSnapshotBar snapshot={snapshot} status={status} />
 
-      <InsightCard
-        headline={insight.headline}
-        summary={insight.summary}
-        note={insight.note}
-        moodScore={mood.score}
-      />
       <div className="mt-1">
         <StatCards  />
       </div>

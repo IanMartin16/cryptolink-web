@@ -38,7 +38,7 @@ export type MoodResult = {
 
 export type BadgeTone = "good" | "warn" | "bad" | "neutral";
 
-export type SnapshotKPIKey = "upDown" | "divergence" | "confidence" | "pressure";
+export type SnapshotKPIKey = "upDown" | "btcDom" | "fng" | "mcap";
 
 export type SnapshotKPI = {
   key: SnapshotKPIKey;
