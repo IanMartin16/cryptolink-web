@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { UI } from "@/lib/ui";
 import DataStatusBadge from "@/components/DataStatusBadge";
 import Sparkline from "@/components/Sparkline";
@@ -115,6 +115,12 @@ export default function MarketOverviewTable({ fiat: fiatProp }: { fiat?: string 
 
   const age = fmtAge(updatedAt);
 
+  const topRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [page]); // 'page' = tu estado de página actual
+
   return (
     <section
       style={{
@@ -152,6 +158,7 @@ export default function MarketOverviewTable({ fiat: fiatProp }: { fiat?: string 
         <p style={{ marginTop: 12 }}>Cannot load overview: <b>{error}</b></p>
       ) : (
         <>
+        <div ref={topRef} />
           <div style={{ marginTop: 14, overflowX: "auto", maxWidth: "100%" }}>
             <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 720 }}>
               <thead>
