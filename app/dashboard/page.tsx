@@ -8,11 +8,9 @@ import type { Health } from "@/lib/health";
 import { HEALTH_OK } from "@/lib/health";
 import TopHeader, { Chip } from "@/components/TopHeader";
 import { computeMood } from "@/lib/moodEngine";
-import { normalizeTrends } from "@/lib/trendEngine";
 import type { PriceRow, TrendItem } from "@/lib/types";
 import type { SnapshotKPIs } from "@/lib/types";
 import MarketSnapshotBar from "@/components/MarketSnapshotBar";
-import { buildInsightV2 } from "@/lib/insight/buildInsightV2";
 import { useMarketSnapshot } from "@/lib/hooks/useMarketSnapshot";
 import { usePricesFeed } from "@/lib/hooks/usePricesFeed";
 import { useTrendsFeed } from "@/lib/trends/useTrendsFeed";
@@ -30,29 +28,6 @@ export default function DashboardPage() {
 
   const [moodUpdatedAt, setMoodUpdatedAt] = useState<string>("—");
 
-  // ✅ 1) Normaliza trends UNA vez
-  const normalizedTrends = useMemo(() => normalizeTrends(trendItems), [trendItems]);
-
-  // ✅ 2) Mood UNA vez (source of truth)
-  const mood = useMemo(() => computeMood(rows, normalizedTrends), [rows, normalizedTrends]);
-
-
-  const trendsSummary = useMemo(() => {
-      const up = normalizedTrends.filter(t => t.trend === "up").length;
-      const down = normalizedTrends.filter(t => t.trend === "down").length;
-      const flat = normalizedTrends.filter(t => t.trend === "flat").length;
-      const avgScore = normalizedTrends.length
-        ? normalizedTrends.reduce((a, t) => a + (t.score ?? 0), 0) / normalizedTrends.length
-        : 0;
-      return {
-        up,
-        down,
-        flat,
-        avgScore,
-        topSymbols: normalizedTrends.slice(0, 3).map(t => t.symbol),
-      };
-    }, [normalizedTrends]);
-
   useEffect(() => {
     const sample = rows.slice(0, 6).map(r => ({
       sym: r.symbol,
@@ -64,25 +39,15 @@ export default function DashboardPage() {
 
   const { snapshot, status } = useMarketSnapshot();
 
-  useEffect(() => {
-    setMoodUpdatedAt(new Date().toLocaleTimeString());
-  }, [mood.score, mood.confidence, normalizedTrends.length]);
+  const pricesFeed = usePricesFeed({
+    onRows: setRows,
+    onHealth: setPricesHealth,
+  });
 
-
-  const insight = useMemo(
-       () => buildInsightV2({ mood, snapshot, rows, trends: normalizedTrends }),
-       [mood, snapshot, rows, normalizedTrends]
-    );
-
-const pricesFeed = usePricesFeed({
-  onRows: setRows,
-  onHealth: setPricesHealth,
-});
-
-const trendsFeed = useTrendsFeed({
-  onItems: setTrendItems,
-  onHealth: setTrendsHealth,
-});
+  const trendsFeed = useTrendsFeed({
+    onItems: setTrendItems,
+    onHealth: setTrendsHealth,
+  });
 
   useEffect(() => {
     if (pricesFeed.rows.length) {

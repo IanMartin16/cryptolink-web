@@ -4,11 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 import Market360Panel from "@/components/Market360Panel";
 import type { Health } from "@/lib/health";
 import { getSymbols, setSymbols } from "@/lib/symbolsStore";
-import { normalizeTrends } from "@/lib/trendEngine";
 import type { SnapshotKPIs } from "@/lib/types";
 import type { PriceRow, TrendItem } from "@/lib/types";
 import { computeMood } from "@/lib/moodEngine";
-import { buildInsightV2 } from "@/lib/insight/buildInsightV2"
 import StatusBar from "@/components/StatusBar";
 import PageHeader from "@/components/PageHeader";
 import { usePricesFeed } from "@/lib/hooks/usePricesFeed";
@@ -23,9 +21,6 @@ export default function Market360Page() {
   const [moodUpdatedAt, setMoodUpdatedAt] = useState<string>("—");
   const [trendsHealth, setTrendsHealth] = useState<Health>(HEALTH_OK);
   const [pricesHealth, setPricesHealth] = useState<Health>(HEALTH_OK);
-
-  // Normaliza trends UNA vez
-  const normalizedTrends = useMemo(() => normalizeTrends(trendItems), [trendItems]);
 
   // carga inicial de la selección persistida
   useEffect(() => {

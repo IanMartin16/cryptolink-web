@@ -4,23 +4,10 @@ import PageHeader from "@/components/PageHeader";
 import { HEALTH_OK } from "@/lib/health";
 import MarketIntelligencePanel from "@/components/MarketIntelligencePanel";
 import MarketStructurePanel from "@/components/MarketStructurePanel";
-import SignalsRadarPanel from "@/components/SignalsRadarPanel";
 import MarketBreadthPanel from "@/components/MarketBreadthPanel";
 import DivergencePanel from "@/components/DivergencePanel"
 import StatusBar from "@/components/StatusBar";
 
-/**
- * Derived Intelligence — la casa de la interpretación/derivados.
- *
- * Reúne los paneles analíticos que antes estaban dispersos y compitiendo por
- * foco en secciones de datos crudos:
- *   - MarketIntelligencePanel: estaba enterrado al fondo de Market 360°.
- *   - SocialPulseBoard: regresa (estaba fuera).
- *   - SignalsRadarPanel: salió de Prices, donde le robaba foco a Top Movers.
- *
- * Los tres son autónomos (se auto-alimentan con sus propios hooks/fetch), así
- * que aquí solo se montan en orden. No reciben props.
- */
 
 export default function DerivedIntelligencePage() {
   return (
