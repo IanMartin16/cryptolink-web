@@ -6,7 +6,6 @@ import type { Health } from "@/lib/health";
 import { getSymbols, setSymbols } from "@/lib/symbolsStore";
 import type { SnapshotKPIs } from "@/lib/types";
 import type { PriceRow, TrendItem } from "@/lib/types";
-import { computeMood } from "@/lib/moodEngine";
 import StatusBar from "@/components/StatusBar";
 import PageHeader from "@/components/PageHeader";
 import { usePricesFeed } from "@/lib/hooks/usePricesFeed";

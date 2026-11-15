@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import StatusBar from "@/components/StatusBar";
 import PricesSplit from "@/components/PricesSplit";
 import PricesHeaderBar from "@/components/PricesHeaderBar";
-import { pushPricesToHistory } from "@/lib/priceHistoryStore";
 import { usePricesFeed } from "@/lib/hooks/usePricesFeed";
 import { getFiat } from "@/lib/fiatStore";
 import { hydratePriceHistory } from "@/lib/usePriceHistory";
@@ -78,12 +77,6 @@ export default function PricesRouteBody() {
   setSymbols(daily);
   console.log("[rotation] getSymbols tras set:", getSymbols().length); // ¿guardó 20?
 }, []);
-
-  // historial de precios (lo seguimos alimentando para sparklines de la tabla)
-  useEffect(() => {
-    if (!rows.length) return;
-    pushPricesToHistory(rows);
-  }, [rows]);
 
   // dentro de PricesBody, cuando ya hay rows:
   useEffect(() => {

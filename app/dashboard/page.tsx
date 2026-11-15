@@ -7,7 +7,6 @@ import { UI } from "@/lib/ui";
 import type { Health } from "@/lib/health";
 import { HEALTH_OK } from "@/lib/health";
 import TopHeader, { Chip } from "@/components/TopHeader";
-import { computeMood } from "@/lib/moodEngine";
 import type { PriceRow, TrendItem } from "@/lib/types";
 import type { SnapshotKPIs } from "@/lib/types";
 import MarketSnapshotBar from "@/components/MarketSnapshotBar";
