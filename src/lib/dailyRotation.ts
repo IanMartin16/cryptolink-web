@@ -1,5 +1,5 @@
 const ANCHORS = ["BTC", "ETH", "USDT", "SOL"];
-const ROTATION_SIZE = 16; // 3 anclas + 17 = 20
+const ROTATION_SIZE = 21; // 4 anclas + 21 = 25
 
 /** Semilla estable por DÍA (UTC): misma toda la jornada, distinta al día siguiente. */
 function daySeed(d: Date = new Date()): number {

@@ -186,7 +186,7 @@ export default function PricesSplit({
             <tbody>
               {watch.map((r) => {
                 const pct = effectivePct(r);
-                const hist = getPriceHistory(r.symbol, r.fiat ?? "USD").slice(-20);
+                const hist = getPriceHistory(r.symbol, r.fiat ?? "USD").slice(-25);
                 const tone = sparkTone(pct);
                 const fullName = getSymbolName(r.symbol);
                 return (
