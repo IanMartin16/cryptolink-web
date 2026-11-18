@@ -8,6 +8,7 @@ import MarketMomentumPanel from "./MarketMomentumPanel";
 import MarketSignalsPanel from "@/components/MarketSignalsPanel";
 import MarketAttentionTable from "./MarketAttentionTable";
 import AttentionPulsePanel from "./AttentionPulsePanel";
+import FearGreedPanel from "./FearGreedPanel";
 import type { PulsePoint } from "@/lib/social/fetchBasicSignals";
 import { AttentionRow } from "@/lib/useMarketAttention";
 
@@ -60,13 +61,17 @@ export default function TrendsRouteBody() {
       onPulseSeries={setPulseSeries}/>
       </div>
 
-      
-
       <div style={{ marginTop: 12, minWidth: 0 }}>
         <AttentionPulsePanel series={pulseSeries}/>
       </div>
 
+      <div style={{ marginTop: 12, minWidth: 0 }}>
+        <FearGreedPanel />
+      </div>
+
+      <div style={{ marginTop: 12, minWidth: 0 }}>
         <MarketSignalsPanel />
+      </div>
 
         <div
           style={{
