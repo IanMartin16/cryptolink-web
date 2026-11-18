@@ -1,5 +1,5 @@
 // components/AttentionSummary.tsx
-import type { AttentionStats } from "@/lib/hooks/useMarketAttention";
+import type { AttentionStats } from "@/lib/useMarketAttention";
 
 const MOOD = {
   BULLISH: { label: "Heating", color: "#2EE59D", bg: "rgba(46,229,157,0.10)", bd: "rgba(46,229,157,0.25)" },
