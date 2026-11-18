@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/Skeleton";
 import Toast from "@/components/Toast";
 import Sparkline from "@/components/Sparkline";
 import SymbolCell from "@/components/SymbolCell";
+import AttentionSummary from "@/components/AttentionSummary";
 import type { PulsePoint } from "@/lib/social/fetchBasicSignals";
 import {
   useMarketAttention,
@@ -370,7 +371,7 @@ export default function MarketAttentionTable({
 
         {/* Fear & Greed gauge */}
         {fearGreed ? (
-          <FearGreedGauge value={fearGreed.value} label={fearGreed.label} />
+          <AttentionSummary stats={stats} />
         ) : null}
       </div>
 
