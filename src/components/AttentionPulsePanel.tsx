@@ -7,7 +7,7 @@ import {
   type IChartApi,
   type ISeriesApi,
 } from "lightweight-charts";
-import type { PulsePoint } from "@/lib/social/fetchBasicSignals";
+import type { PulsePoint } from "@/lib/types";
 
 export default function AttentionPulsePanel({
   series,

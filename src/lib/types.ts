@@ -89,3 +89,36 @@ export type GlobalMarket = {
   markets: number | null;
   ts: string;
 };
+
+export type PulsePoint = { day: string; composite: number };
+
+export type SocialAttentionItem = {
+  asset: string;
+  attentionScore: number;
+  attentionDeltaPct: number;
+  direction: "up" | "down";
+  tags: string[];
+};
+
+export type BasicSignalsResponse = {
+  attentionLeaders: SocialAttentionItem[];
+  attentionLosers: SocialAttentionItem[];
+  tags: string[];
+  coverage: "low" | "moderate" | "high";
+  market: {
+    topAssets: string[];
+    attentionLeaders: SocialAttentionItem[];
+    attentionLosers: SocialAttentionItem[];
+    tags: string[];
+    coverage: "low" | "moderate" | "broad";
+    pulseSeries?: PulsePoint[];
+  };
+  backdrop?: MarketBackdrop;
+};
+
+export type MarketBackdrop = {
+  fearGreedValue?: number;
+  fearGreedLabel?: string;
+  source?: string;
+  ts?: string;
+}

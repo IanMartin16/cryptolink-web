@@ -7,7 +7,7 @@ import Toast from "@/components/Toast";
 import Sparkline from "@/components/Sparkline";
 import SymbolCell from "@/components/SymbolCell";
 import AttentionSummary from "@/components/AttentionSummary";
-import type { PulsePoint } from "@/lib/social/fetchBasicSignals";
+import type { PulsePoint } from "@/lib/types";
 import {
   useMarketAttention,
   type AttentionRow,

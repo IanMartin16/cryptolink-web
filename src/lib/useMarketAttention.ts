@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { BasicSignalsResponse, SocialAttentionItem, PulsePoint } from "@/lib/social/fetchBasicSignals";
+import type { BasicSignalsResponse, SocialAttentionItem, PulsePoint } from "@/lib/types";
 
 /**
  * IMPORTANTE: Market Attention consume SOLO el remoto real de social_link.

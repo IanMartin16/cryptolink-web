@@ -9,7 +9,7 @@ import MarketSignalsPanel from "@/components/MarketSignalsPanel";
 import MarketAttentionTable from "./MarketAttentionTable";
 import AttentionPulsePanel from "./AttentionPulsePanel";
 import FearGreedPanel from "./FearGreedPanel";
-import type { PulsePoint } from "@/lib/social/fetchBasicSignals";
+import type { PulsePoint } from "@/lib/types";
 import { AttentionRow } from "@/lib/useMarketAttention";
 
 
