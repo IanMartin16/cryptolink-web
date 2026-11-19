@@ -15,7 +15,7 @@ export function getSymbols(): string[] {
 export function setSymbols(symbols: string[]) {
   const clean = Array.from(
     new Set((symbols || []).map((s) => String(s).toUpperCase().trim()).filter(Boolean))
-  ).slice(0, 20);
+  ).slice(0, 25);
 
   try {
     localStorage.setItem(KEY, JSON.stringify(clean));

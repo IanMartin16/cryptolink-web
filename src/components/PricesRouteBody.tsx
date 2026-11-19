@@ -9,7 +9,6 @@ import { getFiat } from "@/lib/fiatStore";
 import { hydratePriceHistory } from "@/lib/usePriceHistory";
 import { getSymbols } from "@/lib/symbolsStore";
 import { fetchSymbols360, type SymbolMarket } from "@/lib/cryptoLink";
-import MarketSparkStrip from "./MarketSparkStrip";
 import MarketGlobalPanel from "./MarketGlobalPanel";
 import { SYMBOL_META } from "@/lib/symbolMeta";
 import { getDailyRotation } from "@/lib/dailyRotation";
@@ -105,8 +104,6 @@ export default function PricesRouteBody() {
       />
 
       <MarketGlobalPanel /> 
-
-      <MarketSparkStrip rows={rows} max={20} />
 
       <TopMoversStrip window="24h" limit={15} />
 

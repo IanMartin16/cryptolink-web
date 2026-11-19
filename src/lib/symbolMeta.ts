@@ -574,7 +574,7 @@ export const SYMBOL_META: Record<string, SymbolMetaEntry> = {
   STONKBROKER: { name: "StonkBroker", icon: "/icons/crypto/stonkbroker.png", categories: ["defi"] },
   SN110: { name: "Green Compute", icon: "/icons/crypto/sn110.png", categories: ["ai"] },
   CLANKER: { name: "tokenbot", icon: "/icons/crypto/clanker.png", categories: ["ai"] },
-  ELSA: { name: "Elsa", icon: "/icons/crypto/elsa.png", categories: ["null"] },
+  ELSA: { name: "HeyElsa", icon: "/icons/crypto/elsa.png", categories: ["null"] },
   NAORIS: { name: "NaoX Protocol", icon: "/icons/crypto/naoris.png", categories: ["smart-contracts"] },
   USTBL: { name: "Spiko US T-Bills Money Market Fund", icon: "/icons/crypto/ustbl.png", categories: ["rwa"] },
   PC0000033: { name: "Tradable APAC Diversified Finance Provider SSTN", icon: "/icons/crypto/pc0000033.png", categories: ["rwa"] },
