@@ -1,7 +1,7 @@
 export type SymbolCategory =
   | "major" | "layer1" | "layer2" | "meme" | "defi" | "stablecoin" | "wallets" | "nft" | "cex" | "analytics"
   | "rwa" | "ai" | "privacy" | "infra" | "oracle" | "exchange-token" | "binance alpha spotlight" | "null"
-  | "payments" | "gaming" | "store-of-value" | "smart-contracts" | "launchpad" |"gambling" | "cefi";
+  | "payments" | "gaming" | "store-of-value" | "yield-bearing" | "smart-contracts" | "launchpad" |"gambling" | "cefi";
 
 export type SymbolMetaEntry = { name: string; icon?: string; categories?: SymbolCategory[]; };
 
@@ -388,7 +388,7 @@ export const SYMBOL_META: Record<string, SymbolMetaEntry> = {
   RLC: { name: "iExec RLC", icon: "/icons/crypto/rlc.png", categories: ["ai"] },
   BIO: { name: "Bio Protocol", icon: "/icons/crypto/bio.png", categories: ["null"] },
   BABY: { name: "Babylon", icon: "/icons/crypto/baby.png", categories: ["defi"] },
-  AXL: { name: "Axelar", icon: "/icons/crypto/axl.png", categories: ["null"] },
+  AXL: { name: "Axelar", icon: "/icons/crypto/axl.png", categories: ["infra"] },
   ALLO: { name: "Allora", icon: "/icons/crypto/allo.png", categories: ["ai"] },
   ELF: { name: "aelf", icon: "/icons/crypto/elf.png", categories: ["layer1"] },
   ONT: { name: "Ontology", icon: "/icons/crypto/ont.png", categories: ["smart-contracts"] },
@@ -609,12 +609,12 @@ export const SYMBOL_META: Record<string, SymbolMetaEntry> = {
   NVDAB: { name: "NVIDIA (bStocks Tokenized Stock)", icon: "/icons/crypto/nvdab.png", categories: ["rwa"] },
   PC0000015: { name: "Tradable NA Third Party Online Merchant SSTN", icon: "/icons/crypto/pc0000015.png", categories: ["rwa"] },
   PC0000077: { name: "Tradable Singapore Fintech SSL", icon: "/icons/crypto/pc0000077.png", categories: ["rwa"] },
-  'MAG7.SSI': { name: "MAG7.ssi", icon: "/icons/crypto/mag7.png", categories: ["rwa"] },
+  'MAG7.SSI': { name: "MAG7.ssi", icon: "/icons/crypto/mag7.png", categories: ["defi"] },
   'MF-ONE': { name: "Midas mF-ONE", icon: "/icons/crypto/mfone.png", categories: ["null"]},
   OZA: { name: "Ozapay", icon: "/icons/crypto/oza.png", categories: ["payments"] },
   PC0000027: { name: "Tradable LatAm BNPL SSTN", icon: "/icons/crypto/pc0000027.png", categories: ["rwa"] },
-  MHORSE: { name: "MEME HORSE", icon: "icons/crypto/mhorse.png", categories: ["meme"] },
-  VBILL: { name: "VanEck Treasury Fund", icon: "icons/crypto/vbill.png", categories: ["rwa"] },
+  MHORSE: { name: "MEME HORSE", icon: "/icons/crypto/mhorse.png", categories: ["meme"] },
+  VBILL: { name: "VanEck Treasury Fund", icon: "/icons/crypto/vbill.png", categories: ["rwa"] },
   GPS: { name: "GoPlus Security", icon: "/icons/crypto/gps.png", categories: ["binance alpha spotlight"] },
   ACRDX: { name: "Anemoy Tokenized Apollo Diversified Credit Fund", icon: "/icons/crypto/acrdx.png", categories: ["rwa"] },
   BRSRV: { name: "BlackRock Daily Reinvestment Stablecoin Reserve Vehicle", icon: "/icons/crypto/brsrv.png", categories: ["rwa"] },
@@ -631,7 +631,7 @@ export const SYMBOL_META: Record<string, SymbolMetaEntry> = {
   SPYON: { name: "SPDR S&P 500 ETF (Ondo Tokenized ETF)", icon: "/icons/crypto/spyon.png", categories: ["rwa"] },
   MELANIA: { name: "Melania Meme", icon: "/icons/crypto/melania.png", categories: ["meme"] },
   PC: { name: "Pentagon Chain", icon: "/icons/crypto/pc.png", categories: ["gaming"] },
-  ARMUSDCS: { name: "Wintermute USDC Select", icon: "/icons/crypto/armusdcs.png", categories: ["null"] },
+  ARMUSDCS: { name: "Wintermute USDC Select", icon: "/icons/crypto/armusdcs.png", categories: ["yield-bearing"] },
   SUSHI: { name: "Sushi", icon: "/icons/crypto/sushi.png", categories: ["defi"] },
   AIAT: { name: "AI Analysis Token", icon: "/icons/crypto/aiat.png", categories: ["payments"] },
   '$INF8': { name: "Infinity Gaming", icon: "/icons/crypto/inf8.png", categories: ["gaming"] },
@@ -648,7 +648,7 @@ export const SYMBOL_META: Record<string, SymbolMetaEntry> = {
   ASTR: { name: "Astar", icon: "/icons/crypto/astr.png", categories: ["smart-contracts"] },
   AIOT: { name: "OKZOO", icon: "/icons/crypto/aiot.png", categories: ["ai"] },
   ARIAX: { name: "ARIA NETWORK", icon: "/icons/crypto/ariax.png", categories: ["smart-contracts"] },
-  ARIA: { name: "Aria.AI", icon: "/icons/crypto/aria.png", categories: ["null"] },
+  ARIA: { name: "Aria.AI", icon: "/icons/crypto/aria.png", categories: ["gaming"] },
   VANTA: { name: "Vanta Network", icon: "/icons/crypto/vanta.png", categories: ["ai"] },
   EDU: { name: "Open Campus", icon: "/icons/crypto/edu.png", categories: ["null"] },
   MERL: { name: "Merlin Chain", icon: "/icons/crypto/merl.png", categories: ["smart-contracts"] },
@@ -709,7 +709,7 @@ export const SYMBOL_META: Record<string, SymbolMetaEntry> = {
   NAT: { name: "DMT-NAT", icon: "/icons/crypto/nat.png", categories: ["null"] },
   LION: { name: "Loaded Lions", icon: "/icons/crypto/lion.png", categories: ["null"] },
   HSK: { name: "HashKey Platform Token", icon: "/icons/crypto/hsk.png", categories: ["null"] },
-  LISTA: { name: "Lista DAO", icon: "/icons/crypto/lista.png", categories: ["null"] },
+  LISTA: { name: "Lista DAO", icon: "/icons/crypto/lista.png", categories: ["defi"] },
   MPLX: { name: "Metaplex", icon: "/icons/crypto/mplx.png", categories: ["null"] },
   MOCA: { name: "Moca Network", icon: "/icons/crypto/moca.png", categories: ["null"] },
   SNT: { name: "Status", icon: "/icons/crypto/snt.png", categories: ["null"] },
