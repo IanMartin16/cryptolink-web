@@ -116,7 +116,7 @@ export const SYMBOL_META: Record<string, SymbolMetaEntry> = {
   YLDS: { name: "YLDS", icon: "/icons/crypto/ylds.png", categories: ["rwa", "stablecoin"] },
   VVV: { name: "Venice Token", icon: "/icons/crypto/vvv.png", categories: ["ai"] },
   GHO: { name: "GHO", icon: "/icons/crypto/gho.png", categories: ["stablecoin"] },
-  JAAA: { name: "Janus Henderson Anemoy Treasury Fund", icon: "/icons/crypto/jaaa.png", categories: ["rwa"] },
+  JAAA: { name: "Janus Henderson Anemoy AAA CLO Fund", icon: "/icons/crypto/jaaa.png", categories: ["rwa"] },
   PUMP: { name: "Pump.fun", icon: "/icons/crypto/pump.png", categories: ["defi"] },
   USTB: { name: "Invesco Short Duration US Government Securities Fund", icon: "/icons/crypto/ustb.png", categories: ["rwa"] },
   JTRSY: { name: "JTRSY", icon: "/icons/crypto/jtrsy.png", categories: ["rwa"] },
